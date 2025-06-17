@@ -16,6 +16,10 @@
   padding: 15px 0;
 }
 
+.logo {
+  cursor: pointer;
+}
+
 .logo img {
   height: 50px;
   width: auto;
@@ -35,12 +39,16 @@
 }
 
 .nav-link {
+  background: none;
+  border: none;
   text-decoration: none;
   color: var(--text-dark);
   font-weight: 500;
   font-size: 16px;
   position: relative;
   transition: var(--transition);
+  cursor: pointer;
+  padding: 8px 0;
 }
 
 .nav-link::after {
@@ -54,8 +62,14 @@
   transition: width 0.3s ease;
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
+}
+
+.nav-link.active {
+  color: var(--primary-pink);
+  font-weight: 600;
 }
 
 .menu-toggle {

@@ -7,7 +7,7 @@ import ProductGrid from './ProductGrid';
 import Footer from './Footer';
 import FloatingShapes from './FloatingShapes';
 
-const HomePage = () => {
+const HomePage = ({ onNavigate, onProductSelect }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -16,10 +16,10 @@ const HomePage = () => {
       className="homepage"
     >
       <FloatingShapes />
-      <Header />
-      <HeroSection />
+      <Header currentPage="home" onNavigate={onNavigate} />
+      <HeroSection onNavigate={onNavigate} onProductSelect={onProductSelect} />
       <ProductCarousel />
-      <ProductGrid />
+      <ProductGrid onNavigate={onNavigate} onProductSelect={onProductSelect} />
       <Footer />
     </motion.div>
   );

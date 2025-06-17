@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import logo from '../images/vuvu.png';
 import '../styles/Header.css';
 
-const Header = () => {
+const Header = ({ currentPage, onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   
@@ -26,12 +26,16 @@ const Header = () => {
   }, []);
 
   const menuItems = [
-    { name: 'Trang chủ', href: '#home' },
-    { name: 'Sản phẩm', href: '#products' },
-    { name: 'Bộ sưu tập', href: '#collections' },
-    { name: 'Về chúng tôi', href: '#about' },
-    { name: 'Liên hệ', href: '#contact' }
+    { name: 'Trang chủ', page: 'home' },
+    { name: 'Sản phẩm', page: 'products' },
+    { name: 'Về chúng tôi', page: 'about' },
+    { name: 'Liên hệ', page: 'contact' }
   ];
+
+  const handleNavigation = (page) => {
+    onNavigate(page);
+    setIsMenuOpen(false);
+  };
 
   return (
     <motion.header
@@ -55,6 +59,7 @@ const Header = () => {
             className="logo"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => handleNavigation('home')}
           >
             <img src={logo} alt="Dudu Taba Squishy" />
           </motion.div>
@@ -69,15 +74,14 @@ const Header = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
                 >
-                  <motion.a
-                    href={item.href}
-                    className="nav-link"
+                  <motion.button
+                    className={`nav-link ${currentPage === item.page ? 'active' : ''}`}
                     whileHover={{ scale: 1.05, color: '#ff6b9d' }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => handleNavigation(item.page)}
                   >
                     {item.name}
-                  </motion.a>
+                  </motion.button>
                 </motion.li>
               ))}
             </ul>

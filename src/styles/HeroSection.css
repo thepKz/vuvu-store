@@ -2,28 +2,43 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #ffeef8 0%, #f8e8ff 50%, #e8f8ff 100%);
   position: relative;
   overflow: hidden;
   padding-top: 80px;
 }
 
-.hero::before {
-  content: '';
+.hero-background {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ff6b9d" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23a8e6cf" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23ffd93d" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  opacity: 0.3;
   z-index: 1;
+}
+
+.hero-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #ffeef8 0%, #f8e8ff 30%, #e8f8ff 70%, #fff0f5 100%);
+}
+
+.hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="heroPattern" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="2" fill="%23ff6b9d" opacity="0.1"/><circle cx="75" cy="75" r="1.5" fill="%23a8e6cf" opacity="0.1"/><circle cx="10" cy="40" r="1" fill="%23ffd93d" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23heroPattern)"/></svg>');
+  opacity: 0.4;
 }
 
 .hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: 80px;
   align-items: center;
   position: relative;
   z-index: 2;
@@ -33,9 +48,21 @@
   max-width: 600px;
 }
 
+.hero-badge {
+  display: inline-block;
+  background: rgba(255, 107, 157, 0.1);
+  color: var(--primary-pink);
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 107, 157, 0.2);
+}
+
 .hero-title {
-  font-size: 4rem;
-  font-weight: 800;
+  font-size: 4.5rem;
+  font-weight: 900;
   line-height: 1.1;
   margin-bottom: 1.5rem;
 }
@@ -52,15 +79,42 @@
 .title-accent {
   display: block;
   color: var(--accent-purple);
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin-top: 0.5rem;
+  font-weight: 800;
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--text-light);
-  line-height: 1.6;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
   margin-bottom: 2.5rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-pink);
+  line-height: 1;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.25rem;
+  font-weight: 500;
 }
 
 .hero-buttons {
@@ -81,107 +135,162 @@
   transform: translateY(-3px);
 }
 
-.hero-image {
+.hero-visual {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.hero-image-container {
+.hero-visual-container {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 450px;
+  height: 450px;
 }
 
 .squishy-showcase {
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
   border-radius: 50%;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 20px 60px rgba(255, 107, 157, 0.2);
 }
 
 .squishy-item {
   position: absolute;
-  font-size: 4rem;
-  animation: float 3s ease-in-out infinite;
+  font-size: 5rem;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+  cursor: pointer;
 }
 
 .squishy-1 {
-  top: 10%;
-  left: 20%;
-  animation-delay: 0s;
+  top: 8%;
+  left: 18%;
 }
 
 .squishy-2 {
-  top: 20%;
-  right: 15%;
-  animation-delay: 0.5s;
+  top: 15%;
+  right: 12%;
 }
 
 .squishy-3 {
-  bottom: 20%;
-  left: 15%;
-  animation-delay: 1s;
+  bottom: 15%;
+  left: 12%;
 }
 
 .squishy-4 {
-  bottom: 10%;
-  right: 20%;
-  animation-delay: 1.5s;
+  bottom: 8%;
+  right: 18%;
+}
+
+.hero-visual-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.bg-circle-1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(255, 168, 204, 0.1));
+  top: -50px;
+  right: -50px;
+}
+
+.bg-circle-2 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(168, 230, 207, 0.2), rgba(136, 216, 163, 0.1));
+  bottom: -30px;
+  left: -30px;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .hero {
-    min-height: 80vh;
+    min-height: 90vh;
     padding-top: 100px;
   }
 
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 50px;
     text-align: center;
   }
 
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   .title-accent {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 
   .hero-subtitle {
     font-size: 1.1rem;
   }
 
+  .hero-stats {
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
   .hero-buttons {
     justify-content: center;
   }
 
-  .hero-image-container {
-    width: 300px;
-    height: 300px;
+  .hero-visual-container {
+    width: 350px;
+    height: 350px;
   }
 
   .squishy-item {
-    font-size: 3rem;
+    font-size: 3.5rem;
+  }
+
+  .bg-circle-1 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .bg-circle-2 {
+    width: 150px;
+    height: 150px;
   }
 }
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .title-accent {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+  }
+
+  .hero-stats {
+    gap: 20px;
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
   }
 
   .hero-buttons {
@@ -192,5 +301,14 @@
   .btn {
     width: 100%;
     max-width: 280px;
+  }
+
+  .hero-visual-container {
+    width: 280px;
+    height: 280px;
+  }
+
+  .squishy-item {
+    font-size: 3rem;
   }
 }
