@@ -135,6 +135,8 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
   const handleProductClick = (product) => {
     onProductSelect(product);
     onNavigate('product-detail');
+    // Scroll to top when navigating to product detail
+    window.scrollTo(0, 0);
   };
 
   return (

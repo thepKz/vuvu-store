@@ -35,6 +35,8 @@ const Header = ({ currentPage, onNavigate }) => {
   const handleNavigation = (page) => {
     onNavigate(page);
     setIsMenuOpen(false);
+    // Scroll to top immediately when navigating
+    window.scrollTo(0, 0);
   };
 
   return (

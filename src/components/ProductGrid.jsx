@@ -12,7 +12,7 @@ import lubu6 from '../images/lubu6.jpg';
 import lubu7 from '../images/lubu7.jpg';
 import lubu8 from '../images/lubu8.jpg';
 
-const ProductGrid = () => {
+const ProductGrid = ({ onNavigate, onProductSelect }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, threshold: 0.1 });
 
@@ -117,6 +117,23 @@ const ProductGrid = () => {
     }
   };
 
+  const handleProductClick = (product) => {
+    if (onProductSelect && onNavigate) {
+      onProductSelect(product);
+      onNavigate('product-detail');
+      // Scroll to top when navigating to product detail
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const handleViewAllProducts = () => {
+    if (onNavigate) {
+      onNavigate('products');
+      // Scroll to top when navigating to products page
+      window.scrollTo(0, 0);
+    }
+  };
+
   return (
     <section className="products-section" id="products" ref={ref}>
       <div className="container">
@@ -147,6 +164,7 @@ const ProductGrid = () => {
                 y: -10,
                 transition: { duration: 0.3 }
               }}
+              onClick={() => handleProductClick(product)}
             >
               {product.badge && (
                 <motion.div 
@@ -226,6 +244,28 @@ const ProductGrid = () => {
               </div>
             </motion.div>
           ))}
+        </motion.div>
+
+        <motion.div
+          className="section-footer"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          style={{ textAlign: 'center', marginTop: '50px' }}
+        >
+          <motion.button
+            className="btn btn-primary"
+            onClick={handleViewAllProducts}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              padding: '15px 40px',
+              fontSize: '1.1rem',
+              fontWeight: '700'
+            }}
+          >
+            🛍️ Xem tất cả sản phẩm
+          </motion.button>
         </motion.div>
       </div>
     </section>
