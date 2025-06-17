@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import '../styles/ProductGrid.css';
 
 import lubu1 from '../images/lubu1.jpg';
 import lubu2 from '../images/lubu2.jpg';
@@ -22,7 +23,8 @@ const ProductGrid = () => {
       name: "DIMOO",
       description: "Squishy Vương Quốc Động Vật",
       price: "230.000đ",
-      originalPrice: null
+      originalPrice: null,
+      badge: "Mới"
     },
     {
       id: 2,
@@ -30,7 +32,8 @@ const ProductGrid = () => {
       name: "DIMOO",
       description: "Squishy Thỏ Nghỉ Lễ",
       price: "253.000đ",
-      originalPrice: null
+      originalPrice: null,
+      badge: "Hot"
     },
     {
       id: 3,
@@ -38,7 +41,8 @@ const ProductGrid = () => {
       name: "MOLLY",
       description: "MOLLY SQUISHY KHỔNG LỒ 100% Loạt 2-B",
       price: "805.000đ",
-      originalPrice: "1.150.000đ"
+      originalPrice: "1.150.000đ",
+      badge: "Sale"
     },
     {
       id: 4,
@@ -46,7 +50,8 @@ const ProductGrid = () => {
       name: "MOLLY",
       description: "MOLLY SQUISHY KHỔNG LỒ 100% Loạt 2-C",
       price: "805.000đ",
-      originalPrice: "1.150.000đ"
+      originalPrice: "1.150.000đ",
+      badge: "Sale"
     },
     {
       id: 5,
@@ -54,7 +59,8 @@ const ProductGrid = () => {
       name: "LABUBU",
       description: "LABUBU SQUISHY KHỔNG LỒ 100% Loạt 2-C",
       price: "805.000đ",
-      originalPrice: "1.150.000đ"
+      originalPrice: "1.150.000đ",
+      badge: "Sale"
     },
     {
       id: 6,
@@ -62,7 +68,8 @@ const ProductGrid = () => {
       name: "LABUBU",
       description: "LABUBU SQUISHY KHỔNG LỒ 100% Loạt 2-D",
       price: "805.000đ",
-      originalPrice: "1.150.000đ"
+      originalPrice: "1.150.000đ",
+      badge: "Sale"
     },
     {
       id: 7,
@@ -70,7 +77,8 @@ const ProductGrid = () => {
       name: "LABUBU",
       description: "LABUBU SQUISHY KHỔNG LỒ 100% Loạt 2-E",
       price: "805.000đ",
-      originalPrice: "1.150.000đ"
+      originalPrice: "1.150.000đ",
+      badge: "Sale"
     },
     {
       id: 8,
@@ -78,21 +86,10 @@ const ProductGrid = () => {
       name: "LABUBU",
       description: "LABUBU SQUISHY KHỔNG LỒ 100% Loạt 2-F",
       price: "805.000đ",
-      originalPrice: "1.150.000đ"
+      originalPrice: "1.150.000đ",
+      badge: "Sale"
     }
   ];
-
-  const titleVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  };
 
   const containerVariants = {
     hidden: {},
@@ -114,45 +111,57 @@ const ProductGrid = () => {
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.6,
         ease: "easeOut"
       }
     }
   };
 
   return (
-    <section className="product-section" ref={ref}>
+    <section className="products-section" id="products" ref={ref}>
       <div className="container">
-        <motion.h2
-          className="section-title"
-          variants={titleVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
         >
-          🌟 Squishy Thịnh Hành Nhất 🌟
-        </motion.h2>
+          <h2 className="section-title">🛍️ Sản phẩm thịnh hành 🛍️</h2>
+          <p className="section-subtitle">
+            Khám phá bộ sưu tập squishy đa dạng và chất lượng cao
+          </p>
+        </motion.div>
         
         <motion.div 
-          className="product-grid"
+          className="products-grid"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {products.map((product, index) => (
+          {products.map((product) => (
             <motion.div
               key={product.id}
               className="product-card"
               variants={productVariants}
               whileHover={{ 
-                scale: 1.05,
                 y: -10,
                 transition: { duration: 0.3 }
               }}
-              whileTap={{ scale: 0.95 }}
             >
+              {product.badge && (
+                <motion.div 
+                  className={`product-badge badge-${product.badge.toLowerCase()}`}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.5, type: "spring" }}
+                >
+                  {product.badge}
+                </motion.div>
+              )}
+              
               <motion.div 
                 className="product-image-container"
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
                 <img src={product.image} alt={product.description} className="product-image" />
@@ -167,6 +176,7 @@ const ProductGrid = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                   >
+                    <span>👁️</span>
                     Xem nhanh
                   </motion.button>
                 </motion.div>
@@ -205,12 +215,13 @@ const ProductGrid = () => {
                   className="add-to-cart-btn"
                   whileHover={{ 
                     scale: 1.05,
-                    backgroundColor: '#e91e63'
+                    boxShadow: "0 10px 25px rgba(255, 107, 157, 0.3)"
                   }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
                 >
-                  Thêm vào giỏ 🛒
+                  <span>🛒</span>
+                  Thêm vào giỏ
                 </motion.button>
               </div>
             </motion.div>

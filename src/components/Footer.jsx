@@ -1,43 +1,184 @@
 import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import logo from '../images/vuvu.png';
-const Footer = () => {
-  return (
-    <footer className="footer-container">
-      <div className="footer-content">
-        <div className="footer-logo">
-          <img src= {logo} alt="Tiệm VuVu Logo" width="300px" />
-          <p>Tiệm VuVu</p>
-          <p>Cửa hàng đồ chơi và quà tặng độc đáo</p>
-        </div>
-        <div className="footer-links">
-          <div className="link-column">
-            <h4>Sản phẩm</h4>
-            <ul>
-              <li><a href="#a">Mới & Nổi bật</a></li>
-              <li><a href="#a">Bộ sưu tập</a></li>
-              <li><a href="#a">Mega</a></li>
-            </ul>
-          </div>
-          <div className="link-column">
-            <h4>Về chúng tôi</h4>
-            <ul>
-              <li><a href="#a">Giới thiệu</a></li>
-              <li><a href="#a">Liên hệ</a></li>
-              <li><a href="#a">Chính sách</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div className="footer-bottom">
+import '../styles/Footer.css';
 
-        <div className="social-links">
-          <a href="#a"><i className="fab fa-facebook-square"></i></a>
-          <a href="#a"><i className="fab fa-instagram"></i></a>
-          <a href="#a"><i className="fab fa-youtube"></i></a>
+const Footer = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, threshold: 0.1 });
+
+  const footerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
+  const socialLinks = [
+    { icon: 'fab fa-facebook-f', color: '#4267B2', href: '#' },
+    { icon: 'fab fa-instagram', color: '#E4405F', href: '#' },
+    { icon: 'fab fa-youtube', color: '#FF0000', href: '#' },
+    { icon: 'fab fa-tiktok', color: '#000000', href: '#' }
+  ];
+
+  return (
+    <motion.footer 
+      className="footer"
+      ref={ref}
+      variants={footerVariants}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+    >
+      <div className="container">
+        <div className="footer-content">
+          <motion.div className="footer-brand" variants={itemVariants}>
+            <motion.div 
+              className="footer-logo"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ duration: 0.3 }}
+            >
+              <img src={logo} alt="Dudu Taba Squishy Logo" />
+            </motion.div>
+            <h3>Dudu Taba Squishy</h3>
+            <p>Cửa hàng squishy và đồ chơi mềm mại đáng yêu nhất Việt Nam</p>
+            <div className="contact-info">
+              <div className="contact-item">
+                <i className="fas fa-map-marker-alt"></i>
+                <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-phone"></i>
+                <span>0123 456 789</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-envelope"></i>
+                <span>hello@dudutaba.com</span>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div className="footer-links" variants={itemVariants}>
+            <div className="link-column">
+              <motion.h4
+                whileHover={{ color: '#fff', scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                Sản phẩm
+              </motion.h4>
+              <ul>
+                {['Squishy Mới & Nổi bật', 'Bộ sưu tập Squishy', 'Mega Squishy', 'Phụ kiện'].map((item, index) => (
+                  <motion.li key={index}>
+                    <motion.a 
+                      href="#"
+                      whileHover={{ 
+                        x: 5,
+                        color: '#fff',
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      {item}
+                    </motion.a>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="link-column">
+              <motion.h4
+                whileHover={{ color: '#fff', scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                Hỗ trợ
+              </motion.h4>
+              <ul>
+                {['Hướng dẫn mua hàng', 'Chính sách đổi trả', 'Bảo hành sản phẩm', 'FAQ'].map((item, index) => (
+                  <motion.li key={index}>
+                    <motion.a 
+                      href="#"
+                      whileHover={{ 
+                        x: 5,
+                        color: '#fff',
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      {item}
+                    </motion.a>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="link-column">
+              <motion.h4
+                whileHover={{ color: '#fff', scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                Về chúng tôi
+              </motion.h4>
+              <ul>
+                {['Giới thiệu', 'Tin tức', 'Tuyển dụng', 'Liên hệ'].map((item, index) => (
+                  <motion.li key={index}>
+                    <motion.a 
+                      href="#"
+                      whileHover={{ 
+                        x: 5,
+                        color: '#fff',
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      {item}
+                    </motion.a>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </motion.div>
         </div>
-        <p className="copyright">© 2024 Tiệm VuVu. All rights reserved</p>
+        
+        <motion.div className="footer-bottom" variants={itemVariants}>
+          <motion.div className="social-links">
+            {socialLinks.map((social, index) => (
+              <motion.a 
+                key={index}
+                href={social.href}
+                className="social-link"
+                whileHover={{ 
+                  scale: 1.2,
+                  color: social.color,
+                  y: -3
+                }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+              >
+                <i className={social.icon}></i>
+              </motion.a>
+            ))}
+          </motion.div>
+          
+          <motion.div className="footer-divider" variants={itemVariants} />
+          
+          <motion.div className="copyright" variants={itemVariants}>
+            <p>© 2024 Dudu Taba Squishy. All rights reserved ✨</p>
+            <p>Made with ❤️ for squishy lovers</p>
+          </motion.div>
+        </motion.div>
       </div>
-    </footer>
+    </motion.footer>
   );
 };
 
