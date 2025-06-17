@@ -14,11 +14,12 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: -100 },
+  const slideFromLeft = {
+    hidden: { opacity: 0, x: -100, skewX: -10 },
     visible: {
       opacity: 1,
       x: 0,
+      skewX: 0,
       transition: {
         duration: 0.8,
         ease: "easeOut"
@@ -26,25 +27,29 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
     }
   };
 
-  const buttonVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
+  const slideFromRight = {
+    hidden: { opacity: 0, x: 100, skewX: 10 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      skewX: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const bounceIn = {
+    hidden: { opacity: 0, scale: 0.3, rotate: -180 },
     visible: {
       opacity: 1,
       scale: 1,
+      rotate: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut"
+        duration: 0.8,
+        ease: "backOut"
       }
-    },
-    hover: {
-      scale: 1.05,
-      y: -5,
-      transition: {
-        duration: 0.2
-      }
-    },
-    tap: {
-      scale: 0.95
     }
   };
 
@@ -66,61 +71,90 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
           initial="hidden"
           animate="visible"
         >
-          <motion.div className="hero-text" variants={itemVariants}>
-            <motion.div className="hero-badge" variants={itemVariants}>
-              <span>✨ Chào mừng đến với</span>
+          <motion.div className="hero-text" variants={slideFromLeft}>
+            <motion.div 
+              className="hero-badge"
+              variants={bounceIn}
+              whileHover={{ 
+                scale: 1.1, 
+                rotate: [0, -5, 5, 0],
+                transition: { duration: 0.5 }
+              }}
+            >
+              <span>✨ Chào mừng đến với thế giới squishy ✨</span>
             </motion.div>
             
             <motion.h1 className="hero-title">
               <motion.span 
                 className="title-main"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+                initial={{ opacity: 0, y: 50, rotateX: -90 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                transition={{ duration: 1, delay: 0.3 }}
               >
                 Dudu Taba
               </motion.span>
               <motion.span 
                 className="title-accent"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
+                initial={{ opacity: 0, y: 50, rotateX: -90 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                transition={{ duration: 1, delay: 0.5 }}
               >
                 Squishy Store
               </motion.span>
             </motion.h1>
             
-            <motion.p className="hero-subtitle" variants={itemVariants}>
-              Khám phá thế giới squishy đầy màu sắc và vui nhộn! 
-              Những món đồ chơi mềm mại, dễ thương sẽ mang lại niềm vui và thư giãn cho bạn.
+            <motion.p 
+              className="hero-subtitle"
+              variants={slideFromLeft}
+              whileHover={{ scale: 1.02 }}
+            >
+              🌈 Khám phá thế giới squishy đầy màu sắc và vui nhộn! 
+              Những món đồ chơi mềm mại, dễ thương sẽ mang lại niềm vui và thư giãn cho bạn. 
+              Hãy cùng chúng tôi tạo ra những khoảnh khắc tuyệt vời! 🎉
             </motion.p>
             
-            <motion.div className="hero-stats" variants={itemVariants}>
-              <div className="stat-item">
-                <span className="stat-number">500+</span>
-                <span className="stat-label">Sản phẩm</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">10K+</span>
-                <span className="stat-label">Khách hàng</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">99%</span>
-                <span className="stat-label">Hài lòng</span>
-              </div>
+            <motion.div className="hero-stats" variants={slideFromLeft}>
+              {[
+                { number: "500+", label: "Sản phẩm", icon: "🛍️" },
+                { number: "10K+", label: "Khách hàng", icon: "👥" },
+                { number: "99%", label: "Hài lòng", icon: "⭐" }
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  className="stat-item"
+                  whileHover={{ 
+                    scale: 1.1,
+                    rotate: [0, -5, 5, 0],
+                    transition: { duration: 0.5 }
+                  }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                >
+                  <span className="stat-number">{stat.icon} {stat.number}</span>
+                  <span className="stat-label">{stat.label}</span>
+                </motion.div>
+              ))}
             </motion.div>
             
-            <motion.div className="hero-buttons" variants={itemVariants}>
+            <motion.div className="hero-buttons" variants={slideFromLeft}>
               <motion.button
                 className="btn btn-primary hero-cta"
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
                 onClick={handleExploreClick}
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                  boxShadow: "0 25px 50px rgba(255, 107, 157, 0.4)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.2, duration: 0.6 }}
               >
                 <motion.span
                   animate={{
-                    y: [0, -2, 0],
+                    y: [0, -3, 0],
+                    rotate: [0, 5, -5, 0]
                   }}
                   transition={{
                     duration: 2,
@@ -128,16 +162,22 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
                     ease: "easeInOut"
                   }}
                 >
-                  🛍️ Mua sắm ngay
+                  🚀 Mua sắm ngay
                 </motion.span>
               </motion.button>
               
               <motion.button
                 className="btn btn-secondary"
-                variants={buttonVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 onClick={() => onNavigate('about')}
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                  rotate: [0, -2, 2, 0]
+                }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.4, duration: 0.6 }}
               >
                 📖 Tìm hiểu thêm
               </motion.button>
@@ -146,93 +186,62 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
 
           <motion.div 
             className="hero-visual"
-            initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            variants={slideFromRight}
           >
             <motion.div
               className="hero-visual-container"
-              animate={{
-                y: [0, -20, 0],
-                rotate: [0, 2, -2, 0]
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+              initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ duration: 1.2, delay: 0.5 }}
             >
-              <div className="squishy-showcase">
-                <motion.div 
-                  className="squishy-item squishy-1"
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 10, -10, 0]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  🧸
-                </motion.div>
-                <motion.div 
-                  className="squishy-item squishy-2"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    y: [0, -10, 0]
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.5
-                  }}
-                >
-                  🐱
-                </motion.div>
-                <motion.div 
-                  className="squishy-item squishy-3"
-                  animate={{
-                    scale: [1, 1.15, 1],
-                    rotate: [0, -15, 15, 0]
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1
-                  }}
-                >
-                  🐰
-                </motion.div>
-                <motion.div 
-                  className="squishy-item squishy-4"
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    y: [0, -15, 0]
-                  }}
-                  transition={{
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1.5
-                  }}
-                >
-                  🐻
-                </motion.div>
-              </div>
+              <motion.div
+                className="squishy-showcase"
+                whileHover={{ 
+                  scale: 1.05,
+                  rotate: [0, 5, -5, 0],
+                  transition: { duration: 0.5 }
+                }}
+              >
+                {[
+                  { emoji: "🧸", class: "squishy-1" },
+                  { emoji: "🐱", class: "squishy-2" },
+                  { emoji: "🐰", class: "squishy-3" },
+                  { emoji: "🐻", class: "squishy-4" }
+                ].map((item, index) => (
+                  <motion.div 
+                    key={index}
+                    className={`squishy-item ${item.class}`}
+                    initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                    transition={{ 
+                      delay: 1 + index * 0.2, 
+                      duration: 0.8,
+                      type: "spring",
+                      stiffness: 200
+                    }}
+                    whileHover={{
+                      scale: 1.4,
+                      rotate: [0, -15, 15, 0],
+                      y: -10,
+                      transition: { duration: 0.3 }
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {item.emoji}
+                  </motion.div>
+                ))}
+              </motion.div>
               
               <div className="hero-visual-bg">
                 <motion.div 
                   className="bg-circle bg-circle-1"
                   animate={{
                     scale: [1, 1.2, 1],
-                    opacity: [0.3, 0.6, 0.3]
+                    opacity: [0.3, 0.6, 0.3],
+                    rotate: [0, 180, 360]
                   }}
                   transition={{
-                    duration: 4,
+                    duration: 8,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
@@ -241,10 +250,11 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
                   className="bg-circle bg-circle-2"
                   animate={{
                     scale: [1.2, 1, 1.2],
-                    opacity: [0.2, 0.5, 0.2]
+                    opacity: [0.2, 0.5, 0.2],
+                    rotate: [360, 180, 0]
                   }}
                   transition={{
-                    duration: 5,
+                    duration: 10,
                     repeat: Infinity,
                     ease: "easeInOut",
                     delay: 1
