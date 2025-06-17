@@ -1,24 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './styles/global.css';
 import HomePage from './components/HomePage';
 import ProductsPage from './components/ProductsPage';
 import ProductDetailPage from './components/ProductDetailPage';
 import AboutPage from './components/AboutPage';
 import ContactPage from './components/ContactPage';
-import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  // Scroll to top when page changes
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }, [currentPage]);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -40,7 +30,6 @@ function App() {
   return (
     <div className="App">
       {renderPage()}
-      <ScrollToTop />
     </div>
   );
 }
