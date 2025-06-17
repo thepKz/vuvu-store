@@ -4,12 +4,13 @@ import './assets/CSS/luoi.css';
 import './assets/CSS/owl.carousel.css';
 import './assets/CSS/owl.theme.default.css';
 import './assets/CSS/style.css';
-import Home from './components/Home';
+import './assets/CSS/animations.css';
+import AnimatedHome from './components/AnimatedHome';
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <AnimatedHome />
     </div>
   );
 }
