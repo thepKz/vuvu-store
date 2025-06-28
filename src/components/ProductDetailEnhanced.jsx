@@ -17,6 +17,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const rotationRef = useRef(null);
+  const imageRef = useRef(null);
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -74,6 +75,16 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     return () => clearInterval(rotationInterval);
   }, [isFullscreen, isDragging]);
 
+  // Handle image zoom
+  const handleImageHover = (e) => {
+    if (!isZoomed || !imageRef.current) return;
+    
+    const rect = imageRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPosition({ x, y });
+  };
+
   if (!product) {
     return (
       <div className="product-detail-enhanced">
@@ -115,15 +126,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     if (newQuantity >= 1 && newQuantity <= maxStock) {
       setQuantity(newQuantity);
     }
-  };
-
-  const handleImageHover = (e) => {
-    if (!isZoomed) return;
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoomPosition({ x, y });
   };
 
   const handleAddToCart = () => {
@@ -181,6 +183,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   onMouseLeave={() => setIsZoomed(false)}
                   onMouseMove={handleImageHover}
                   onClick={toggleFullscreen}
+                  ref={imageRef}
                 >
                   <img 
                     src={images[selectedImage]} 
@@ -335,7 +338,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     whileHover={{ scale: 1.1, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <span>📘</span>
                     <span>Facebook</span>
                   </motion.button>
                   
@@ -344,7 +346,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     whileHover={{ scale: 1.1, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <span>🐦</span>
                     <span>Twitter</span>
                   </motion.button>
                   
@@ -353,7 +354,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     whileHover={{ scale: 1.1, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <span>📌</span>
                     <span>Pinterest</span>
                   </motion.button>
                 </div>
@@ -395,11 +395,11 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <h3>Mô tả chi tiết</h3>
                     <p>{product.description || "Sản phẩm squishy cao cấp với thiết kế độc đáo, chất liệu mềm mại và an toàn. Phù hợp làm quà tặng hoặc sưu tập."}</p>
                     <ul>
-                      <li>✨ Chất liệu cao cấp, an toàn cho trẻ em</li>
-                      <li>🌟 Thiết kế dễ thương, màu sắc tươi sáng</li>
-                      <li>💝 Kích thước hoàn hảo để ôm và chơi</li>
-                      <li>🎁 Phù hợp làm quà tặng cho mọi lứa tuổi</li>
-                      <li>🧼 Dễ dàng vệ sinh và bảo quản</li>
+                      <li>Chất liệu cao cấp, an toàn cho trẻ em</li>
+                      <li>Thiết kế dễ thương, màu sắc tươi sáng</li>
+                      <li>Kích thước hoàn hảo để ôm và chơi</li>
+                      <li>Phù hợp làm quà tặng cho mọi lứa tuổi</li>
+                      <li>Dễ dàng vệ sinh và bảo quản</li>
                     </ul>
 
                     <div className="product-specs">
@@ -439,15 +439,15 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <h3>Thông tin vận chuyển</h3>
                     <div className="shipping-options">
                       <div className="shipping-option">
-                        <strong>🚚 Giao hàng tiêu chuẩn</strong>
+                        <strong>Giao hàng tiêu chuẩn</strong>
                         <p>2-3 ngày làm việc • Miễn phí cho đơn từ 500.000đ</p>
                       </div>
                       <div className="shipping-option">
-                        <strong>⚡ Giao hàng nhanh</strong>
+                        <strong>Giao hàng nhanh</strong>
                         <p>1-2 ngày làm việc • Phí 30.000đ</p>
                       </div>
                       <div className="shipping-option">
-                        <strong>🏃 Giao hàng trong ngày</strong>
+                        <strong>Giao hàng trong ngày</strong>
                         <p>Trong ngày (khu vực nội thành) • Phí 50.000đ</p>
                       </div>
                     </div>

@@ -11,10 +11,11 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.2",
+    "chart.js": "^4.4.1",
     "framer-motion": "^10.16.16",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
-    "react-image-magnify": "^2.7.4",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.3",
     "swiper": "^11.1.14",
@@ -51,11 +52,5 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "gh-pages": "^6.1.1",
     "nodemon": "^3.0.1"
-  },
-  "overrides": {
-    "react-image-magnify": {
-      "react": "$react",
-      "react-dom": "$react-dom"
-    }
   }
 }

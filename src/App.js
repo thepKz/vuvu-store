@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './styles/global.css';
-import './styles/HomePage.css';
 import HomePage from './components/HomePage';
 import ShopeeProductsPage from './components/ShopeeProductsPage';
-import ShopeeProductDetail from './components/ShopeeProductDetail';
+import ProductDetailEnhanced from './components/ProductDetailEnhanced';
 import AboutPagePopMart from './components/AboutPagePopMart';
 import ContactPage from './components/ContactPage';
 import LoginPage from './components/LoginPage';
 import CollectionsPage from './components/CollectionsPage';
+import AdminLayout from './components/admin/AdminLayout';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -51,7 +51,7 @@ function App() {
       case 'products':
         return <ShopeeProductsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'product-detail':
-        return <ShopeeProductDetail product={selectedProduct} onNavigate={handleNavigation} />;
+        return <ProductDetailEnhanced product={selectedProduct} onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'collections':
         return <CollectionsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'about':
@@ -60,6 +60,8 @@ function App() {
         return <ContactPage onNavigate={handleNavigation} />;
       case 'login':
         return <LoginPage onNavigate={handleNavigation} onAdminLogin={() => setIsAdmin(true)} />;
+      case 'admin':
+        return <AdminLayout />;
       default:
         return <HomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
     }

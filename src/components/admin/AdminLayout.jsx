@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import '../../styles/AdminLayout.css';
 import AdminDashboard from './AdminDashboard';
 import ProductManager from './ProductManager';
-import CollectionManager from './CollectionManager';
+import OrderManager from './OrderManager';
+import UserManager from './UserManager';
 
 const AdminLayout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -14,14 +15,14 @@ const AdminLayout = () => {
         return <AdminDashboard />;
       case 'products':
         return <ProductManager />;
-      case 'collections':
-        return <CollectionManager />;
+      case 'orders':
+        return <OrderManager />;
+      case 'users':
+        return <UserManager />;
       case 'categories':
         return <div>Categories Manager</div>;
-      case 'orders':
-        return <div>Orders Manager</div>;
-      case 'users':
-        return <div>Users Manager</div>;
+      case 'collections':
+        return <div>Collections Manager</div>;
       case 'settings':
         return <div>Settings</div>;
       default:
@@ -58,20 +59,20 @@ const AdminLayout = () => {
             </li>
             <li>
               <button 
-                className={activeTab === 'collections' ? 'active' : ''}
-                onClick={() => setActiveTab('collections')}
-              >
-                <span className="nav-icon">🎨</span>
-                Bộ sưu tập
-              </button>
-            </li>
-            <li>
-              <button 
                 className={activeTab === 'categories' ? 'active' : ''}
                 onClick={() => setActiveTab('categories')}
               >
                 <span className="nav-icon">🗂️</span>
                 Danh mục
+              </button>
+            </li>
+            <li>
+              <button 
+                className={activeTab === 'collections' ? 'active' : ''}
+                onClick={() => setActiveTab('collections')}
+              >
+                <span className="nav-icon">🎨</span>
+                Bộ sưu tập
               </button>
             </li>
             <li>

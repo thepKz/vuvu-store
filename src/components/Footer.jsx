@@ -145,10 +145,10 @@ const Footer = () => {
         <motion.div className="footer-bottom" variants={itemVariants}>
           <motion.div className="social-links">
             {[
-              { emoji: '📘', label: 'Facebook' },
-              { emoji: '📷', label: 'Instagram' },
-              { emoji: '📺', label: 'YouTube' },
-              { emoji: '🎵', label: 'TikTok' }
+              { label: 'Facebook' },
+              { label: 'Instagram' },
+              { label: 'YouTube' },
+              { label: 'TikTok' }
             ].map((social, index) => (
               <motion.a 
                 key={index}
@@ -161,7 +161,6 @@ const Footer = () => {
                 whileTap={{ scale: 0.9 }}
                 transition={{ duration: 0.2 }}
               >
-                <span className="social-icon">{social.emoji}</span>
                 <span className="social-label">{social.label}</span>
               </motion.a>
             ))}

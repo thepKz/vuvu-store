@@ -1,126 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line, Bar } from 'react-chartjs-2';
 import '../../styles/AdminDashboard.css';
+import supabase, { getDashboardStats, getProductViewStats } from '../../services/supabaseClient';
+
+// Register ChartJS components
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 const AdminDashboard = () => {
   const [period, setPeriod] = useState('week');
   const [dashboardData, setDashboardData] = useState(null);
+  const [viewsData, setViewsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch dashboard data (mock data for now)
+  // Fetch dashboard data
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Simulate API call
-        setTimeout(() => {
-          // Mock data
-          const mockData = {
-            products: {
-              total_products: 24,
-              in_stock: 18,
-              out_of_stock: 6
-            },
-            orders: {
-              total_orders: 156,
-              pending_orders: 12,
-              processing_orders: 8,
-              shipped_orders: 15,
-              delivered_orders: 115,
-              cancelled_orders: 6
-            },
-            users: {
-              total_users: 350,
-              new_users: 42
-            },
-            revenue: {
-              total_revenue: 125000000,
-              monthly_revenue: 28000000,
-              weekly_revenue: 8500000
-            },
-            recentOrders: [
-              {
-                id: 'ORD-001',
-                user_id: 'USR-001',
-                status: 'pending',
-                total_amount: 850000,
-                created_at: '2025-06-28T10:30:00Z',
-                email: 'customer1@example.com',
-                first_name: 'Nguyễn',
-                last_name: 'Văn A'
-              },
-              {
-                id: 'ORD-002',
-                user_id: 'USR-002',
-                status: 'processing',
-                total_amount: 1250000,
-                created_at: '2025-06-28T09:15:00Z',
-                email: 'customer2@example.com',
-                first_name: 'Trần',
-                last_name: 'Thị B'
-              },
-              {
-                id: 'ORD-003',
-                user_id: 'USR-003',
-                status: 'shipped',
-                total_amount: 750000,
-                created_at: '2025-06-27T16:45:00Z',
-                email: 'customer3@example.com',
-                first_name: 'Lê',
-                last_name: 'Văn C'
-              }
-            ],
-            lowStock: [
-              {
-                id: 'PRD-001',
-                name: 'DIMOO Limited Edition',
-                stock: 2,
-                price: 850000
-              },
-              {
-                id: 'PRD-002',
-                name: 'MOLLY Premium Silver',
-                stock: 3,
-                price: 750000
-              },
-              {
-                id: 'PRD-003',
-                name: 'LABUBU Special Edition',
-                stock: 4,
-                price: 650000
-              }
-            ],
-            topViewed: [
-              {
-                id: 'PRD-004',
-                name: 'DIMOO Premium Gold',
-                image: '/images/lubu1.jpg',
-                view_count: 245
-              },
-              {
-                id: 'PRD-005',
-                name: 'MOLLY Exclusive Series',
-                image: '/images/lubu3.jpg',
-                view_count: 198
-              },
-              {
-                id: 'PRD-006',
-                name: 'LABUBU Collector Series',
-                image: '/images/lubu6.jpg',
-                view_count: 176
-              }
-            ]
-          };
-          
-          setDashboardData(mockData);
-          setLoading(false);
-        }, 1000);
+        // Fetch dashboard stats
+        const stats = await getDashboardStats();
+        
+        // Fetch product view statistics
+        const viewStats = await getProductViewStats(period);
+        
+        setDashboardData(stats);
+        setViewsData({
+          labels: viewStats.viewsByDate.map(item => item.date),
+          viewCounts: viewStats.viewsByDate.map(item => item.view_count),
+          totalViews: viewStats.totalViews,
+          topViewedProducts: viewStats.topViewedProducts
+        });
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
         setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
@@ -147,6 +65,45 @@ const AdminDashboard = () => {
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
+  };
+
+  // Prepare chart data
+  const viewsChartData = {
+    labels: viewsData?.labels || [],
+    datasets: [
+      {
+        label: 'Lượt xem',
+        data: viewsData?.viewCounts || [],
+        backgroundColor: '#a855f7',
+        borderColor: '#a855f7',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
+      }
+    ]
+  };
+
+  // Chart options
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0
+        }
+      }
+    }
   };
 
   return (
@@ -197,12 +154,9 @@ const AdminDashboard = () => {
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>👁️</div>
               <div className="stat-content">
-                <h3>Tổng sản phẩm</h3>
-                <p className="stat-value">{dashboardData?.products?.total_products || 0}</p>
-                <p className="stat-period">
-                  <span className="in-stock">{dashboardData?.products?.in_stock || 0} còn hàng</span> | 
-                  <span className="out-of-stock">{dashboardData?.products?.out_of_stock || 0} hết hàng</span>
-                </p>
+                <h3>Lượt xem</h3>
+                <p className="stat-value">{viewsData?.totalViews || 0}</p>
+                <p className="stat-period">trong {getPeriodDisplay(period)}</p>
               </div>
             </div>
             
@@ -229,153 +183,176 @@ const AdminDashboard = () => {
               <div className="stat-content">
                 <h3>Người dùng</h3>
                 <p className="stat-value">{dashboardData?.users?.total_users || 0}</p>
-                <p className="stat-period">{dashboardData?.users?.new_users || 0} người dùng mới trong 30 ngày</p>
+                <p className="stat-period">tổng người dùng</p>
               </div>
             </div>
           </div>
           
-          <div className="dashboard-grid">
-            <div className="dashboard-card orders-summary">
-              <h3>Tổng quan đơn hàng</h3>
-              <div className="order-status-summary">
-                <div className="status-item">
-                  <div className="status-label">Chờ xử lý</div>
-                  <div className="status-value status-pending">{dashboardData?.orders?.pending_orders || 0}</div>
-                </div>
-                <div className="status-item">
-                  <div className="status-label">Đang xử lý</div>
-                  <div className="status-value status-processing">{dashboardData?.orders?.processing_orders || 0}</div>
-                </div>
-                <div className="status-item">
-                  <div className="status-label">Đã gửi</div>
-                  <div className="status-value status-shipped">{dashboardData?.orders?.shipped_orders || 0}</div>
-                </div>
-                <div className="status-item">
-                  <div className="status-label">Đã giao</div>
-                  <div className="status-value status-delivered">{dashboardData?.orders?.delivered_orders || 0}</div>
-                </div>
-                <div className="status-item">
-                  <div className="status-label">Đã hủy</div>
-                  <div className="status-value status-cancelled">{dashboardData?.orders?.cancelled_orders || 0}</div>
-                </div>
+          <div className="charts-container">
+            <div className="chart-card">
+              <h3>Lượt xem theo thời gian</h3>
+              <div className="chart-container">
+                <Line data={viewsChartData} options={chartOptions} />
               </div>
             </div>
             
-            <div className="dashboard-card revenue-summary">
-              <h3>Doanh thu</h3>
-              <div className="revenue-stats">
-                <div className="revenue-item">
-                  <div className="revenue-period">Tuần này</div>
-                  <div className="revenue-amount">{formatCurrency(dashboardData?.revenue?.weekly_revenue)}</div>
-                </div>
-                <div className="revenue-item">
-                  <div className="revenue-period">Tháng này</div>
-                  <div className="revenue-amount">{formatCurrency(dashboardData?.revenue?.monthly_revenue)}</div>
-                </div>
-                <div className="revenue-item">
-                  <div className="revenue-period">Tổng cộng</div>
-                  <div className="revenue-amount total">{formatCurrency(dashboardData?.revenue?.total_revenue)}</div>
-                </div>
+            <div className="chart-card">
+              <h3>Thống kê sản phẩm</h3>
+              <div className="chart-container">
+                <Bar 
+                  data={{
+                    labels: ['Tổng sản phẩm', 'Còn hàng', 'Hết hàng'],
+                    datasets: [
+                      {
+                        data: [
+                          dashboardData?.products?.total_products || 0,
+                          dashboardData?.products?.in_stock || 0,
+                          dashboardData?.products?.out_of_stock || 0
+                        ],
+                        backgroundColor: [
+                          '#a855f7',
+                          '#10b981',
+                          '#ef4444'
+                        ]
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          precision: 0
+                        }
+                      }
+                    }
+                  }}
+                />
               </div>
             </div>
           </div>
           
-          <div className="dashboard-grid">
-            <div className="dashboard-card recent-orders">
-              <div className="card-header">
-                <h3>Đơn hàng gần đây</h3>
-                <button className="view-all-btn">Xem tất cả</button>
-              </div>
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Mã đơn hàng</th>
-                      <th>Khách hàng</th>
-                      <th>Trạng thái</th>
-                      <th>Tổng tiền</th>
-                      <th>Ngày tạo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashboardData?.recentOrders?.map((order) => (
-                      <tr key={order.id}>
-                        <td>{order.id}</td>
-                        <td>
-                          <div className="customer-info">
-                            <div className="customer-name">{order.first_name} {order.last_name}</div>
-                            <div className="customer-email">{order.email}</div>
-                          </div>
-                        </td>
-                        <td>
-                          <span className={`order-status status-${order.status}`}>
-                            {getOrderStatusText(order.status)}
-                          </span>
-                        </td>
-                        <td>{formatCurrency(order.total_amount)}</td>
-                        <td>{formatDate(order.created_at)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            <div className="dashboard-card low-stock">
-              <div className="card-header">
-                <h3>Sản phẩm sắp hết hàng</h3>
-                <button className="view-all-btn">Xem tất cả</button>
-              </div>
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Sản phẩm</th>
-                      <th>Tồn kho</th>
-                      <th>Giá</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashboardData?.lowStock?.map((product) => (
-                      <tr key={product.id}>
-                        <td>{product.name}</td>
-                        <td>
-                          <span className="stock-badge low-stock">{product.stock}</span>
-                        </td>
-                        <td>{formatCurrency(product.price)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          
-          <div className="dashboard-card top-viewed">
-            <div className="card-header">
-              <h3>Sản phẩm được xem nhiều nhất</h3>
-              <button className="view-all-btn">Xem tất cả</button>
-            </div>
+          <div className="top-products-table">
+            <h3>Sản phẩm được xem nhiều nhất</h3>
             <div className="table-container">
               <table>
                 <thead>
                   <tr>
                     <th>Sản phẩm</th>
                     <th>Lượt xem</th>
+                    <th>Người xem</th>
+                    <th>Lần xem gần nhất</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboardData?.topViewed?.map((product) => (
-                    <tr key={product.id}>
+                  {viewsData?.topViewedProducts?.map((product) => (
+                    <tr key={product.product_id}>
                       <td className="product-cell">
-                        <div className="admin-product-image">
-                          <img src={product.image || 'https://via.placeholder.com/40'} alt={product.name} />
-                        </div>
-                        <span>{product.name}</span>
+                        {product.image && (
+                          <div className="admin-product-image">
+                            <img src={product.image} alt={product.product_name} />
+                          </div>
+                        )}
+                        <span>{product.product_name}</span>
                       </td>
                       <td>{product.view_count}</td>
+                      <td>{product.unique_viewers || 0}</td>
+                      <td>{formatDate(product.last_viewed_at)}</td>
                     </tr>
                   ))}
+                  {(!viewsData?.topViewedProducts || viewsData.topViewedProducts.length === 0) && (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                        Không có dữ liệu lượt xem
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="top-products-table">
+            <h3>Đơn hàng gần đây</h3>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Khách hàng</th>
+                    <th>Trạng thái</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày tạo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData?.recentOrders?.map((order) => (
+                    <tr key={order.id}>
+                      <td>{order.id.substring(0, 8)}</td>
+                      <td className="product-cell">
+                        <div>
+                          <div>{order.users?.email}</div>
+                          <div>{order.users?.first_name} {order.users?.last_name}</div>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`status-badge status-${order.status}`}>
+                          {getStatusLabel(order.status)}
+                        </span>
+                      </td>
+                      <td>{formatCurrency(order.total_amount)}</td>
+                      <td>{formatDate(order.created_at)}</td>
+                    </tr>
+                  ))}
+                  {(!dashboardData?.recentOrders || dashboardData.recentOrders.length === 0) && (
+                    <tr>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                        Không có đơn hàng gần đây
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="top-products-table">
+            <h3>Sản phẩm sắp hết hàng</h3>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Tồn kho</th>
+                    <th>Giá</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData?.lowStock?.map((product) => (
+                    <tr key={product.id}>
+                      <td>{product.name}</td>
+                      <td>
+                        <span className="stock-badge low-stock">
+                          {product.stock}
+                        </span>
+                      </td>
+                      <td>{formatCurrency(product.price)}</td>
+                    </tr>
+                  ))}
+                  {(!dashboardData?.lowStock || dashboardData.lowStock.length === 0) && (
+                    <tr>
+                      <td colSpan="3" style={{ textAlign: 'center', padding: '20px' }}>
+                        Không có sản phẩm sắp hết hàng
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -386,17 +363,27 @@ const AdminDashboard = () => {
   );
 };
 
-// Helper function to get order status text
-function getOrderStatusText(status) {
-  const statusMap = {
-    'pending': 'Chờ xử lý',
-    'processing': 'Đang xử lý',
-    'shipped': 'Đã gửi hàng',
-    'delivered': 'Đã giao hàng',
-    'cancelled': 'Đã hủy'
-  };
-  
-  return statusMap[status] || status;
+// Helper function to get period display text
+function getPeriodDisplay(period) {
+  switch (period) {
+    case 'day': return 'hôm nay';
+    case 'week': return '7 ngày qua';
+    case 'month': return '30 ngày qua';
+    case 'year': return 'năm nay';
+    default: return 'khoảng thời gian';
+  }
+}
+
+// Helper function to get status label
+function getStatusLabel(status) {
+  switch (status) {
+    case 'pending': return 'Chờ xử lý';
+    case 'processing': return 'Đang xử lý';
+    case 'shipped': return 'Đã gửi hàng';
+    case 'delivered': return 'Đã giao hàng';
+    case 'cancelled': return 'Đã hủy';
+    default: return status;
+  }
 }
 
 export default AdminDashboard;
