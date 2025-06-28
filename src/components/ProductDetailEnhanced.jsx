@@ -12,6 +12,30 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState('description');
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Show button when page is scrolled down
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Set up scroll event listener
+  useEffect(() => {
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
 
   useEffect(() => {
     if (product?.variants?.length > 0) {
@@ -21,7 +45,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
 
   if (!product) {
     return (
-      <div className="product-detail-page">
+      <div className="product-detail-enhanced">
         <Header currentPage="products" onNavigate={onNavigate} />
         <div className="container" style={{ paddingTop: '120px', textAlign: 'center' }}>
           <motion.div
@@ -349,7 +373,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                 {activeTab === 'description' && (
                   <div className="description-content">
                     <h3>Mô tả chi tiết</h3>
-                    <p>{product.description}</p>
+                    <p>{product.description || "Sản phẩm squishy cao cấp với thiết kế độc đáo, chất liệu mềm mại và an toàn. Phù hợp làm quà tặng hoặc sưu tập."}</p>
                     <ul>
                       <li>✨ Chất liệu cao cấp, an toàn cho trẻ em</li>
                       <li>🌟 Thiết kế dễ thương, màu sắc tươi sáng</li>
@@ -425,6 +449,20 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
           />
         </div>
       </main>
+
+      {/* Scroll to top button */}
+      {isVisible && (
+        <motion.button
+          className="scroll-to-top"
+          onClick={scrollToTop}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          ⬆️
+        </motion.button>
+      )}
 
       <Footer />
     </motion.div>

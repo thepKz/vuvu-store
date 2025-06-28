@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles/global.css';
 import HomePage from './components/HomePage';
 import ProductsPage from './components/ProductsPage';
-import ProductDetailPage from './components/ProductDetailPage';
+import ProductDetailEnhanced from './components/ProductDetailEnhanced';
 import AboutPagePopMart from './components/AboutPagePopMart';
 import ContactPage from './components/ContactPage';
 import LoginPage from './components/LoginPage';
@@ -49,7 +49,7 @@ function App() {
       case 'products':
         return <ProductsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'product-detail':
-        return <ProductDetailPage product={selectedProduct} onNavigate={handleNavigation} />;
+        return <ProductDetailEnhanced product={selectedProduct} onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'collections':
         return <CollectionsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'about':

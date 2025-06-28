@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
@@ -11,6 +11,30 @@ import lubu4 from '../images/lubu4.jpg';
 
 const CollectionsPage = ({ onNavigate, onProductSelect }) => {
   const [selectedCollection, setSelectedCollection] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Show button when page is scrolled down
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Set up scroll event listener
+  useEffect(() => {
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
 
   const collections = [
     {
@@ -69,15 +93,21 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
 
   const handleCollectionClick = (collection) => {
     setSelectedCollection(collection);
+    // Scroll to top when selecting a collection
+    window.scrollTo(0, 0);
   };
 
   const handleProductClick = (product) => {
     onProductSelect(product);
     onNavigate('product-detail');
+    // Scroll to top when navigating to product detail
+    window.scrollTo(0, 0);
   };
 
   const handleBackToCollections = () => {
     setSelectedCollection(null);
+    // Scroll to top when going back to collections
+    window.scrollTo(0, 0);
   };
 
   if (selectedCollection) {
@@ -133,6 +163,7 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => handleProductClick(product)}
+                    whileHover={{ y: -10, transition: { duration: 0.3 } }}
                   >
                     <div className="product-image">
                       <img src={product.image} alt={product.name} />
@@ -148,6 +179,20 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
             </div>
           </div>
         </main>
+
+        {/* Scroll to top button */}
+        {isVisible && (
+          <motion.button
+            className="scroll-to-top"
+            onClick={scrollToTop}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            ⬆️
+          </motion.button>
+        )}
 
         <Footer />
       </motion.div>
@@ -187,6 +232,7 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => handleCollectionClick(collection)}
+                  whileHover={{ y: -10, transition: { duration: 0.3 } }}
                   style={{ '--collection-color': collection.color }}
                 >
                   <div className="collection-image">
@@ -209,6 +255,20 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           </div>
         </section>
       </main>
+
+      {/* Scroll to top button */}
+      {isVisible && (
+        <motion.button
+          className="scroll-to-top"
+          onClick={scrollToTop}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          ⬆️
+        </motion.button>
+      )}
 
       <Footer />
     </motion.div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
@@ -16,6 +16,30 @@ import lubu8 from '../images/lubu8.jpg';
 const ProductsPage = ({ onNavigate, onProductSelect }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Show button when page is scrolled down
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Set up scroll event listener
+  useEffect(() => {
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
 
   const products = [
     {
@@ -268,9 +292,9 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
                           <span className="current-price">{product.price}</span>
                         </div>
                         
-                        <button className="add-to-cart-btn">
-                          <span>🛒</span>
-                          Thêm vào giỏ
+                        <button className="product-detail-btn">
+                          <span>🔍</span>
+                          Chi tiết sản phẩm
                         </button>
                       </div>
                     </motion.div>
@@ -281,6 +305,20 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
           </div>
         </section>
       </main>
+
+      {/* Scroll to top button */}
+      {isVisible && (
+        <motion.button
+          className="scroll-to-top"
+          onClick={scrollToTop}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          ⬆️
+        </motion.button>
+      )}
 
       <Footer />
     </motion.div>

@@ -1,6 +1,7 @@
 .product-detail-enhanced {
   min-height: 100vh;
   background: linear-gradient(180deg, #ffffff 0%, #fefcff 100%);
+  position: relative;
 }
 
 .product-detail-main {
@@ -98,6 +99,8 @@
 .badge-premium { background: linear-gradient(135deg, #ec4899, #db2777); }
 .badge-limited { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .badge-sale { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.badge-mới { background: linear-gradient(135deg, #4CAF50, #45a049); }
+.badge-hot { background: linear-gradient(135deg, #FF5722, #E64A19); }
 
 .zoom-hint {
   position: absolute;
@@ -121,6 +124,22 @@
   gap: 15px;
   overflow-x: auto;
   padding: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.3) rgba(168, 85, 247, 0.1);
+}
+
+.thumbnail-gallery::-webkit-scrollbar {
+  height: 6px;
+}
+
+.thumbnail-gallery::-webkit-scrollbar-track {
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 10px;
+}
+
+.thumbnail-gallery::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
 }
 
 .thumbnail {
@@ -201,6 +220,7 @@
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;
+  flex-wrap: wrap;
 }
 
 .original-price {
@@ -232,6 +252,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .stock-status {
@@ -324,6 +345,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .quantity-section label {
@@ -470,6 +492,23 @@
   gap: 0;
   margin-bottom: 30px;
   border-bottom: 1px solid rgba(168, 85, 247, 0.1);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.3) rgba(168, 85, 247, 0.1);
+}
+
+.tabs-header::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tabs-header::-webkit-scrollbar-track {
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 10px;
+}
+
+.tabs-header::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
 }
 
 .tab-button {
@@ -483,6 +522,7 @@
   transition: all 0.3s ease;
   border-bottom: 3px solid transparent;
   position: relative;
+  white-space: nowrap;
 }
 
 .tab-button:hover {
@@ -587,6 +627,12 @@
   border: 1px solid rgba(168, 85, 247, 0.1);
   border-radius: 16px;
   padding: 25px;
+  transition: all 0.3s ease;
+}
+
+.review-item:hover {
+  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.1);
+  transform: translateY(-5px);
 }
 
 .review-header {
@@ -660,6 +706,8 @@
 .shipping-option:hover {
   border-color: rgba(168, 85, 247, 0.2);
   background: rgba(168, 85, 247, 0.02);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.1);
 }
 
 .shipping-option strong {
@@ -695,6 +743,32 @@
   line-height: 1.6;
 }
 
+/* Scroll to top button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.scroll-to-top:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .product-content {
@@ -715,24 +789,25 @@
   }
 
   .thumbnail-gallery {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .quantity-section {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .variants-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 
   .tabs-header {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
 
   .tab-button {
-    flex: 1;
-    min-width: 120px;
+    flex: 0 0 auto;
+    min-width: 150px;
   }
 
   .reviews-summary {
@@ -747,6 +822,14 @@
 
   .review-date {
     margin-left: 0;
+  }
+
+  .scroll-to-top {
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
   }
 }
 
@@ -787,5 +870,40 @@
 
   .avg-rating {
     font-size: 2.5rem;
+  }
+
+  .scroll-to-top {
+    bottom: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .product-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .current-price {
+    font-size: 1.4rem;
+  }
+
+  .product-actions .btn {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+
+  .thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+
+  .tab-button {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    min-width: 120px;
   }
 }

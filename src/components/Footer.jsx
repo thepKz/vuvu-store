@@ -41,7 +41,7 @@ const Footer = () => {
           <motion.div className="footer-brand" variants={itemVariants}>
             <motion.div 
               className="footer-logo"
-              whileHover={{ scale: 1.05, rotate: 5 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
               <h2>Dudu Store</h2>
@@ -155,7 +155,7 @@ const Footer = () => {
                 href="#"
                 className="social-link"
                 whileHover={{ 
-                  scale: 1.2,
+                  scale: 1.1,
                   y: -3
                 }}
                 whileTap={{ scale: 0.9 }}
