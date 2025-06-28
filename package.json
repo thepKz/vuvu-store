@@ -51,5 +51,11 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "gh-pages": "^6.1.1",
     "nodemon": "^3.0.1"
+  },
+  "overrides": {
+    "react-image-magnify": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }
