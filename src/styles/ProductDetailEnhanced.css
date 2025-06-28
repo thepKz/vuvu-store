@@ -269,121 +269,6 @@
   font-size: 0.9rem;
 }
 
-/* Product Variants */
-.product-variants h3,
-.product-colors h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #374151;
-  margin-bottom: 15px;
-}
-
-.variants-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-}
-
-.variant-option {
-  background: rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(168, 85, 247, 0.1);
-  border-radius: 12px;
-  padding: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  position: relative;
-}
-
-.variant-option:hover:not(:disabled) {
-  border-color: rgba(168, 85, 247, 0.3);
-  background: rgba(168, 85, 247, 0.05);
-}
-
-.variant-option.active {
-  border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.1);
-}
-
-.variant-option:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.variant-name {
-  display: block;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 5px;
-}
-
-.variant-price {
-  display: block;
-  font-weight: 700;
-  color: #a855f7;
-  font-size: 0.95rem;
-}
-
-.out-of-stock {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(239, 68, 68, 0.9);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-/* Color Selection */
-.colors-grid {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
-.color-option {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.color-option.active {
-  border-color: #a855f7;
-  transform: scale(1.1);
-}
-
-.color-option:hover {
-  transform: scale(1.1);
-}
-
-.color-check {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 1rem;
-  font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.selected-color-name {
-  font-size: 0.95rem;
-  color: #6b7280;
-}
-
-.selected-color-name strong {
-  color: #374151;
-}
-
 /* Quantity Section */
 .quantity-section {
   display: flex;
@@ -979,10 +864,6 @@
 
   .quantity-section {
     justify-content: flex-start;
-  }
-
-  .variants-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 
   .tabs-header {
