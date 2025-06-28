@@ -112,7 +112,7 @@ const PopMartHero = ({ onNavigate }) => {
             </motion.div>
           </motion.div>
 
-          {/* Right Visual - Enhanced & Larger */}
+          {/* Right Visual - Enhanced & Properly Contained */}
           <motion.div 
             className="hero-visual"
             initial={{ opacity: 0, scale: 0.8, x: 50 }}
@@ -120,7 +120,7 @@ const PopMartHero = ({ onNavigate }) => {
             transition={{ duration: 1, delay: 0.2 }}
           >
             <div className="hero-visual-container">
-              {/* Main Product Card - Larger & Tilted */}
+              {/* Main Product Card - Properly Positioned */}
               <motion.div 
                 className="visual-card main-card"
                 animate={{ 
@@ -132,9 +132,6 @@ const PopMartHero = ({ onNavigate }) => {
                   duration: 6,
                   repeat: Infinity,
                   ease: "easeInOut"
-                }}
-                style={{
-                  transform: 'perspective(1000px) rotateY(8deg) rotateX(2deg)'
                 }}
               >
                 <div className="card-header">
@@ -222,9 +219,6 @@ const PopMartHero = ({ onNavigate }) => {
                   ease: "easeInOut",
                   delay: 1
                 }}
-                style={{
-                  transform: 'perspective(800px) rotateY(-5deg)'
-                }}
               >
                 <div className="premium-indicator">
                   <div className="indicator-icon">
@@ -242,7 +236,7 @@ const PopMartHero = ({ onNavigate }) => {
                 </div>
               </motion.div>
 
-              {/* Enhanced Floating Elements */}
+              {/* Enhanced Floating Elements - Properly Contained */}
               <div className="floating-elements">
                 <motion.div 
                   className="floating-shape shape-1"

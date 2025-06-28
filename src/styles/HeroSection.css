@@ -93,6 +93,7 @@
   left: 30%;
 }
 
+/* Fixed Hero Content Container */
 .hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -100,10 +101,17 @@
   align-items: center;
   position: relative;
   z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .hero-text {
   max-width: 500px;
+  position: relative;
+  z-index: 3;
 }
 
 .hero-badge {
@@ -211,18 +219,22 @@
   transform: translateX(3px);
 }
 
+/* Fixed Hero Visual Container */
 .hero-visual {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 3;
 }
 
-/* Enhanced Visual Container - Larger */
+/* Enhanced Visual Container - Properly Contained */
 .hero-visual-container {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 450px;
+  height: 450px;
   perspective: 1000px;
+  margin: 0 auto;
 }
 
 .visual-card {
@@ -235,12 +247,12 @@
   transition: transform 0.3s ease;
 }
 
-/* Main Card - Larger & More Tilted */
+/* Main Card - Properly Positioned */
 .main-card {
-  width: 320px;
-  height: 380px;
-  top: 60px;
-  left: 90px;
+  width: 280px;
+  height: 320px;
+  top: 65px;
+  left: 85px;
   z-index: 2;
   transform: perspective(1000px) rotateY(8deg) rotateX(2deg);
 }
@@ -249,10 +261,10 @@
   transform: perspective(1000px) rotateY(12deg) rotateX(4deg) translateY(-5px);
 }
 
-/* Accent Card - Enhanced */
+/* Accent Card - Properly Positioned */
 .accent-card {
-  width: 180px;
-  height: 120px;
+  width: 160px;
+  height: 100px;
   top: 30px;
   right: 30px;
   z-index: 3;
@@ -438,7 +450,7 @@
   color: #6b7280;
 }
 
-/* Enhanced Floating Elements */
+/* Enhanced Floating Elements - Properly Contained */
 .floating-elements {
   position: absolute;
   top: 0;
@@ -476,7 +488,7 @@
   left: 25%;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive - Fixed Layout */
 @media (max-width: 768px) {
   .hero {
     height: 100vh;
@@ -487,6 +499,7 @@
     grid-template-columns: 1fr;
     gap: 50px;
     text-align: center;
+    padding: 0 15px;
   }
 
   .hero-title {
@@ -508,15 +521,15 @@
   }
 
   .main-card {
-    width: 260px;
-    height: 300px;
-    top: 40px;
-    left: 45px;
+    width: 240px;
+    height: 280px;
+    top: 35px;
+    left: 55px;
   }
 
   .accent-card {
-    width: 140px;
-    height: 90px;
+    width: 130px;
+    height: 80px;
     top: 20px;
     right: 20px;
   }
@@ -556,17 +569,21 @@
   }
 
   .main-card {
-    width: 220px;
-    height: 260px;
+    width: 200px;
+    height: 240px;
     top: 30px;
-    left: 40px;
+    left: 50px;
   }
 
   .accent-card {
-    width: 120px;
-    height: 80px;
+    width: 110px;
+    height: 70px;
     top: 15px;
     right: 15px;
+  }
+
+  .hero-content {
+    padding: 0 10px;
   }
 }
 
