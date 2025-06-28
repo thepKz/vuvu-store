@@ -33,12 +33,12 @@
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
-/* Login Container */
+/* Login Container - INCREASED WIDTH */
 .login-container {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 450px;
+  max-width: 650px; /* Increased from 450px to 650px */
   padding: 20px;
 }
 
@@ -46,7 +46,7 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 30px;
-  padding: 50px 40px;
+  padding: 60px 50px; /* Increased padding */
   box-shadow: 
     0 20px 60px rgba(255, 107, 157, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.2);
@@ -86,7 +86,7 @@
 }
 
 .login-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem; /* Increased font size */
   font-weight: 800;
   background: linear-gradient(45deg, #fa86b1, #ff6b9d, #e91e63);
   -webkit-background-clip: text;
@@ -98,11 +98,11 @@
 
 .login-header p {
   color: var(--text-light);
-  font-size: 1.1rem;
+  font-size: 1.2rem; /* Increased font size */
   line-height: 1.5;
 }
 
-/* Login Form */
+/* Login Form - WIDER LAYOUT */
 .login-form {
   margin-bottom: 30px;
 }
@@ -120,6 +120,7 @@
   border-radius: 20px;
   overflow: hidden;
   transition: var(--transition);
+  height: 70px; /* Increased height */
 }
 
 .input-container:focus-within {
@@ -129,11 +130,11 @@
 }
 
 .input-icon {
-  padding: 0 20px;
-  font-size: 1.2rem;
+  padding: 0 25px; /* Increased padding */
+  font-size: 1.4rem; /* Increased icon size */
   color: var(--primary-pink);
   background: rgba(255, 107, 157, 0.1);
-  height: 60px;
+  height: 100%;
   display: flex;
   align-items: center;
   border-right: 1px solid rgba(255, 107, 157, 0.2);
@@ -141,10 +142,10 @@
 
 .input-container input {
   flex: 1;
-  padding: 20px;
+  padding: 25px; /* Increased padding */
   border: none;
   background: transparent;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Increased font size */
   color: var(--text-dark);
   outline: none;
 }
@@ -165,7 +166,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem; /* Increased font size */
   color: var(--text-dark);
 }
 
@@ -174,11 +175,11 @@
 }
 
 .checkmark {
-  width: 20px;
-  height: 20px;
+  width: 22px; /* Increased size */
+  height: 22px;
   border: 2px solid var(--primary-pink);
   border-radius: 6px;
-  margin-right: 10px;
+  margin-right: 12px;
   position: relative;
   transition: var(--transition);
 }
@@ -194,7 +195,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -202,7 +203,7 @@
   background: none;
   border: none;
   color: var(--primary-pink);
-  font-size: 0.95rem;
+  font-size: 1rem; /* Increased font size */
   cursor: pointer;
   text-decoration: underline;
   transition: var(--transition);
@@ -212,22 +213,22 @@
   color: var(--accent-purple);
 }
 
-/* Login Button */
+/* Login Button - WIDER */
 .login-btn {
   width: 100%;
   background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink));
   color: var(--white);
   border: none;
-  padding: 20px;
+  padding: 22px; /* Increased padding */
   border-radius: 20px;
-  font-size: 1.1rem;
+  font-size: 1.2rem; /* Increased font size */
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
   position: relative;
   overflow: hidden;
@@ -244,10 +245,10 @@
 }
 
 .loading-spinner {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 }
 
-/* Social Login */
+/* Social Login - WIDER BUTTONS */
 .social-login {
   margin-bottom: 30px;
 }
@@ -270,9 +271,9 @@
 
 .divider span {
   background: rgba(255, 255, 255, 0.95);
-  padding: 0 20px;
+  padding: 0 25px; /* Increased padding */
   color: var(--text-light);
-  font-size: 0.9rem;
+  font-size: 1rem; /* Increased font size */
   position: relative;
   z-index: 1;
 }
@@ -280,15 +281,15 @@
 .social-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 20px; /* Increased gap */
 }
 
 .social-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 15px;
+  gap: 10px;
+  padding: 18px; /* Increased padding */
   border: 2px solid rgba(255, 107, 157, 0.2);
   border-radius: 15px;
   background: rgba(255, 255, 255, 0.8);
@@ -296,6 +297,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
+  font-size: 1rem; /* Increased font size */
 }
 
 .social-btn:hover {
@@ -305,10 +307,10 @@
 }
 
 .social-btn span {
-  font-size: 1.1rem;
+  font-size: 1.2rem; /* Increased icon size */
 }
 
-/* Register Notice */
+/* Register Notice - WIDER */
 .register-notice {
   border-top: 1px solid rgba(255, 107, 157, 0.2);
   padding-top: 25px;
@@ -318,17 +320,17 @@
   background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(255, 168, 204, 0.1));
   border: 1px solid rgba(255, 107, 157, 0.2);
   border-radius: 20px;
-  padding: 25px;
+  padding: 30px; /* Increased padding */
   text-align: center;
 }
 
 .notice-icon {
-  font-size: 2rem;
+  font-size: 2.5rem; /* Increased size */
   margin-bottom: 15px;
 }
 
 .notice-content h4 {
-  font-size: 1.2rem;
+  font-size: 1.3rem; /* Increased font size */
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 10px;
@@ -336,7 +338,7 @@
 
 .notice-content p {
   color: var(--text-light);
-  font-size: 0.95rem;
+  font-size: 1rem; /* Increased font size */
   line-height: 1.5;
   margin-bottom: 20px;
 }
@@ -345,14 +347,15 @@
   background: linear-gradient(135deg, var(--accent-purple), #a73653);
   color: var(--white);
   border: none;
-  padding: 12px 25px;
+  padding: 14px 30px; /* Increased padding */
   border-radius: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  font-size: 1rem; /* Increased font size */
 }
 
 .contact-btn:hover {
@@ -408,12 +411,12 @@
   }
 
   .login-card {
-    padding: 40px 25px;
+    padding: 40px 30px; /* Adjusted for mobile */
     border-radius: 25px;
   }
 
   .login-header h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .logo-squishy {
@@ -422,20 +425,23 @@
 
   .input-container {
     border-radius: 15px;
+    height: 60px;
   }
 
   .input-container input {
-    padding: 18px 15px;
+    padding: 20px 15px;
+    font-size: 1rem;
   }
 
   .input-icon {
     padding: 0 15px;
-    height: 55px;
+    font-size: 1.2rem;
   }
 
   .login-btn {
-    padding: 18px;
+    padding: 20px;
     border-radius: 15px;
+    font-size: 1.1rem;
   }
 
   .social-buttons {
@@ -459,15 +465,15 @@
 
 @media (max-width: 480px) {
   .login-header h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 
   .login-header p {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .notice-content p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .floating-squishy {

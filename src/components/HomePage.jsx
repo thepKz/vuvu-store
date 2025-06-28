@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Header from './Header';
-import PopMartHero from './PopMartHero';
+import NewHeroSection from './NewHeroSection';
 import PopMartProducts from './PopMartProducts';
 import Footer from './Footer';
 
@@ -14,7 +14,7 @@ const HomePage = ({ onNavigate, onProductSelect }) => {
       className="homepage"
     >
       <Header currentPage="home" onNavigate={onNavigate} />
-      <PopMartHero onNavigate={onNavigate} />
+      <NewHeroSection onNavigate={onNavigate} />
       <PopMartProducts onNavigate={onNavigate} onProductSelect={onProductSelect} />
       <Footer />
     </motion.div>
