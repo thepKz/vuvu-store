@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import '../styles/PopMartProducts.css';
+import '../styles/ProductGrid.css';
 
 import lubu1 from '../images/lubu1.jpg';
 import lubu2 from '../images/lubu2.jpg';
@@ -18,50 +18,56 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
     {
       id: 1,
       image: lubu1,
-      name: "DIMOO Premium",
+      name: "DIMOO Premium Collection",
       price: "230.000đ",
       originalPrice: null,
-      badge: "New"
+      badge: "New",
+      rating: 4.9
     },
     {
       id: 2,
       image: lubu2,
-      name: "DIMOO Limited",
+      name: "DIMOO Limited Edition",
       price: "253.000đ",
       originalPrice: null,
-      badge: "Hot"
+      badge: "Hot",
+      rating: 4.8
     },
     {
       id: 3,
       image: lubu3,
-      name: "MOLLY Exclusive",
+      name: "MOLLY Exclusive Series",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale"
+      badge: "Sale",
+      rating: 4.7
     },
     {
       id: 4,
       image: lubu4,
-      name: "MOLLY Deluxe",
+      name: "MOLLY Deluxe Collection",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale"
+      badge: "Sale",
+      rating: 4.9
     },
     {
       id: 5,
       image: lubu5,
-      name: "LABUBU Special",
+      name: "LABUBU Special Edition",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale"
+      badge: "Sale",
+      rating: 4.8
     },
     {
       id: 6,
       image: lubu6,
-      name: "LABUBU Collector",
+      name: "LABUBU Collector Series",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale"
+      badge: "Sale",
+      rating: 4.6
     }
   ];
 
@@ -107,14 +113,7 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
   };
 
   return (
-    <section className="popmart-products" ref={ref}>
-      {/* Background Effects */}
-      <div className="products-bg">
-        <div className="bg-orb orb-left"></div>
-        <div className="bg-orb orb-right"></div>
-        <div className="grid-pattern"></div>
-      </div>
-
+    <section className="products-section" ref={ref}>
       <div className="container">
         <motion.div
           className="section-header"
@@ -122,11 +121,11 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <div className="header-badge">
-            <span className="badge-glow"></span>
-            Trending Now
+          <div className="section-badge">
+            <div className="badge-dot"></div>
+            <span>Sản phẩm nổi bật</span>
           </div>
-          <h2 className="section-title">Sản phẩm nổi bật</h2>
+          <h2 className="section-title">Bộ sưu tập đặc biệt</h2>
         </motion.div>
         
         <motion.div 
@@ -147,8 +146,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
               }}
               onClick={() => handleProductClick(product)}
             >
-              <div className="card-glow-effect"></div>
-              
               {product.badge && (
                 <motion.div 
                   className={`product-badge badge-${product.badge.toLowerCase()}`}
@@ -161,7 +158,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
               )}
               
               <div className="product-image-container">
-                <div className="image-glow"></div>
                 <img src={product.image} alt={product.name} className="product-image" />
                 <motion.div 
                   className="product-overlay"
@@ -183,7 +179,19 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
               </div>
               
               <div className="product-info">
-                <h3 className="product-name">{product.name}</h3>
+                <div className="product-header">
+                  <h3 className="product-name">{product.name}</h3>
+                  <div className="product-rating">
+                    <div className="rating-stars">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className={i < Math.floor(product.rating) ? 'filled' : ''}>
+                          ⭐
+                        </span>
+                      ))}
+                    </div>
+                    <span className="rating-value">{product.rating}</span>
+                  </div>
+                </div>
                 
                 <div className="product-price">
                   <span className="current-price">{product.price}</span>
@@ -196,7 +204,7 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
                   className="add-to-cart-btn"
                   whileHover={{ 
                     scale: 1.05,
-                    boxShadow: "0 8px 25px rgba(255, 107, 157, 0.4)"
+                    boxShadow: "0 8px 25px rgba(168, 85, 247, 0.3)"
                   }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
@@ -224,7 +232,7 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
             onClick={handleViewAllProducts}
             whileHover={{ 
               scale: 1.05,
-              boxShadow: "0 12px 35px rgba(255, 107, 157, 0.4)"
+              boxShadow: "0 12px 35px rgba(168, 85, 247, 0.3)"
             }}
             whileTap={{ scale: 0.95 }}
           >

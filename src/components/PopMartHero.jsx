@@ -1,34 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import '../styles/PopMartHero.css';
+import '../styles/HeroSection.css';
 
 const PopMartHero = ({ onNavigate }) => {
   return (
-    <section className="popmart-hero">
-      {/* Animated Background */}
-      <div className="hero-bg">
-        <div className="gradient-orb orb-1"></div>
-        <div className="gradient-orb orb-2"></div>
-        <div className="gradient-orb orb-3"></div>
-        <div className="mesh-gradient"></div>
+    <section className="hero">
+      {/* Background */}
+      <div className="hero-background">
+        <div className="hero-gradient"></div>
+        <div className="hero-mesh"></div>
       </div>
 
       <div className="container">
-        <div className="hero-layout">
+        <div className="hero-content">
           {/* Left Content */}
           <motion.div 
-            className="hero-content"
+            className="hero-text"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.div 
-              className="content-badge"
+              className="hero-badge"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.3, type: "spring" }}
             >
-              Premium Collection
+              <div className="badge-dot"></div>
+              <span>Chào mừng đến với thế giới squishy</span>
             </motion.div>
 
             <motion.h1 
@@ -37,27 +36,27 @@ const PopMartHero = ({ onNavigate }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              Dudu Taba
-              <span className="title-accent">Squishy</span>
+              <span className="title-line-1">Dudu Store</span>
+              <span className="title-line-2">Squishy Collection</span>
             </motion.h1>
 
             <motion.p 
-              className="hero-description"
+              className="hero-subtitle"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
             >
-              Bộ sưu tập squishy cao cấp được thiết kế đặc biệt cho phụ nữ hiện đại
+              Khám phá bộ sưu tập squishy cao cấp được thiết kế đặc biệt cho những cô gái yêu thích sự dễ thương và chất lượng.
             </motion.p>
 
             <motion.div 
-              className="hero-actions"
+              className="hero-buttons"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
             >
               <motion.button
-                className="cta-primary"
+                className="btn btn-primary"
                 onClick={() => onNavigate('products')}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -68,6 +67,30 @@ const PopMartHero = ({ onNavigate }) => {
                 </svg>
               </motion.button>
             </motion.div>
+
+            <motion.div 
+              className="hero-social-proof"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.6 }}
+            >
+              <div className="proof-avatars">
+                <div className="avatar avatar-1"></div>
+                <div className="avatar avatar-2"></div>
+                <div className="avatar avatar-3"></div>
+                <div className="avatar-more">+99</div>
+              </div>
+              <div className="proof-rating">
+                <div className="rating-stars">
+                  <span>⭐</span>
+                  <span>⭐</span>
+                  <span>⭐</span>
+                  <span>⭐</span>
+                  <span>⭐</span>
+                </div>
+                <span className="rating-text">4.9/5 từ 1000+ khách hàng</span>
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Right Visual */}
@@ -77,13 +100,13 @@ const PopMartHero = ({ onNavigate }) => {
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <div className="visual-container">
+            <div className="hero-visual-container">
               {/* Main Product Card */}
               <motion.div 
-                className="product-showcase"
+                className="visual-card main-card"
                 animate={{ 
                   y: [0, -10, 0],
-                  rotateY: [0, 5, 0]
+                  rotateY: [0, 2, 0]
                 }}
                 transition={{ 
                   duration: 4,
@@ -91,83 +114,56 @@ const PopMartHero = ({ onNavigate }) => {
                   ease: "easeInOut"
                 }}
               >
-                <div className="showcase-card">
-                  <div className="card-glow"></div>
-                  <div className="product-image-area">
-                    <div className="image-placeholder">
-                      <div className="placeholder-gradient"></div>
+                <div className="card-header">
+                  <div className="card-badge">Premium</div>
+                </div>
+                <div className="card-content">
+                  <div className="product-preview">
+                    <div className="preview-image"></div>
+                    <div className="preview-info">
+                      <h4>Limited Edition Squishy</h4>
+                      <div className="preview-price">
+                        <span className="price-current">850.000đ</span>
+                        <span className="price-original">1.200.000đ</span>
+                      </div>
                     </div>
-                    <div className="product-badge">Limited</div>
                   </div>
-                  <div className="product-details">
-                    <h3>Premium Squishy</h3>
-                    <div className="price-display">
-                      <span className="current">850.000đ</span>
-                      <span className="original">1.200.000đ</span>
-                    </div>
+                  <div className="card-actions">
+                    <button className="action-btn primary">Mua ngay</button>
+                    <button className="action-btn secondary">♡</button>
                   </div>
                 </div>
               </motion.div>
 
-              {/* Floating Elements */}
+              {/* Accent Card */}
               <motion.div 
-                className="floating-element element-1"
+                className="visual-card accent-card"
                 animate={{ 
-                  y: [0, -15, 0],
-                  x: [0, 5, 0],
-                  rotate: [0, 10, 0]
+                  y: [0, -8, 0],
+                  x: [0, 5, 0]
                 }}
                 transition={{ 
                   duration: 3,
                   repeat: Infinity,
                   ease: "easeInOut",
-                  delay: 0.5
-                }}
-              >
-                <div className="mini-card">
-                  <div className="mini-icon">✨</div>
-                  <span>Premium</span>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                className="floating-element element-2"
-                animate={{ 
-                  y: [0, 12, 0],
-                  x: [0, -8, 0],
-                  rotate: [0, -8, 0]
-                }}
-                transition={{ 
-                  duration: 3.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
                   delay: 1
                 }}
               >
-                <div className="mini-card">
-                  <div className="mini-icon">🎁</div>
-                  <span>Limited</span>
+                <div className="quality-indicator">
+                  <div className="indicator-icon">✨</div>
+                  <div className="indicator-text">
+                    <span className="indicator-title">Chất lượng</span>
+                    <span className="indicator-subtitle">đảm bảo</span>
+                  </div>
                 </div>
               </motion.div>
 
-              <motion.div 
-                className="floating-element element-3"
-                animate={{ 
-                  y: [0, -8, 0],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{ 
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1.5
-                }}
-              >
-                <div className="mini-card">
-                  <div className="mini-icon">💎</div>
-                  <span>Exclusive</span>
-                </div>
-              </motion.div>
+              {/* Floating Elements */}
+              <div className="floating-elements">
+                <div className="floating-shape shape-1"></div>
+                <div className="floating-shape shape-2"></div>
+                <div className="floating-shape shape-3"></div>
+              </div>
             </div>
           </motion.div>
         </div>
