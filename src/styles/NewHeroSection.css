@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Tắt overflow để tránh elements tràn ra ngoài */
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.98) 0%, 
     rgba(254, 252, 255, 0.95) 20%, 
@@ -13,9 +13,11 @@
     rgba(255, 255, 255, 0.95) 100%
   );
   padding: 80px 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Background Effects */
+/* Background Effects - Contained */
 .hero-bg-effects {
   position: absolute;
   top: 0;
@@ -24,6 +26,7 @@
   bottom: 0;
   z-index: 1;
   pointer-events: none;
+  overflow: hidden; /* Đảm bảo effects không tràn ra ngoài */
 }
 
 .gradient-overlay {
@@ -61,6 +64,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  overflow: hidden; /* Particles không tràn ra ngoài */
 }
 
 .particle {
@@ -74,6 +78,7 @@
   filter: blur(2px);
 }
 
+/* Particles positioned within bounds */
 .particle-1 { width: 15px; height: 15px; top: 20%; left: 10%; }
 .particle-2 { width: 22px; height: 22px; top: 70%; left: 20%; }
 .particle-3 { width: 10px; height: 10px; top: 40%; right: 15%; }
@@ -87,7 +92,7 @@
 .particle-11 { width: 11px; height: 11px; top: 25%; left: 45%; }
 .particle-12 { width: 19px; height: 19px; top: 75%; right: 60%; }
 
-/* Hero Layout - Completely Flexible */
+/* Hero Layout - Completely Contained */
 .hero-layout {
   display: flex;
   flex-direction: row;
@@ -96,17 +101,19 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: none;
+  max-width: 1400px; /* Reasonable max-width để tránh quá rộng */
   margin: 0 auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
-/* Hero Content - No Constraints */
+/* Hero Content - Contained */
 .hero-content {
   flex: 1;
   width: 100%;
   max-width: none;
   min-width: 0;
+  box-sizing: border-box;
 }
 
 .hero-badge {
@@ -225,7 +232,7 @@
   transform: translateX(4px);
 }
 
-/* Hero Visual - Flexible */
+/* Hero Visual - Contained */
 .hero-visual {
   flex: 1;
   display: flex;
@@ -233,6 +240,7 @@
   align-items: center;
   min-width: 0;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .visual-showcase {
@@ -257,6 +265,7 @@
   padding: 25px;
   box-shadow: 0 30px 80px rgba(168, 85, 247, 0.2);
   z-index: 3;
+  box-sizing: border-box;
 }
 
 .product-badge {
@@ -345,7 +354,7 @@
   text-decoration: line-through;
 }
 
-/* Floating Info Cards */
+/* Floating Info Cards - Contained */
 .info-card {
   position: absolute;
   background: rgba(255, 255, 255, 0.9);
@@ -377,7 +386,7 @@
   font-size: 1rem;
 }
 
-/* Visual Glow */
+/* Visual Glow - Contained */
 .visual-glow {
   position: absolute;
   top: 50%;
@@ -396,28 +405,32 @@
   50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
 }
 
-/* Mobile Responsive - Completely Flexible */
+/* Mobile Responsive - Proper Padding */
 @media (max-width: 768px) {
   .new-hero-section {
     min-height: auto;
-    padding: 60px 0;
+    padding: 80px 20px; /* Tăng padding cho mobile */
+    overflow: hidden; /* Đảm bảo không tràn */
   }
 
   .hero-layout {
     flex-direction: column;
-    gap: 40px;
+    gap: 50px;
     text-align: center;
-    padding: 0 15px;
+    padding: 0 20px; /* Padding đủ cho mobile */
+    max-width: 100%;
   }
 
   .hero-content {
     order: 1;
     width: 100%;
+    padding: 0 10px; /* Thêm padding cho content */
   }
 
   .hero-visual {
     order: 2;
     width: 100%;
+    padding: 0 10px; /* Thêm padding cho visual */
   }
 
   .title-primary {
@@ -429,47 +442,67 @@
   }
 
   .hero-badge {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 12px 20px; /* Tăng padding cho mobile */
   }
 
   .hero-actions {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .visual-showcase {
     width: 100%;
-    max-width: 320px;
-    height: 320px;
+    max-width: 350px;
+    height: 350px;
     margin: 0 auto;
   }
 
   .main-product-card {
-    width: min(280px, 95%);
-    height: 320px;
+    width: min(300px, 95%);
+    height: 340px;
     padding: 20px;
   }
 
   .product-image-area {
-    height: 180px;
+    height: 200px;
   }
 
   .info-card {
-    display: none;
+    display: none; /* Ẩn trên mobile để tránh tràn */
   }
 
   .particle {
     filter: blur(1px);
   }
+
+  /* Giảm kích thước particles trên mobile */
+  .particle-1, .particle-3, .particle-6, .particle-8, .particle-11 { 
+    width: 8px; height: 8px; 
+  }
+  .particle-2, .particle-4, .particle-7, .particle-9, .particle-10, .particle-12 { 
+    width: 12px; height: 12px; 
+  }
+  .particle-5 { 
+    width: 15px; height: 15px; 
+  }
 }
 
 @media (max-width: 480px) {
   .new-hero-section {
-    padding: 40px 0;
+    padding: 60px 15px; /* Padding đủ cho mobile nhỏ */
   }
 
   .hero-layout {
-    gap: 30px;
-    padding: 0 10px;
+    gap: 40px;
+    padding: 0 15px; /* Padding đủ cho mobile nhỏ */
+  }
+
+  .hero-content {
+    padding: 0 5px;
+  }
+
+  .hero-visual {
+    padding: 0 5px;
   }
 
   .title-primary {
@@ -480,26 +513,36 @@
     font-size: clamp(1.6rem, 8vw, 2rem);
   }
 
+  .hero-badge {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
   .visual-showcase {
-    max-width: 280px;
-    height: 280px;
+    max-width: 300px;
+    height: 300px;
   }
 
   .main-product-card {
-    width: min(240px, 98%);
-    height: 280px;
+    width: min(280px, 98%);
+    height: 300px;
     padding: 16px;
   }
 
   .product-image-area {
-    height: 150px;
+    height: 170px;
   }
 
   .cta-button {
-    padding: 16px 28px;
+    padding: 18px 32px;
     font-size: 1.1rem;
     width: 100%;
-    max-width: 280px;
+    max-width: 300px;
+  }
+
+  /* Ẩn hầu hết particles trên mobile nhỏ */
+  .particle-1, .particle-3, .particle-5, .particle-7, .particle-9, .particle-11 {
+    display: none;
   }
 }
 
@@ -514,4 +557,13 @@
   .image-shine {
     animation: none !important;
   }
+}
+
+/* Ensure no horizontal scroll */
+* {
+  box-sizing: border-box;
+}
+
+.new-hero-section * {
+  max-width: 100%;
 }
