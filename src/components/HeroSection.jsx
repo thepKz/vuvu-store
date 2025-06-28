@@ -8,26 +8,22 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.15,
         delayChildren: 0.1
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
+        duration: 0.6,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
-  };
-
-  const handleExploreClick = () => {
-    onNavigate('products');
   };
 
   return (
@@ -47,131 +43,68 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
           <motion.div className="hero-text" variants={itemVariants}>
             <motion.div className="hero-badge">
               <span className="badge-dot"></span>
-              <span className="badge-text">Chào mừng đến với thế giới squishy</span>
+              <span>Premium Collection</span>
             </motion.div>
             
             <motion.h1 className="hero-title">
               <span className="title-line-1">Dudu Taba</span>
-              <span className="title-line-2">Squishy Collection</span>
-              <div className="title-decoration"></div>
+              <span className="title-line-2">Squishy</span>
             </motion.h1>
             
             <motion.p className="hero-subtitle" variants={itemVariants}>
-              Khám phá bộ sưu tập squishy cao cấp được thiết kế đặc biệt cho những cô gái yêu thích 
-              sự dễ thương và chất lượng. Mỗi sản phẩm đều mang đến cảm giác thư giãn tuyệt vời 
-              và vẻ đẹp tinh tế.
+              Bộ sưu tập squishy cao cấp dành cho phụ nữ hiện đại
             </motion.p>
-            
-            <motion.div className="hero-features" variants={itemVariants}>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Chất lượng cao cấp</span>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Thiết kế đáng yêu</span>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <span>An toàn tuyệt đối</span>
-              </div>
-            </motion.div>
             
             <motion.div className="hero-buttons" variants={itemVariants}>
               <motion.button
                 className="btn btn-primary"
-                onClick={handleExploreClick}
+                onClick={() => onNavigate('products')}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="btn-text">Khám phá bộ sưu tập</span>
-                <div className="btn-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              </motion.button>
-              
-              <motion.button
-                className="btn btn-secondary"
-                onClick={() => onNavigate('about')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="btn-text">Tìm hiểu thêm</span>
+                Khám phá ngay
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </motion.button>
             </motion.div>
 
             <motion.div className="hero-social-proof" variants={itemVariants}>
-              <div className="proof-item">
-                <div className="proof-avatars">
-                  <div className="avatar avatar-1"></div>
-                  <div className="avatar avatar-2"></div>
-                  <div className="avatar avatar-3"></div>
-                  <div className="avatar-more">+</div>
-                </div>
-                <div className="proof-text">
-                  <span className="proof-number">2,000+</span>
-                  <span className="proof-label">khách hàng hài lòng</span>
-                </div>
+              <div className="proof-avatars">
+                <div className="avatar avatar-1"></div>
+                <div className="avatar avatar-2"></div>
+                <div className="avatar avatar-3"></div>
+                <div className="avatar-more">2K+</div>
               </div>
               <div className="proof-rating">
                 <div className="rating-stars">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z"/>
-                  </svg>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z"/>
-                  </svg>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z"/>
-                  </svg>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z"/>
-                  </svg>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z"/>
-                  </svg>
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z"/>
+                    </svg>
+                  ))}
                 </div>
-                <span className="rating-text">4.9/5 đánh giá</span>
+                <span className="rating-text">4.9</span>
               </div>
             </motion.div>
           </motion.div>
 
           <motion.div 
             className="hero-visual"
-            initial={{ opacity: 0, scale: 0.9, x: 50 }}
+            initial={{ opacity: 0, scale: 0.9, x: 30 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
             <div className="hero-visual-container">
               <div className="visual-card main-card">
                 <div className="card-header">
                   <div className="card-badge">Premium</div>
-                  <div className="card-menu">
-                    <div className="menu-dot"></div>
-                    <div className="menu-dot"></div>
-                    <div className="menu-dot"></div>
-                  </div>
                 </div>
                 <div className="card-content">
                   <div className="product-preview">
                     <div className="preview-image"></div>
                     <div className="preview-info">
                       <h4>Limited Collection</h4>
-                      <p>Bộ sưu tập giới hạn</p>
                       <div className="preview-price">
                         <span className="price-current">850.000đ</span>
                         <span className="price-original">1.200.000đ</span>
