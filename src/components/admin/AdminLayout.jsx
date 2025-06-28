@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import '../../styles/AdminLayout.css';
 import AdminDashboard from './AdminDashboard';
 import ProductManager from './ProductManager';
+import CollectionManager from './CollectionManager';
 
 const AdminLayout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -13,10 +14,10 @@ const AdminLayout = () => {
         return <AdminDashboard />;
       case 'products':
         return <ProductManager />;
+      case 'collections':
+        return <CollectionManager />;
       case 'categories':
         return <div>Categories Manager</div>;
-      case 'collections':
-        return <div>Collections Manager</div>;
       case 'orders':
         return <div>Orders Manager</div>;
       case 'users':
@@ -52,16 +53,7 @@ const AdminLayout = () => {
                 onClick={() => setActiveTab('products')}
               >
                 <span className="nav-icon">📦</span>
-                Products
-              </button>
-            </li>
-            <li>
-              <button 
-                className={activeTab === 'categories' ? 'active' : ''}
-                onClick={() => setActiveTab('categories')}
-              >
-                <span className="nav-icon">🗂️</span>
-                Categories
+                Sản phẩm
               </button>
             </li>
             <li>
@@ -70,7 +62,16 @@ const AdminLayout = () => {
                 onClick={() => setActiveTab('collections')}
               >
                 <span className="nav-icon">🎨</span>
-                Collections
+                Bộ sưu tập
+              </button>
+            </li>
+            <li>
+              <button 
+                className={activeTab === 'categories' ? 'active' : ''}
+                onClick={() => setActiveTab('categories')}
+              >
+                <span className="nav-icon">🗂️</span>
+                Danh mục
               </button>
             </li>
             <li>
@@ -79,7 +80,7 @@ const AdminLayout = () => {
                 onClick={() => setActiveTab('orders')}
               >
                 <span className="nav-icon">🛒</span>
-                Orders
+                Đơn hàng
               </button>
             </li>
             <li>
@@ -88,7 +89,7 @@ const AdminLayout = () => {
                 onClick={() => setActiveTab('users')}
               >
                 <span className="nav-icon">👥</span>
-                Users
+                Người dùng
               </button>
             </li>
             <li>
@@ -97,7 +98,7 @@ const AdminLayout = () => {
                 onClick={() => setActiveTab('settings')}
               >
                 <span className="nav-icon">⚙️</span>
-                Settings
+                Cài đặt
               </button>
             </li>
           </ul>
@@ -106,7 +107,7 @@ const AdminLayout = () => {
         <div className="sidebar-footer">
           <button className="logout-btn">
             <span className="nav-icon">🚪</span>
-            Logout
+            Đăng xuất
           </button>
         </div>
       </aside>
@@ -114,7 +115,7 @@ const AdminLayout = () => {
       <main className="admin-content">
         <header className="admin-header">
           <div className="header-search">
-            <input type="text" placeholder="Search..." />
+            <input type="text" placeholder="Tìm kiếm..." />
             <button className="search-btn">🔍</button>
           </div>
           

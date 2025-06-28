@@ -51,6 +51,7 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           name: 'DIMOO Premium Gold', 
           price: '850.000đ', 
           image: lubu1,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567890',
           variants: [
             { id: 1, name: "Kích thước S", price: "850.000đ", stock: 5 },
             { id: 2, name: "Kích thước M", price: "950.000đ", stock: 3 }
@@ -58,13 +59,15 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Vàng", code: "#f59e0b" },
             { id: 2, name: "Bạc", code: "#94a3b8" }
-          ]
+          ],
+          images: [lubu1, lubu2, lubu3]
         },
         { 
           id: 2, 
           name: 'MOLLY Premium Silver', 
           price: '750.000đ', 
           image: lubu2,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567891',
           variants: [
             { id: 1, name: "Kích thước S", price: "750.000đ", stock: 7 },
             { id: 2, name: "Kích thước M", price: "850.000đ", stock: 4 }
@@ -72,7 +75,8 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Bạc", code: "#94a3b8" },
             { id: 2, name: "Hồng", code: "#ff6b9d" }
-          ]
+          ],
+          images: [lubu2, lubu3, lubu4]
         }
       ]
     },
@@ -90,6 +94,7 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           name: 'LABUBU Limited 2024', 
           price: '650.000đ', 
           image: lubu3,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567892',
           variants: [
             { id: 1, name: "Kích thước S", price: "650.000đ", stock: 3 },
             { id: 2, name: "Kích thước M", price: "750.000đ", stock: 1 }
@@ -97,13 +102,15 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Đỏ", code: "#ef4444" },
             { id: 2, name: "Xanh", code: "#0ea5e9" }
-          ]
+          ],
+          images: [lubu3, lubu4, lubu1]
         },
         { 
           id: 4, 
           name: 'DIMOO Limited Spring', 
           price: '550.000đ', 
           image: lubu4,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567893',
           variants: [
             { id: 1, name: "Kích thước S", price: "550.000đ", stock: 4 },
             { id: 2, name: "Kích thước M", price: "650.000đ", stock: 2 }
@@ -111,7 +118,8 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Hồng", code: "#ff6b9d" },
             { id: 2, name: "Xanh lá", code: "#10b981" }
-          ]
+          ],
+          images: [lubu4, lubu1, lubu2]
         }
       ]
     },
@@ -129,6 +137,7 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           name: 'Summer Vibes MOLLY', 
           price: '450.000đ', 
           image: lubu1,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567894',
           variants: [
             { id: 1, name: "Kích thước S", price: "450.000đ", stock: 8 },
             { id: 2, name: "Kích thước M", price: "550.000đ", stock: 5 }
@@ -136,13 +145,15 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Vàng", code: "#f59e0b" },
             { id: 2, name: "Xanh biển", code: "#0ea5e9" }
-          ]
+          ],
+          images: [lubu1, lubu3, lubu4]
         },
         { 
           id: 6, 
           name: 'Spring Bloom DIMOO', 
           price: '380.000đ', 
           image: lubu2,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567895',
           variants: [
             { id: 1, name: "Kích thước S", price: "380.000đ", stock: 6 },
             { id: 2, name: "Kích thước M", price: "480.000đ", stock: 3 }
@@ -150,7 +161,8 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Hồng", code: "#ff6b9d" },
             { id: 2, name: "Xanh lá", code: "#10b981" }
-          ]
+          ],
+          images: [lubu2, lubu4, lubu1]
         }
       ]
     },
@@ -168,6 +180,7 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           name: 'Classic LABUBU', 
           price: '320.000đ', 
           image: lubu3,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567896',
           variants: [
             { id: 1, name: "Kích thước S", price: "320.000đ", stock: 10 },
             { id: 2, name: "Kích thước M", price: "420.000đ", stock: 7 }
@@ -175,13 +188,15 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Đen", code: "#1f2937" },
             { id: 2, name: "Trắng", code: "#f9fafb" }
-          ]
+          ],
+          images: [lubu3, lubu2, lubu1]
         },
         { 
           id: 8, 
           name: 'Vintage MOLLY', 
           price: '280.000đ', 
           image: lubu4,
+          shopeeUrl: 'https://shopee.vn/product/123456789/1234567897',
           variants: [
             { id: 1, name: "Kích thước S", price: "280.000đ", stock: 12 },
             { id: 2, name: "Kích thước M", price: "380.000đ", stock: 8 }
@@ -189,7 +204,8 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
           colors: [
             { id: 1, name: "Nâu", code: "#92400e" },
             { id: 2, name: "Xám", code: "#6b7280" }
-          ]
+          ],
+          images: [lubu4, lubu3, lubu2]
         }
       ]
     }
@@ -270,7 +286,13 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
                     whileHover={{ y: -10, transition: { duration: 0.3 } }}
                   >
                     <div className="product-image">
-                      <img src={product.image} alt={product.name} />
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
+                        }}
+                      />
                     </div>
                     <div className="product-info">
                       <h3>{product.name}</h3>

@@ -64,7 +64,7 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
     );
   }
 
-  // Mock multiple images - in a real app, these would come from the product data
+  // Use product images if available, otherwise use fallback
   const images = product.images || [product.image, product.image, product.image]; 
 
   // Handle Shopee redirect
@@ -133,7 +133,7 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
                     },
                     isHintEnabled: true,
                     shouldHideHintAfterFirstActivation: false,
-                    hintTextMouse: 'Hover to zoom'
+                    hintTextMouse: 'Di chuột để phóng to'
                   }}
                 />
                 {product.badge && (
