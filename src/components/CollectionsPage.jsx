@@ -46,8 +46,34 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
       priceRange: '500.000đ - 2.000.000đ',
       color: '#ec4899',
       products: [
-        { id: 1, name: 'DIMOO Premium Gold', price: '850.000đ', image: lubu1 },
-        { id: 2, name: 'MOLLY Premium Silver', price: '750.000đ', image: lubu2 }
+        { 
+          id: 1, 
+          name: 'DIMOO Premium Gold', 
+          price: '850.000đ', 
+          image: lubu1,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "850.000đ", stock: 5 },
+            { id: 2, name: "Kích thước M", price: "950.000đ", stock: 3 }
+          ],
+          colors: [
+            { id: 1, name: "Vàng", code: "#f59e0b" },
+            { id: 2, name: "Bạc", code: "#94a3b8" }
+          ]
+        },
+        { 
+          id: 2, 
+          name: 'MOLLY Premium Silver', 
+          price: '750.000đ', 
+          image: lubu2,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "750.000đ", stock: 7 },
+            { id: 2, name: "Kích thước M", price: "850.000đ", stock: 4 }
+          ],
+          colors: [
+            { id: 1, name: "Bạc", code: "#94a3b8" },
+            { id: 2, name: "Hồng", code: "#ff6b9d" }
+          ]
+        }
       ]
     },
     {
@@ -59,8 +85,34 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
       priceRange: '300.000đ - 1.500.000đ',
       color: '#f59e0b',
       products: [
-        { id: 3, name: 'LABUBU Limited 2024', price: '650.000đ', image: lubu3 },
-        { id: 4, name: 'DIMOO Limited Spring', price: '550.000đ', image: lubu4 }
+        { 
+          id: 3, 
+          name: 'LABUBU Limited 2024', 
+          price: '650.000đ', 
+          image: lubu3,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "650.000đ", stock: 3 },
+            { id: 2, name: "Kích thước M", price: "750.000đ", stock: 1 }
+          ],
+          colors: [
+            { id: 1, name: "Đỏ", code: "#ef4444" },
+            { id: 2, name: "Xanh", code: "#0ea5e9" }
+          ]
+        },
+        { 
+          id: 4, 
+          name: 'DIMOO Limited Spring', 
+          price: '550.000đ', 
+          image: lubu4,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "550.000đ", stock: 4 },
+            { id: 2, name: "Kích thước M", price: "650.000đ", stock: 2 }
+          ],
+          colors: [
+            { id: 1, name: "Hồng", code: "#ff6b9d" },
+            { id: 2, name: "Xanh lá", code: "#10b981" }
+          ]
+        }
       ]
     },
     {
@@ -72,8 +124,34 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
       priceRange: '200.000đ - 800.000đ',
       color: '#10b981',
       products: [
-        { id: 5, name: 'Summer Vibes MOLLY', price: '450.000đ', image: lubu1 },
-        { id: 6, name: 'Spring Bloom DIMOO', price: '380.000đ', image: lubu2 }
+        { 
+          id: 5, 
+          name: 'Summer Vibes MOLLY', 
+          price: '450.000đ', 
+          image: lubu1,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "450.000đ", stock: 8 },
+            { id: 2, name: "Kích thước M", price: "550.000đ", stock: 5 }
+          ],
+          colors: [
+            { id: 1, name: "Vàng", code: "#f59e0b" },
+            { id: 2, name: "Xanh biển", code: "#0ea5e9" }
+          ]
+        },
+        { 
+          id: 6, 
+          name: 'Spring Bloom DIMOO', 
+          price: '380.000đ', 
+          image: lubu2,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "380.000đ", stock: 6 },
+            { id: 2, name: "Kích thước M", price: "480.000đ", stock: 3 }
+          ],
+          colors: [
+            { id: 1, name: "Hồng", code: "#ff6b9d" },
+            { id: 2, name: "Xanh lá", code: "#10b981" }
+          ]
+        }
       ]
     },
     {
@@ -85,8 +163,34 @@ const CollectionsPage = ({ onNavigate, onProductSelect }) => {
       priceRange: '150.000đ - 600.000đ',
       color: '#8b5cf6',
       products: [
-        { id: 7, name: 'Classic LABUBU', price: '320.000đ', image: lubu3 },
-        { id: 8, name: 'Vintage MOLLY', price: '280.000đ', image: lubu4 }
+        { 
+          id: 7, 
+          name: 'Classic LABUBU', 
+          price: '320.000đ', 
+          image: lubu3,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "320.000đ", stock: 10 },
+            { id: 2, name: "Kích thước M", price: "420.000đ", stock: 7 }
+          ],
+          colors: [
+            { id: 1, name: "Đen", code: "#1f2937" },
+            { id: 2, name: "Trắng", code: "#f9fafb" }
+          ]
+        },
+        { 
+          id: 8, 
+          name: 'Vintage MOLLY', 
+          price: '280.000đ', 
+          image: lubu4,
+          variants: [
+            { id: 1, name: "Kích thước S", price: "280.000đ", stock: 12 },
+            { id: 2, name: "Kích thước M", price: "380.000đ", stock: 8 }
+          ],
+          colors: [
+            { id: 1, name: "Nâu", code: "#92400e" },
+            { id: 2, name: "Xám", code: "#6b7280" }
+          ]
+        }
       ]
     }
   ];

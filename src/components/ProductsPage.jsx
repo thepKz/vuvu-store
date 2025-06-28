@@ -51,7 +51,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: null,
       badge: "Mới",
       category: "dimoo",
-      rating: 4.8
+      rating: 4.8,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "230.000đ", stock: 10 },
+        { id: 2, name: "Kích thước M", price: "280.000đ", stock: 5 }
+      ],
+      colors: [
+        { id: 1, name: "Hồng", code: "#ff6b9d" },
+        { id: 2, name: "Xanh", code: "#0ea5e9" }
+      ]
     },
     {
       id: 2,
@@ -62,7 +70,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: null,
       badge: "Hot",
       category: "dimoo",
-      rating: 4.9
+      rating: 4.9,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "253.000đ", stock: 8 },
+        { id: 2, name: "Kích thước M", price: "300.000đ", stock: 3 }
+      ],
+      colors: [
+        { id: 1, name: "Hồng", code: "#ff6b9d" },
+        { id: 2, name: "Tím", code: "#a855f7" }
+      ]
     },
     {
       id: 3,
@@ -73,7 +89,16 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "molly",
-      rating: 4.7
+      rating: 4.7,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "805.000đ", stock: 5 },
+        { id: 2, name: "Kích thước M", price: "950.000đ", stock: 2 },
+        { id: 3, name: "Kích thước L", price: "1.050.000đ", stock: 0 }
+      ],
+      colors: [
+        { id: 1, name: "Hồng", code: "#ff6b9d" },
+        { id: 2, name: "Vàng", code: "#f59e0b" }
+      ]
     },
     {
       id: 4,
@@ -84,7 +109,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "molly",
-      rating: 4.6
+      rating: 4.6,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "805.000đ", stock: 7 },
+        { id: 2, name: "Kích thước M", price: "950.000đ", stock: 0 }
+      ],
+      colors: [
+        { id: 1, name: "Tím", code: "#a855f7" },
+        { id: 2, name: "Xanh", code: "#0ea5e9" }
+      ]
     },
     {
       id: 5,
@@ -95,7 +128,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      rating: 4.8
+      rating: 4.8,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "805.000đ", stock: 4 },
+        { id: 2, name: "Kích thước M", price: "950.000đ", stock: 2 }
+      ],
+      colors: [
+        { id: 1, name: "Hồng", code: "#ff6b9d" },
+        { id: 2, name: "Vàng", code: "#f59e0b" }
+      ]
     },
     {
       id: 6,
@@ -106,7 +147,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      rating: 4.9
+      rating: 4.9,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "805.000đ", stock: 3 },
+        { id: 2, name: "Kích thước M", price: "950.000đ", stock: 1 }
+      ],
+      colors: [
+        { id: 1, name: "Tím", code: "#a855f7" },
+        { id: 2, name: "Xanh", code: "#0ea5e9" }
+      ]
     },
     {
       id: 7,
@@ -117,7 +166,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      rating: 4.7
+      rating: 4.7,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "805.000đ", stock: 2 },
+        { id: 2, name: "Kích thước M", price: "950.000đ", stock: 0 }
+      ],
+      colors: [
+        { id: 1, name: "Hồng", code: "#ff6b9d" },
+        { id: 2, name: "Vàng", code: "#f59e0b" }
+      ]
     },
     {
       id: 8,
@@ -128,7 +185,15 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      rating: 4.8
+      rating: 4.8,
+      variants: [
+        { id: 1, name: "Kích thước S", price: "805.000đ", stock: 5 },
+        { id: 2, name: "Kích thước M", price: "950.000đ", stock: 3 }
+      ],
+      colors: [
+        { id: 1, name: "Tím", code: "#a855f7" },
+        { id: 2, name: "Xanh", code: "#0ea5e9" }
+      ]
     }
   ];
 

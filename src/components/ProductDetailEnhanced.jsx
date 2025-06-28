@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
@@ -13,6 +13,12 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState('description');
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
+  const rotationRef = useRef(null);
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -41,7 +47,44 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     if (product?.variants?.length > 0) {
       setSelectedVariant(product.variants[0]);
     }
+    
+    if (product?.colors?.length > 0) {
+      setSelectedColor(product.colors[0]);
+    }
   }, [product]);
+
+  // Handle 360 rotation
+  const handleRotationStart = (e) => {
+    if (isFullscreen) {
+      setIsDragging(true);
+      setDragStart(e.clientX);
+    }
+  };
+
+  const handleRotationMove = (e) => {
+    if (isDragging && isFullscreen) {
+      const diff = e.clientX - dragStart;
+      setRotation(prev => (prev + diff / 5) % 360);
+      setDragStart(e.clientX);
+    }
+  };
+
+  const handleRotationEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Auto-rotate effect
+  useEffect(() => {
+    let rotationInterval;
+    
+    if (isFullscreen && !isDragging) {
+      rotationInterval = setInterval(() => {
+        setRotation(prev => (prev + 1) % 360);
+      }, 50);
+    }
+    
+    return () => clearInterval(rotationInterval);
+  }, [isFullscreen, isDragging]);
 
   if (!product) {
     return (
@@ -84,6 +127,13 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     { id: 3, name: 'Kích thước L', price: '450.000đ', stock: 3 }
   ];
 
+  const colors = product.colors || [
+    { id: 1, name: 'Hồng', code: '#ff6b9d' },
+    { id: 2, name: 'Tím', code: '#a855f7' },
+    { id: 3, name: 'Xanh', code: '#0ea5e9' },
+    { id: 4, name: 'Vàng', code: '#f59e0b' }
+  ];
+
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
     const maxStock = selectedVariant?.stock || 10;
@@ -109,6 +159,10 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const handleBuyNow = () => {
     // Buy now logic
     alert('Chuyển đến trang thanh toán!');
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
   };
 
   return (
@@ -151,6 +205,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   onMouseEnter={() => setIsZoomed(true)}
                   onMouseLeave={() => setIsZoomed(false)}
                   onMouseMove={handleImageHover}
+                  onClick={toggleFullscreen}
                 >
                   <img 
                     src={images[selectedImage]} 
@@ -166,7 +221,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     </div>
                   )}
                   <div className="zoom-hint">
-                    🔍 Di chuột để phóng to
+                    🔍 Nhấp để xem toàn màn hình
                   </div>
                 </motion.div>
               </div>
@@ -183,6 +238,14 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <img src={image} alt={`${product.name} ${index + 1}`} />
                   </motion.button>
                 ))}
+                <motion.button
+                  className="thumbnail view-360"
+                  onClick={toggleFullscreen}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span>360°</span>
+                </motion.button>
               </div>
             </motion.div>
 
@@ -195,6 +258,10 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
             >
               <div className="product-header">
                 <h1 className="product-title">{product.name}</h1>
+                <div className="product-code">
+                  <span>Mã sản phẩm: </span>
+                  <strong>SKU-{product.id || '12345'}</strong>
+                </div>
               </div>
 
               <div className="product-price-section">
@@ -218,7 +285,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
               {/* Product Variants */}
               {variants.length > 0 && (
                 <div className="product-variants">
-                  <h3>Chọn phiên bản:</h3>
+                  <h3>Chọn kích thước:</h3>
                   <div className="variants-grid">
                     {variants.map((variant) => (
                       <motion.button
@@ -234,6 +301,31 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                         {variant.stock === 0 && <span className="out-of-stock">Hết hàng</span>}
                       </motion.button>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Color Selection */}
+              {colors.length > 0 && (
+                <div className="product-colors">
+                  <h3>Chọn màu sắc:</h3>
+                  <div className="colors-grid">
+                    {colors.map((color) => (
+                      <motion.button
+                        key={color.id}
+                        className={`color-option ${selectedColor?.id === color.id ? 'active' : ''}`}
+                        onClick={() => setSelectedColor(color)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        style={{ backgroundColor: color.code }}
+                        aria-label={color.name}
+                      >
+                        {selectedColor?.id === color.id && <span className="color-check">✓</span>}
+                      </motion.button>
+                    ))}
+                  </div>
+                  <div className="selected-color-name">
+                    Màu: <strong>{selectedColor?.name}</strong>
                   </div>
                 </div>
               )}
@@ -308,6 +400,37 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   </div>
                 </div>
               </div>
+
+              {/* Share Buttons */}
+              <div className="share-section">
+                <h3>Chia sẻ sản phẩm:</h3>
+                <div className="share-buttons">
+                  <motion.button 
+                    className="share-btn facebook"
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <span>📘</span>
+                    <span>Facebook</span>
+                  </motion.button>
+                  <motion.button 
+                    className="share-btn twitter"
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <span>🐦</span>
+                    <span>Twitter</span>
+                  </motion.button>
+                  <motion.button 
+                    className="share-btn pinterest"
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <span>📌</span>
+                    <span>Pinterest</span>
+                  </motion.button>
+                </div>
+              </div>
             </motion.div>
           </div>
 
@@ -351,6 +474,36 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                       <li>🎁 Phù hợp làm quà tặng cho mọi lứa tuổi</li>
                       <li>🧼 Dễ dàng vệ sinh và bảo quản</li>
                     </ul>
+
+                    <div className="product-specs">
+                      <h4>Thông số kỹ thuật</h4>
+                      <div className="specs-table">
+                        <div className="spec-row">
+                          <div className="spec-label">Thương hiệu</div>
+                          <div className="spec-value">Dudu Store</div>
+                        </div>
+                        <div className="spec-row">
+                          <div className="spec-label">Xuất xứ</div>
+                          <div className="spec-value">Việt Nam</div>
+                        </div>
+                        <div className="spec-row">
+                          <div className="spec-label">Chất liệu</div>
+                          <div className="spec-value">Silicone cao cấp</div>
+                        </div>
+                        <div className="spec-row">
+                          <div className="spec-label">Kích thước</div>
+                          <div className="spec-value">10cm x 8cm x 5cm</div>
+                        </div>
+                        <div className="spec-row">
+                          <div className="spec-label">Trọng lượng</div>
+                          <div className="spec-value">150g</div>
+                        </div>
+                        <div className="spec-row">
+                          <div className="spec-label">Độ tuổi phù hợp</div>
+                          <div className="spec-value">3 tuổi trở lên</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -371,6 +524,16 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                         <p>Trong ngày (khu vực nội thành) • Phí 50.000đ</p>
                       </div>
                     </div>
+
+                    <div className="shipping-policy">
+                      <h4>Chính sách vận chuyển</h4>
+                      <ul>
+                        <li>Đơn hàng được xử lý trong vòng 24 giờ sau khi đặt hàng</li>
+                        <li>Thời gian giao hàng có thể thay đổi tùy thuộc vào khu vực và điều kiện thời tiết</li>
+                        <li>Khách hàng sẽ nhận được thông báo khi đơn hàng được gửi đi</li>
+                        <li>Theo dõi đơn hàng thông qua mã vận đơn được cung cấp qua email hoặc SMS</li>
+                      </ul>
+                    </div>
                   </div>
                 )}
               </motion.div>
@@ -385,6 +548,54 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
           />
         </div>
       </main>
+
+      {/* Fullscreen Gallery */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div 
+            className="fullscreen-gallery"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={toggleFullscreen}
+          >
+            <div 
+              className="fullscreen-content"
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={handleRotationStart}
+              onMouseMove={handleRotationMove}
+              onMouseUp={handleRotationEnd}
+              onMouseLeave={handleRotationEnd}
+              ref={rotationRef}
+            >
+              <div className="rotation-view">
+                <img 
+                  src={images[selectedImage]} 
+                  alt={product.name}
+                  style={{ transform: `rotate(${rotation}deg)` }}
+                />
+                <div className="rotation-instructions">
+                  <p>🖱️ Kéo để xoay 360°</p>
+                </div>
+              </div>
+              <div className="fullscreen-thumbnails">
+                {images.map((image, index) => (
+                  <button
+                    key={index}
+                    className={`fullscreen-thumbnail ${selectedImage === index ? 'active' : ''}`}
+                    onClick={() => setSelectedImage(index)}
+                  >
+                    <img src={image} alt={`${product.name} ${index + 1}`} />
+                  </button>
+                ))}
+              </div>
+              <button className="close-fullscreen" onClick={toggleFullscreen}>
+                ✖️
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Scroll to top button */}
       {isVisible && (
