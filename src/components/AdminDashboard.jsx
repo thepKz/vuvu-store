@@ -1,131 +1,203 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Line, Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line, Bar } from 'react-chartjs-2';
 import '../styles/AdminDashboard.css';
+import supabase from '../services/supabaseClient';
 
-// Đăng ký các thành phần Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// Register ChartJS components
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 const AdminDashboard = () => {
-  const [activeSection, setActiveSection] = useState('dashboard');
-  const [salesPeriod, setSalesPeriod] = useState('week');
-  const [viewsPeriod, setViewsPeriod] = useState('week');
-  const [dashboardStats, setDashboardStats] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [period, setPeriod] = useState('week');
+  const [dashboardData, setDashboardData] = useState(null);
+  const [viewsData, setViewsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Giả lập dữ liệu thống kê
+  // Fetch dashboard data
   useEffect(() => {
-    // Trong thực tế, đây sẽ là API call
-    setTimeout(() => {
-      setDashboardStats({
-        products: {
-          total_products: 41,
-          in_stock: 35,
-          out_of_stock: 6,
-          low_stock: 8
-        },
-        orders: {
-          total_orders: 128,
-          pending_orders: 12,
-          processing_orders: 24,
-          shipped_orders: 36,
-          delivered_orders: 52,
-          cancelled_orders: 4
-        },
-        users: {
-          total_users: 256,
-          new_users: 24
-        },
-        revenue: {
-          total_revenue: 45600000,
-          monthly_revenue: 12500000,
-          weekly_revenue: 3200000
-        },
-        recentOrders: [
-          { id: 'ORD-001', user_email: 'user1@example.com', status: 'pending', total_amount: 850000, created_at: '2025-06-25T10:30:00Z' },
-          { id: 'ORD-002', user_email: 'user2@example.com', status: 'processing', total_amount: 1250000, created_at: '2025-06-24T14:20:00Z' },
-          { id: 'ORD-003', user_email: 'user3@example.com', status: 'shipped', total_amount: 750000, created_at: '2025-06-23T09:15:00Z' },
-          { id: 'ORD-004', user_email: 'user4@example.com', status: 'delivered', total_amount: 1450000, created_at: '2025-06-22T16:45:00Z' },
-          { id: 'ORD-005', user_email: 'user5@example.com', status: 'cancelled', total_amount: 550000, created_at: '2025-06-21T11:10:00Z' }
-        ],
-        lowStock: [
-          { id: 'PROD-001', name: 'DIMOO Limited Edition', stock: 2, price: 253000 },
-          { id: 'PROD-002', name: 'MOLLY Exclusive Series', stock: 3, price: 805000 },
-          { id: 'PROD-003', name: 'LABUBU Collector Series', stock: 4, price: 805000 },
-          { id: 'PROD-004', name: 'DIMOO Premium Collection', stock: 5, price: 230000 }
-        ]
-      });
-      setIsLoading(false);
-    }, 1000);
-  }, []);
-
-  // Dữ liệu biểu đồ doanh thu
-  const revenueData = {
-    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
-    datasets: [
-      {
-        label: 'Doanh thu',
-        data: [1200000, 1900000, 1500000, 2200000, 1800000, 2500000, 3000000],
-        borderColor: '#a855f7',
-        backgroundColor: 'rgba(168, 85, 247, 0.1)',
-        tension: 0.4,
-        fill: true
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch product view statistics
+        const { data: viewsData, error: viewsError } = await supabase
+          .from('product_view_trends_by_date')
+          .select('*')
+          .order('date', { ascending: true })
+          .limit(30);
+        
+        if (viewsError) throw viewsError;
+        
+        // Fetch top viewed products
+        const { data: topProducts, error: topProductsError } = await supabase
+          .from('product_view_analytics')
+          .select('*')
+          .order('view_count', { ascending: false })
+          .limit(10);
+        
+        if (topProductsError) throw topProductsError;
+        
+        // Fetch product counts
+        const { data: productCounts, error: productCountsError } = await supabase
+          .rpc('get_product_counts');
+        
+        if (productCountsError) throw productCountsError;
+        
+        // Fetch order counts
+        const { data: orderCounts, error: orderCountsError } = await supabase
+          .rpc('get_order_counts');
+        
+        if (orderCountsError) throw orderCountsError;
+        
+        // Fetch user counts
+        const { data: userCounts, error: userCountsError } = await supabase
+          .rpc('get_user_counts');
+        
+        if (userCountsError) throw userCountsError;
+        
+        // Fetch revenue data
+        const { data: revenueData, error: revenueError } = await supabase
+          .rpc('get_revenue_data');
+        
+        if (revenueError) throw revenueError;
+        
+        // Fetch recent orders
+        const { data: recentOrders, error: recentOrdersError } = await supabase
+          .from('orders')
+          .select(`
+            id,
+            user_id,
+            status,
+            total_amount,
+            created_at,
+            users (email, first_name, last_name)
+          `)
+          .order('created_at', { ascending: false })
+          .limit(5);
+        
+        if (recentOrdersError) throw recentOrdersError;
+        
+        // Fetch low stock products
+        const { data: lowStock, error: lowStockError } = await supabase
+          .from('products')
+          .select('id, name, stock, price')
+          .gt('stock', 0)
+          .lte('stock', 5)
+          .order('stock', { ascending: true })
+          .limit(5);
+        
+        if (lowStockError) throw lowStockError;
+        
+        // Process views data for chart
+        const processedViewsData = processViewsData(viewsData, period);
+        
+        setViewsData(processedViewsData);
+        setDashboardData({
+          topProducts,
+          productCounts: productCounts || {
+            total_products: 0,
+            in_stock: 0,
+            out_of_stock: 0
+          },
+          orderCounts: orderCounts || {
+            total_orders: 0,
+            pending_orders: 0,
+            processing_orders: 0,
+            shipped_orders: 0,
+            delivered_orders: 0,
+            cancelled_orders: 0
+          },
+          userCounts: userCounts || {
+            total_users: 0,
+            new_users: 0
+          },
+          revenueData: revenueData || {
+            total_revenue: 0,
+            monthly_revenue: 0,
+            weekly_revenue: 0
+          },
+          recentOrders: recentOrders || [],
+          lowStock: lowStock || []
+        });
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    ]
+    };
+    
+    fetchDashboardData();
+  }, [period]);
+
+  // Process views data for chart based on period
+  const processViewsData = (data, period) => {
+    if (!data || data.length === 0) return null;
+    
+    // Sort data by date
+    const sortedData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    let filteredData;
+    const now = new Date();
+    
+    switch (period) {
+      case 'day':
+        // Last 24 hours - would need hourly data which we don't have
+        filteredData = sortedData.slice(-1);
+        break;
+      case 'week':
+        // Last 7 days
+        const weekAgo = new Date(now);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        filteredData = sortedData.filter(item => new Date(item.date) >= weekAgo);
+        break;
+      case 'month':
+        // Last 30 days
+        const monthAgo = new Date(now);
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        filteredData = sortedData.filter(item => new Date(item.date) >= monthAgo);
+        break;
+      case 'year':
+        // Last 365 days
+        const yearAgo = new Date(now);
+        yearAgo.setDate(yearAgo.getDate() - 365);
+        filteredData = sortedData.filter(item => new Date(item.date) >= yearAgo);
+        break;
+      default:
+        filteredData = sortedData.slice(-7); // Default to last 7 days
+    }
+    
+    // Format dates for display
+    const labels = filteredData.map(item => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+    });
+    
+    const viewCounts = filteredData.map(item => item.view_count);
+    
+    return {
+      labels,
+      viewCounts,
+      totalViews: viewCounts.reduce((sum, count) => sum + count, 0),
+      uniqueProducts: Math.max(...filteredData.map(item => item.unique_products), 0),
+      uniqueUsers: Math.max(...filteredData.map(item => item.unique_users), 0)
+    };
   };
 
-  // Dữ liệu biểu đồ lượt xem sản phẩm
-  const viewsData = {
-    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
-    datasets: [
-      {
-        label: 'Lượt xem',
-        data: [120, 190, 150, 220, 180, 250, 300],
-        backgroundColor: '#ec4899',
-        borderRadius: 6
-      }
-    ]
-  };
-
-  // Dữ liệu biểu đồ trạng thái đơn hàng
-  const orderStatusData = {
-    labels: ['Chờ xử lý', 'Đang xử lý', 'Đã gửi hàng', 'Đã giao hàng', 'Đã hủy'],
-    datasets: [
-      {
-        data: [12, 24, 36, 52, 4],
-        backgroundColor: [
-          '#f59e0b',
-          '#3b82f6',
-          '#a855f7',
-          '#10b981',
-          '#ef4444'
-        ],
-        borderWidth: 0
-      }
-    ]
-  };
-
-  // Định dạng tiền tệ VND
+  // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND'
-    }).format(amount);
+    }).format(amount || 0);
   };
 
-  // Định dạng ngày giờ
+  // Format date
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('vi-VN', {
       year: 'numeric',
@@ -136,798 +208,236 @@ const AdminDashboard = () => {
     }).format(date);
   };
 
-  // Render trạng thái đơn hàng
-  const renderOrderStatus = (status) => {
-    const statusMap = {
-      'pending': { class: 'status-pending', text: 'Chờ xử lý' },
-      'processing': { class: 'status-processing', text: 'Đang xử lý' },
-      'shipped': { class: 'status-shipped', text: 'Đã gửi hàng' },
-      'delivered': { class: 'status-delivered', text: 'Đã giao hàng' },
-      'cancelled': { class: 'status-cancelled', text: 'Đã hủy' }
-    };
-    
-    const statusInfo = statusMap[status] || { class: '', text: status };
-    
-    return (
-      <span className={`order-status ${statusInfo.class}`}>
-        {statusInfo.text}
-      </span>
-    );
+  // Prepare chart data
+  const viewsChartData = {
+    labels: viewsData?.labels || [],
+    datasets: [
+      {
+        label: 'Lượt xem',
+        data: viewsData?.viewCounts || [],
+        backgroundColor: '#a855f7',
+        borderColor: '#a855f7',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
+      }
+    ]
   };
 
-  // Render trạng thái tồn kho
-  const renderStockStatus = (stock) => {
-    if (stock === 0) {
-      return <span className="product-status status-out-of-stock">Hết hàng</span>;
-    } else if (stock <= 5) {
-      return <span className="product-status status-low-stock">Sắp hết ({stock})</span>;
-    } else {
-      return <span className="product-status status-in-stock">Còn hàng ({stock})</span>;
+  // Chart options
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0
+        }
+      }
     }
   };
 
   return (
     <div className="admin-dashboard">
-      {/* Header */}
-      <header className="admin-header">
-        <div className="admin-logo">
-          <h1>Dudu <span>Admin</span></h1>
+      <div className="dashboard-header">
+        <h1>Bảng điều khiển</h1>
+        <div className="period-selector">
+          <button 
+            className={period === 'day' ? 'active' : ''} 
+            onClick={() => setPeriod('day')}
+          >
+            Hôm nay
+          </button>
+          <button 
+            className={period === 'week' ? 'active' : ''} 
+            onClick={() => setPeriod('week')}
+          >
+            Tuần này
+          </button>
+          <button 
+            className={period === 'month' ? 'active' : ''} 
+            onClick={() => setPeriod('month')}
+          >
+            Tháng này
+          </button>
+          <button 
+            className={period === 'year' ? 'active' : ''} 
+            onClick={() => setPeriod('year')}
+          >
+            Năm nay
+          </button>
         </div>
-        <div className="admin-actions">
-          <div className="admin-user">
-            <div className="admin-avatar">A</div>
-            <span>Admin</span>
-          </div>
-        </div>
-      </header>
-
-      {/* Layout */}
-      <div className="admin-layout">
-        {/* Sidebar */}
-        <aside className="admin-sidebar">
-          <nav className="sidebar-nav">
-            <div className="nav-section">
-              <div className="nav-section-title">Tổng quan</div>
-              <div 
-                className={`nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
-                onClick={() => setActiveSection('dashboard')}
-              >
-                <div className="nav-icon">📊</div>
-                <span>Bảng điều khiển</span>
-              </div>
-              <div 
-                className={`nav-link ${activeSection === 'analytics' ? 'active' : ''}`}
-                onClick={() => setActiveSection('analytics')}
-              >
-                <div className="nav-icon">📈</div>
-                <span>Phân tích</span>
-              </div>
-            </div>
-
-            <div className="nav-section">
-              <div className="nav-section-title">Quản lý</div>
-              <div 
-                className={`nav-link ${activeSection === 'products' ? 'active' : ''}`}
-                onClick={() => setActiveSection('products')}
-              >
-                <div className="nav-icon">🛍️</div>
-                <span>Sản phẩm</span>
-              </div>
-              <div 
-                className={`nav-link ${activeSection === 'categories' ? 'active' : ''}`}
-                onClick={() => setActiveSection('categories')}
-              >
-                <div className="nav-icon">🗂️</div>
-                <span>Danh mục</span>
-              </div>
-              <div 
-                className={`nav-link ${activeSection === 'collections' ? 'active' : ''}`}
-                onClick={() => setActiveSection('collections')}
-              >
-                <div className="nav-icon">🎨</div>
-                <span>Bộ sưu tập</span>
-              </div>
-              <div 
-                className={`nav-link ${activeSection === 'orders' ? 'active' : ''}`}
-                onClick={() => setActiveSection('orders')}
-              >
-                <div className="nav-icon">📦</div>
-                <span>Đơn hàng</span>
-              </div>
-              <div 
-                className={`nav-link ${activeSection === 'users' ? 'active' : ''}`}
-                onClick={() => setActiveSection('users')}
-              >
-                <div className="nav-icon">👥</div>
-                <span>Người dùng</span>
-              </div>
-            </div>
-
-            <div className="nav-section">
-              <div className="nav-section-title">Nội dung</div>
-              <div 
-                className={`nav-link ${activeSection === 'media' ? 'active' : ''}`}
-                onClick={() => setActiveSection('media')}
-              >
-                <div className="nav-icon">🖼️</div>
-                <span>Thư viện media</span>
-              </div>
-              <div 
-                className={`nav-link ${activeSection === 'settings' ? 'active' : ''}`}
-                onClick={() => setActiveSection('settings')}
-              >
-                <div className="nav-icon">⚙️</div>
-                <span>Cài đặt</span>
-              </div>
-            </div>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="admin-content">
-          {activeSection === 'dashboard' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="page-header">
-                <h1 className="page-title">Bảng điều khiển</h1>
-                <p className="page-description">Tổng quan về hoạt động của cửa hàng</p>
-              </div>
-
-              {isLoading ? (
-                <div className="loading-state">Đang tải dữ liệu...</div>
-              ) : (
-                <>
-                  {/* Stats Grid */}
-                  <div className="stats-grid">
-                    <div className="stat-card">
-                      <div className="stat-header">
-                        <div className="stat-title">Tổng doanh thu</div>
-                        <div className="stat-icon icon-purple">💰</div>
-                      </div>
-                      <div className="stat-value">{formatCurrency(dashboardStats.revenue.total_revenue)}</div>
-                      <div className="stat-comparison comparison-positive">
-                        <span>↑ 12.5%</span>
-                        <span>so với tháng trước</span>
-                      </div>
-                    </div>
-
-                    <div className="stat-card">
-                      <div className="stat-header">
-                        <div className="stat-title">Tổng đơn hàng</div>
-                        <div className="stat-icon icon-pink">📦</div>
-                      </div>
-                      <div className="stat-value">{dashboardStats.orders.total_orders}</div>
-                      <div className="stat-comparison comparison-positive">
-                        <span>↑ 8.2%</span>
-                        <span>so với tháng trước</span>
-                      </div>
-                    </div>
-
-                    <div className="stat-card">
-                      <div className="stat-header">
-                        <div className="stat-title">Tổng sản phẩm</div>
-                        <div className="stat-icon icon-blue">🛍️</div>
-                      </div>
-                      <div className="stat-value">{dashboardStats.products.total_products}</div>
-                      <div className="stat-comparison comparison-positive">
-                        <span>↑ 5.3%</span>
-                        <span>so với tháng trước</span>
-                      </div>
-                    </div>
-
-                    <div className="stat-card">
-                      <div className="stat-header">
-                        <div className="stat-title">Tổng người dùng</div>
-                        <div className="stat-icon icon-green">👥</div>
-                      </div>
-                      <div className="stat-value">{dashboardStats.users.total_users}</div>
-                      <div className="stat-comparison comparison-positive">
-                        <span>↑ 15.8%</span>
-                        <span>so với tháng trước</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Charts */}
-                  <div className="charts-row">
-                    <div className="chart-card">
-                      <div className="chart-header">
-                        <div className="chart-title">Doanh thu</div>
-                        <div className="chart-actions">
-                          <div 
-                            className={`chart-period ${salesPeriod === 'week' ? 'active' : ''}`}
-                            onClick={() => setSalesPeriod('week')}
-                          >
-                            Tuần
-                          </div>
-                          <div 
-                            className={`chart-period ${salesPeriod === 'month' ? 'active' : ''}`}
-                            onClick={() => setSalesPeriod('month')}
-                          >
-                            Tháng
-                          </div>
-                          <div 
-                            className={`chart-period ${salesPeriod === 'year' ? 'active' : ''}`}
-                            onClick={() => setSalesPeriod('year')}
-                          >
-                            Năm
-                          </div>
-                        </div>
-                      </div>
-                      <div className="chart-container">
-                        <Line 
-                          data={revenueData} 
-                          options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                              legend: {
-                                display: false
-                              }
-                            },
-                            scales: {
-                              y: {
-                                beginAtZero: true,
-                                ticks: {
-                                  callback: function(value) {
-                                    return formatCurrency(value).replace('₫', '') + 'đ';
-                                  }
-                                }
-                              }
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="chart-card">
-                      <div className="chart-header">
-                        <div className="chart-title">Trạng thái đơn hàng</div>
-                      </div>
-                      <div className="chart-container">
-                        <Pie 
-                          data={orderStatusData}
-                          options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                              legend: {
-                                position: 'bottom'
-                              }
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="chart-card">
-                    <div className="chart-header">
-                      <div className="chart-title">Lượt xem sản phẩm</div>
-                      <div className="chart-actions">
-                        <div 
-                          className={`chart-period ${viewsPeriod === 'week' ? 'active' : ''}`}
-                          onClick={() => setViewsPeriod('week')}
-                        >
-                          Tuần
-                        </div>
-                        <div 
-                          className={`chart-period ${viewsPeriod === 'month' ? 'active' : ''}`}
-                          onClick={() => setViewsPeriod('month')}
-                        >
-                          Tháng
-                        </div>
-                        <div 
-                          className={`chart-period ${viewsPeriod === 'year' ? 'active' : ''}`}
-                          onClick={() => setViewsPeriod('year')}
-                        >
-                          Năm
-                        </div>
-                      </div>
-                    </div>
-                    <div className="chart-container">
-                      <Bar 
-                        data={viewsData}
-                        options={{
-                          responsive: true,
-                          maintainAspectRatio: false,
-                          plugins: {
-                            legend: {
-                              display: false
-                            }
-                          },
-                          scales: {
-                            y: {
-                              beginAtZero: true
-                            }
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Recent Orders */}
-                  <div className="table-card">
-                    <div className="table-header">
-                      <div className="table-title">Đơn hàng gần đây</div>
-                      <div className="view-all">Xem tất cả</div>
-                    </div>
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Mã đơn hàng</th>
-                          <th>Khách hàng</th>
-                          <th>Trạng thái</th>
-                          <th>Tổng tiền</th>
-                          <th>Ngày tạo</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {dashboardStats.recentOrders.map((order) => (
-                          <tr key={order.id}>
-                            <td>{order.id}</td>
-                            <td>{order.user_email}</td>
-                            <td>{renderOrderStatus(order.status)}</td>
-                            <td>{formatCurrency(order.total_amount)}</td>
-                            <td>{formatDate(order.created_at)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Low Stock Products */}
-                  <div className="table-card">
-                    <div className="table-header">
-                      <div className="table-title">Sản phẩm sắp hết hàng</div>
-                      <div className="view-all">Xem tất cả</div>
-                    </div>
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Mã sản phẩm</th>
-                          <th>Tên sản phẩm</th>
-                          <th>Tồn kho</th>
-                          <th>Giá</th>
-                          <th>Thao tác</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {dashboardStats.lowStock.map((product) => (
-                          <tr key={product.id}>
-                            <td>{product.id}</td>
-                            <td>{product.name}</td>
-                            <td>{renderStockStatus(product.stock)}</td>
-                            <td>{formatCurrency(product.price)}</td>
-                            <td>
-                              <div className="product-actions">
-                                <div className="action-btn action-edit">✏️</div>
-                                <div className="action-btn">🔍</div>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          )}
-
-          {activeSection === 'products' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="page-header">
-                <h1 className="page-title">Quản lý sản phẩm</h1>
-                <p className="page-description">Quản lý tất cả sản phẩm trong cửa hàng</p>
-              </div>
-
-              <div className="table-card">
-                <div className="table-header">
-                  <div className="table-title">Danh sách sản phẩm</div>
-                  <div className="table-actions">
-                    <button className="admin-btn btn-primary btn-icon">
-                      <span>+</span>
-                      <span>Thêm sản phẩm</span>
-                    </button>
-                  </div>
-                </div>
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Ảnh</th>
-                      <th>Tên sản phẩm</th>
-                      <th>Danh mục</th>
-                      <th>Giá</th>
-                      <th>Tồn kho</th>
-                      <th>Lượt xem</th>
-                      <th>Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <img 
-                          src="https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                          alt="DIMOO Premium Collection" 
-                          className="admin-product-image"
-                        />
-                      </td>
-                      <td>DIMOO Premium Collection</td>
-                      <td>DIMOO</td>
-                      <td>{formatCurrency(230000)}</td>
-                      <td>{renderStockStatus(10)}</td>
-                      <td>245</td>
-                      <td>
-                        <div className="product-actions">
-                          <div className="action-btn action-edit">✏️</div>
-                          <div className="action-btn action-delete">🗑️</div>
-                          <div className="action-btn">🔍</div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img 
-                          src="https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                          alt="DIMOO Limited Edition" 
-                          className="admin-product-image"
-                        />
-                      </td>
-                      <td>DIMOO Limited Edition</td>
-                      <td>DIMOO</td>
-                      <td>{formatCurrency(253000)}</td>
-                      <td>{renderStockStatus(2)}</td>
-                      <td>189</td>
-                      <td>
-                        <div className="product-actions">
-                          <div className="action-btn action-edit">✏️</div>
-                          <div className="action-btn action-delete">🗑️</div>
-                          <div className="action-btn">🔍</div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img 
-                          src="https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                          alt="MOLLY Exclusive Series" 
-                          className="admin-product-image"
-                        />
-                      </td>
-                      <td>MOLLY Exclusive Series</td>
-                      <td>MOLLY</td>
-                      <td>{formatCurrency(805000)}</td>
-                      <td>{renderStockStatus(8)}</td>
-                      <td>312</td>
-                      <td>
-                        <div className="product-actions">
-                          <div className="action-btn action-edit">✏️</div>
-                          <div className="action-btn action-delete">🗑️</div>
-                          <div className="action-btn">🔍</div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img 
-                          src="https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                          alt="LABUBU Special Edition" 
-                          className="admin-product-image"
-                        />
-                      </td>
-                      <td>LABUBU Special Edition</td>
-                      <td>LABUBU</td>
-                      <td>{formatCurrency(805000)}</td>
-                      <td>{renderStockStatus(0)}</td>
-                      <td>278</td>
-                      <td>
-                        <div className="product-actions">
-                          <div className="action-btn action-edit">✏️</div>
-                          <div className="action-btn action-delete">🗑️</div>
-                          <div className="action-btn">🔍</div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className="table-footer">
-                  <div className="pagination">
-                    <div className="page-button">«</div>
-                    <div className="page-button active">1</div>
-                    <div className="page-button">2</div>
-                    <div className="page-button">3</div>
-                    <div className="page-button">»</div>
-                  </div>
-                  <div className="page-info">Hiển thị 1-10 của 41 sản phẩm</div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'analytics' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="page-header">
-                <h1 className="page-title">Phân tích dữ liệu</h1>
-                <p className="page-description">Thống kê và phân tích dữ liệu cửa hàng</p>
-              </div>
-
-              <div className="analytics-filters">
-                <div className="filter-group">
-                  <div className="filter-label">Thời gian:</div>
-                  <select className="filter-select">
-                    <option value="7days">7 ngày qua</option>
-                    <option value="30days">30 ngày qua</option>
-                    <option value="90days">90 ngày qua</option>
-                    <option value="year">Năm nay</option>
-                  </select>
-                </div>
-                <div className="filter-group">
-                  <div className="filter-label">Danh mục:</div>
-                  <select className="filter-select">
-                    <option value="all">Tất cả danh mục</option>
-                    <option value="dimoo">DIMOO</option>
-                    <option value="molly">MOLLY</option>
-                    <option value="labubu">LABUBU</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="charts-row">
-                <div className="chart-card">
-                  <div className="chart-header">
-                    <div className="chart-title">Lượt xem sản phẩm theo thời gian</div>
-                  </div>
-                  <div className="chart-container">
-                    <Line 
-                      data={{
-                        labels: ['01/06', '08/06', '15/06', '22/06', '29/06'],
-                        datasets: [
-                          {
-                            label: 'Lượt xem',
-                            data: [450, 520, 480, 580, 620],
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                          }
-                        ]
-                      }}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            display: false
-                          }
-                        },
-                        scales: {
-                          y: {
-                            beginAtZero: true
-                          }
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="chart-card">
-                  <div className="chart-header">
-                    <div className="chart-title">Sản phẩm được xem nhiều nhất</div>
-                  </div>
-                  <div className="chart-container">
-                    <Pie 
-                      data={{
-                        labels: ['DIMOO Premium', 'MOLLY Exclusive', 'LABUBU Special', 'DIMOO Limited', 'Khác'],
-                        datasets: [
-                          {
-                            data: [30, 25, 20, 15, 10],
-                            backgroundColor: [
-                              '#a855f7',
-                              '#ec4899',
-                              '#3b82f6',
-                              '#f59e0b',
-                              '#9ca3af'
-                            ],
-                            borderWidth: 0
-                          }
-                        ]
-                      }}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            position: 'bottom'
-                          }
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="table-card">
-                <div className="table-header">
-                  <div className="table-title">Sản phẩm được xem nhiều nhất</div>
-                </div>
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Sản phẩm</th>
-                      <th>Danh mục</th>
-                      <th>Lượt xem</th>
-                      <th>Người xem duy nhất</th>
-                      <th>Tỷ lệ chuyển đổi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>DIMOO Premium Collection</td>
-                      <td>DIMOO</td>
-                      <td>245</td>
-                      <td>198</td>
-                      <td>12.5%</td>
-                    </tr>
-                    <tr>
-                      <td>MOLLY Exclusive Series</td>
-                      <td>MOLLY</td>
-                      <td>312</td>
-                      <td>256</td>
-                      <td>15.2%</td>
-                    </tr>
-                    <tr>
-                      <td>LABUBU Special Edition</td>
-                      <td>LABUBU</td>
-                      <td>278</td>
-                      <td>215</td>
-                      <td>13.8%</td>
-                    </tr>
-                    <tr>
-                      <td>DIMOO Limited Edition</td>
-                      <td>DIMOO</td>
-                      <td>189</td>
-                      <td>154</td>
-                      <td>10.5%</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'media' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="page-header">
-                <h1 className="page-title">Thư viện media</h1>
-                <p className="page-description">Quản lý hình ảnh và tệp đa phương tiện</p>
-              </div>
-
-              <div className="form-card">
-                <div className="media-upload">
-                  <div className="upload-icon">📤</div>
-                  <div className="upload-text">Kéo thả file vào đây hoặc click để chọn file</div>
-                </div>
-              </div>
-
-              <div className="form-card">
-                <div className="form-section-title">Thư viện hình ảnh</div>
-                <div className="media-grid">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-                    <div key={item} className="media-item">
-                      <img 
-                        src={`https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1`} 
-                        alt={`Media item ${item}`}
-                      />
-                      <div className="media-overlay">
-                        <div className="media-action">🔍</div>
-                        <div className="media-action">📋</div>
-                        <div className="media-action">🗑️</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'settings' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="page-header">
-                <h1 className="page-title">Cài đặt hệ thống</h1>
-                <p className="page-description">Quản lý cài đặt cửa hàng</p>
-              </div>
-
-              <div className="form-card">
-                <div className="form-section">
-                  <div className="form-section-title">Thông tin cửa hàng</div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label className="form-label">Tên cửa hàng</label>
-                      <input type="text" className="form-input" defaultValue="Dudu Store" />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Mô tả</label>
-                      <input type="text" className="form-input" defaultValue="Premium Squishy Collection" />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Địa chỉ</label>
-                    <input type="text" className="form-input" defaultValue="123 Đường ABC, Quận XYZ, TP.HCM" />
-                  </div>
-                </div>
-
-                <div className="form-section">
-                  <div className="form-section-title">Cài đặt thanh toán</div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label className="form-label">Đơn vị tiền tệ</label>
-                      <select className="form-select">
-                        <option value="VND">VND - Việt Nam Đồng</option>
-                        <option value="USD">USD - US Dollar</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Thuế (%)</label>
-                      <input type="number" className="form-input" defaultValue="10" />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label className="form-label">Phí vận chuyển</label>
-                      <input type="number" className="form-input" defaultValue="30000" />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Ngưỡng miễn phí vận chuyển</label>
-                      <input type="number" className="form-input" defaultValue="500000" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-section">
-                  <div className="form-section-title">Thông tin liên hệ</div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label className="form-label">Email liên hệ</label>
-                      <input type="email" className="form-input" defaultValue="contact@dudustore.com" />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Số điện thoại</label>
-                      <input type="tel" className="form-input" defaultValue="0123456789" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button className="admin-btn btn-secondary">Hủy</button>
-                  <button className="admin-btn btn-primary">Lưu thay đổi</button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </main>
       </div>
+      
+      {loading ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      ) : error ? (
+        <div className="error-state">
+          <p>Lỗi khi tải dữ liệu: {error}</p>
+          <button onClick={() => window.location.reload()}>Thử lại</button>
+        </div>
+      ) : (
+        <>
+          <div className="stats-cards">
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>👁️</div>
+              <div className="stat-content">
+                <h3>Lượt xem</h3>
+                <p className="stat-value">{viewsData?.totalViews || 0}</p>
+                <p className="stat-period">trong {getPeriodDisplay(period)}</p>
+              </div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'rgba(236, 72, 153, 0.1)', color: '#ec4899' }}>💰</div>
+              <div className="stat-content">
+                <h3>Doanh thu</h3>
+                <p className="stat-value">{formatCurrency(dashboardData?.revenueData?.total_revenue)}</p>
+                <p className="stat-period">tổng doanh thu</p>
+              </div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>📦</div>
+              <div className="stat-content">
+                <h3>Đơn hàng</h3>
+                <p className="stat-value">{dashboardData?.orderCounts?.total_orders || 0}</p>
+                <p className="stat-period">tổng đơn hàng</p>
+              </div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>👥</div>
+              <div className="stat-content">
+                <h3>Người dùng</h3>
+                <p className="stat-value">{dashboardData?.userCounts?.total_users || 0}</p>
+                <p className="stat-period">tổng người dùng</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="charts-container">
+            <div className="chart-card">
+              <h3>Lượt xem theo thời gian</h3>
+              <div className="chart-container">
+                <Line data={viewsChartData} options={chartOptions} />
+              </div>
+            </div>
+            
+            <div className="chart-card">
+              <h3>Thống kê đơn hàng</h3>
+              <div className="chart-container">
+                <Bar 
+                  data={{
+                    labels: ['Chờ xử lý', 'Đang xử lý', 'Đã gửi', 'Đã giao', 'Đã hủy'],
+                    datasets: [
+                      {
+                        data: [
+                          dashboardData?.orderCounts?.pending_orders || 0,
+                          dashboardData?.orderCounts?.processing_orders || 0,
+                          dashboardData?.orderCounts?.shipped_orders || 0,
+                          dashboardData?.orderCounts?.delivered_orders || 0,
+                          dashboardData?.orderCounts?.cancelled_orders || 0
+                        ],
+                        backgroundColor: [
+                          '#f59e0b',
+                          '#3b82f6',
+                          '#a855f7',
+                          '#10b981',
+                          '#ef4444'
+                        ]
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          precision: 0
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div className="top-products-table">
+            <h3>Sản phẩm được xem nhiều nhất</h3>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Lượt xem</th>
+                    <th>Người xem</th>
+                    <th>Lần xem gần nhất</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData?.topProducts?.map((product) => (
+                    <tr key={product.product_id}>
+                      <td className="product-cell">
+                        {product.image && (
+                          <div className="admin-product-image">
+                            <img src={product.image} alt={product.product_name} />
+                          </div>
+                        )}
+                        <span>{product.product_name}</span>
+                      </td>
+                      <td>{product.view_count}</td>
+                      <td>{product.unique_viewers || 0}</td>
+                      <td>{formatDate(product.last_viewed_at)}</td>
+                    </tr>
+                  ))}
+                  {(!dashboardData?.topProducts || dashboardData.topProducts.length === 0) && (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                        Không có dữ liệu lượt xem
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
+
+// Helper function to get period display text
+function getPeriodDisplay(period) {
+  switch (period) {
+    case 'day': return 'hôm nay';
+    case 'week': return '7 ngày qua';
+    case 'month': return '30 ngày qua';
+    case 'year': return 'năm nay';
+    default: return 'khoảng thời gian';
+  }
+}
 
 export default AdminDashboard;

@@ -1,234 +1,205 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import '../styles/AdminDashboard.css';
+import '../styles/OrderManagement.css';
+import supabase from '../services/supabaseClient';
 
 const AdminOrderManagement = () => {
   const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('created_at');
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
-  const [currentOrder, setCurrentOrder] = useState(null);
+  const [filters, setFilters] = useState({
+    status: '',
+    search: '',
+    startDate: '',
+    endDate: ''
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    totalCount: 0,
+    totalPages: 1
+  });
 
-  // Giả lập dữ liệu đơn hàng
+  // Fetch orders
   useEffect(() => {
-    // Trong thực tế, đây sẽ là API call
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          id: 'ORD-001',
-          user: {
-            id: 'USR-001',
-            email: 'user1@example.com',
-            first_name: 'Nguyễn',
-            last_name: 'Văn A'
-          },
-          status: 'pending',
-          total_amount: 850000,
-          shipping_address: '123 Đường ABC, Quận 1, TP.HCM',
-          payment_method: 'COD',
-          payment_status: 'pending',
-          created_at: '2025-06-25T10:30:00Z',
-          updated_at: '2025-06-25T10:30:00Z',
-          items: [
-            {
-              id: 'ITEM-001',
-              product: {
-                id: 'PROD-001',
-                name: 'DIMOO Premium Collection',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 230000
-            },
-            {
-              id: 'ITEM-002',
-              product: {
-                id: 'PROD-002',
-                name: 'DIMOO Limited Edition',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: {
-                id: 'VAR-001',
-                name: 'Kích thước M'
-              },
-              quantity: 2,
-              price: 300000
-            }
-          ]
-        },
-        {
-          id: 'ORD-002',
-          user: {
-            id: 'USR-002',
-            email: 'user2@example.com',
-            first_name: 'Trần',
-            last_name: 'Thị B'
-          },
-          status: 'processing',
-          total_amount: 1250000,
-          shipping_address: '456 Đường DEF, Quận 2, TP.HCM',
-          payment_method: 'Bank Transfer',
-          payment_status: 'paid',
-          created_at: '2025-06-24T14:20:00Z',
-          updated_at: '2025-06-24T15:30:00Z',
-          items: [
-            {
-              id: 'ITEM-003',
-              product: {
-                id: 'PROD-003',
-                name: 'MOLLY Exclusive Series',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 805000
-            },
-            {
-              id: 'ITEM-004',
-              product: {
-                id: 'PROD-004',
-                name: 'MOLLY Deluxe Collection',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 445000
-            }
-          ]
-        },
-        {
-          id: 'ORD-003',
-          user: {
-            id: 'USR-003',
-            email: 'user3@example.com',
-            first_name: 'Lê',
-            last_name: 'Văn C'
-          },
-          status: 'shipped',
-          total_amount: 750000,
-          shipping_address: '789 Đường GHI, Quận 3, TP.HCM',
-          payment_method: 'Momo',
-          payment_status: 'paid',
-          created_at: '2025-06-23T09:15:00Z',
-          updated_at: '2025-06-23T14:45:00Z',
-          items: [
-            {
-              id: 'ITEM-005',
-              product: {
-                id: 'PROD-005',
-                name: 'LABUBU Special Edition',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 750000
-            }
-          ]
-        },
-        {
-          id: 'ORD-004',
-          user: {
-            id: 'USR-004',
-            email: 'user4@example.com',
-            first_name: 'Phạm',
-            last_name: 'Thị D'
-          },
-          status: 'delivered',
-          total_amount: 1450000,
-          shipping_address: '101 Đường JKL, Quận 4, TP.HCM',
-          payment_method: 'Credit Card',
-          payment_status: 'paid',
-          created_at: '2025-06-22T16:45:00Z',
-          updated_at: '2025-06-24T10:30:00Z',
-          items: [
-            {
-              id: 'ITEM-006',
-              product: {
-                id: 'PROD-001',
-                name: 'DIMOO Premium Collection',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 2,
-              price: 230000
-            },
-            {
-              id: 'ITEM-007',
-              product: {
-                id: 'PROD-003',
-                name: 'MOLLY Exclusive Series',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 805000
-            },
-            {
-              id: 'ITEM-008',
-              product: {
-                id: 'PROD-002',
-                name: 'DIMOO Limited Edition',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 253000
-            }
-          ]
-        },
-        {
-          id: 'ORD-005',
-          user: {
-            id: 'USR-005',
-            email: 'user5@example.com',
-            first_name: 'Hoàng',
-            last_name: 'Văn E'
-          },
-          status: 'cancelled',
-          total_amount: 550000,
-          shipping_address: '202 Đường MNO, Quận 5, TP.HCM',
-          payment_method: 'COD',
-          payment_status: 'cancelled',
-          created_at: '2025-06-21T11:10:00Z',
-          updated_at: '2025-06-21T15:20:00Z',
-          items: [
-            {
-              id: 'ITEM-009',
-              product: {
-                id: 'PROD-004',
-                name: 'MOLLY Deluxe Collection',
-                image: 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=100'
-              },
-              variant: null,
-              quantity: 1,
-              price: 550000
-            }
-          ]
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        
+        let query = supabase
+          .from('orders')
+          .select(`
+            *,
+            user:users(id, email, first_name, last_name)
+          `, { count: 'exact' });
+        
+        // Apply status filter
+        if (filters.status) {
+          query = query.eq('status', filters.status);
         }
-      ];
-      
-      setOrders(mockOrders);
-      setTotalPages(3); // Giả sử có 3 trang
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+        
+        // Apply search filter
+        if (filters.search) {
+          query = query.or(`id.ilike.%${filters.search}%,user.email.ilike.%${filters.search}%`);
+        }
+        
+        // Apply date filters
+        if (filters.startDate) {
+          query = query.gte('created_at', filters.startDate);
+        }
+        
+        if (filters.endDate) {
+          query = query.lte('created_at', filters.endDate);
+        }
+        
+        // Apply pagination
+        query = query
+          .range(
+            (pagination.page - 1) * pagination.limit, 
+            pagination.page * pagination.limit - 1
+          )
+          .order('created_at', { ascending: false });
+        
+        const { data, error, count } = await query;
+        
+        if (error) throw error;
+        
+        setOrders(data || []);
+        setPagination(prev => ({
+          ...prev,
+          totalCount: count || 0,
+          totalPages: Math.ceil((count || 0) / prev.limit)
+        }));
+      } catch (err) {
+        console.error('Error fetching orders:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOrders();
+  }, [filters, pagination.page, pagination.limit]);
 
-  // Định dạng tiền tệ VND
+  // Handle filter changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+    setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page
+  };
+
+  // Clear filters
+  const clearFilters = () => {
+    setFilters({
+      status: '',
+      search: '',
+      startDate: '',
+      endDate: ''
+    });
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
+
+  // View order details
+  const viewOrderDetails = async (orderId) => {
+    try {
+      setLoading(true);
+      
+      // Fetch order details
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          user:users(id, email, first_name, last_name, phone, address)
+        `)
+        .eq('id', orderId)
+        .single();
+      
+      if (orderError) throw orderError;
+      
+      // Fetch order items
+      const { data: itemsData, error: itemsError } = await supabase
+        .from('order_items')
+        .select(`
+          *,
+          product:products(id, name, image),
+          variant:product_variants(id, name, image)
+        `)
+        .eq('order_id', orderId);
+      
+      if (itemsError) throw itemsError;
+      
+      // Combine data
+      const orderWithItems = {
+        ...orderData,
+        items: itemsData || []
+      };
+      
+      setSelectedOrder(orderWithItems);
+      setShowOrderModal(true);
+    } catch (err) {
+      console.error('Error fetching order details:', err);
+      setError(err.message);
+      alert('Lỗi khi tải chi tiết đơn hàng: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update order status
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      setLoading(true);
+      
+      // Update order status
+      const { data, error } = await supabase
+        .from('orders')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date()
+        })
+        .eq('id', orderId)
+        .select();
+      
+      if (error) throw error;
+      
+      // Update local state
+      setOrders(prev => prev.map(order => 
+        order.id === orderId ? { ...order, status: newStatus, updated_at: new Date() } : order
+      ));
+      
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder({ ...selectedOrder, status: newStatus, updated_at: new Date() });
+      }
+      
+      alert('Cập nhật trạng thái đơn hàng thành công');
+    } catch (err) {
+      console.error('Error updating order status:', err);
+      setError(err.message);
+      alert('Lỗi khi cập nhật trạng thái đơn hàng: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, page: newPage }));
+  };
+
+  // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND'
-    }).format(amount);
+    }).format(amount || 0);
   };
 
-  // Định dạng ngày giờ
+  // Format date
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('vi-VN', {
       year: 'numeric',
@@ -239,8 +210,8 @@ const AdminOrderManagement = () => {
     }).format(date);
   };
 
-  // Render trạng thái đơn hàng
-  const renderOrderStatus = (status) => {
+  // Get order status display
+  const getOrderStatusDisplay = (status) => {
     const statusMap = {
       'pending': { class: 'status-pending', text: 'Chờ xử lý' },
       'processing': { class: 'status-processing', text: 'Đang xử lý' },
@@ -249,17 +220,11 @@ const AdminOrderManagement = () => {
       'cancelled': { class: 'status-cancelled', text: 'Đã hủy' }
     };
     
-    const statusInfo = statusMap[status] || { class: '', text: status };
-    
-    return (
-      <span className={`order-status ${statusInfo.class}`}>
-        {statusInfo.text}
-      </span>
-    );
+    return statusMap[status] || { class: '', text: status };
   };
 
-  // Render trạng thái thanh toán
-  const renderPaymentStatus = (status) => {
+  // Get payment status display
+  const getPaymentStatusDisplay = (status) => {
     const statusMap = {
       'pending': { class: 'status-pending', text: 'Chờ thanh toán' },
       'paid': { class: 'status-delivered', text: 'Đã thanh toán' },
@@ -268,126 +233,31 @@ const AdminOrderManagement = () => {
       'cancelled': { class: 'status-cancelled', text: 'Đã hủy' }
     };
     
-    const statusInfo = statusMap[status] || { class: '', text: status };
-    
-    return (
-      <span className={`order-status ${statusInfo.class}`}>
-        {statusInfo.text}
-      </span>
-    );
+    return statusMap[status] || { class: '', text: status };
   };
-
-  // Xử lý tìm kiếm
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
-
-  // Xử lý thay đổi bộ lọc trạng thái
-  const handleStatusChange = (e) => {
-    setStatusFilter(e.target.value);
-    setCurrentPage(1);
-  };
-
-  // Xử lý thay đổi sắp xếp
-  const handleSortChange = (e) => {
-    const value = e.target.value;
-    const [field, order] = value.split('-');
-    setSortBy(field);
-    setSortOrder(order);
-    setCurrentPage(1);
-  };
-
-  // Xử lý xem chi tiết đơn hàng
-  const handleViewOrder = (order) => {
-    setCurrentOrder(order);
-    setShowOrderModal(true);
-  };
-
-  // Xử lý cập nhật trạng thái đơn hàng
-  const handleUpdateOrderStatus = (orderId, newStatus) => {
-    // Trong thực tế, đây sẽ là API call
-    setOrders(orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: newStatus, updated_at: new Date().toISOString() } 
-        : order
-    ));
-    
-    if (currentOrder && currentOrder.id === orderId) {
-      setCurrentOrder({ ...currentOrder, status: newStatus, updated_at: new Date().toISOString() });
-    }
-  };
-
-  // Xử lý phân trang
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Lọc đơn hàng
-  const filteredOrders = orders.filter(order => {
-    // Lọc theo trạng thái
-    if (statusFilter !== 'all' && order.status !== statusFilter) {
-      return false;
-    }
-    
-    // Lọc theo tìm kiếm
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      return (
-        order.id.toLowerCase().includes(searchLower) ||
-        order.user.email.toLowerCase().includes(searchLower) ||
-        `${order.user.first_name} ${order.user.last_name}`.toLowerCase().includes(searchLower)
-      );
-    }
-    
-    return true;
-  });
-
-  // Sắp xếp đơn hàng
-  const sortedOrders = [...filteredOrders].sort((a, b) => {
-    if (sortBy === 'created_at') {
-      return sortOrder === 'asc' 
-        ? new Date(a.created_at) - new Date(b.created_at)
-        : new Date(b.created_at) - new Date(a.created_at);
-    } else if (sortBy === 'total_amount') {
-      return sortOrder === 'asc' 
-        ? a.total_amount - b.total_amount
-        : b.total_amount - a.total_amount;
-    }
-    return 0;
-  });
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className="order-management"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="page-header">
         <h1 className="page-title">Quản lý đơn hàng</h1>
         <p className="page-description">Quản lý và xử lý đơn hàng</p>
       </div>
-
-      <div className="form-card">
-        <div className="form-row">
-          <div className="form-group">
-            <label className="form-label">Tìm kiếm</label>
-            <input 
-              type="text" 
-              className="form-input" 
-              placeholder="Tìm kiếm theo mã đơn hàng, email..." 
-              value={searchTerm}
-              onChange={handleSearch}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Trạng thái</label>
+      
+      <div className="order-filters">
+        <div className="filter-group">
+          <div className="filter">
+            <label>Trạng thái</label>
             <select 
-              className="form-select"
-              value={statusFilter}
-              onChange={handleStatusChange}
+              name="status" 
+              value={filters.status} 
+              onChange={handleFilterChange}
             >
-              <option value="all">Tất cả trạng thái</option>
+              <option value="">Tất cả trạng thái</option>
               <option value="pending">Chờ xử lý</option>
               <option value="processing">Đang xử lý</option>
               <option value="shipped">Đã gửi hàng</option>
@@ -395,112 +265,185 @@ const AdminOrderManagement = () => {
               <option value="cancelled">Đã hủy</option>
             </select>
           </div>
-          <div className="form-group">
-            <label className="form-label">Sắp xếp theo</label>
-            <select 
-              className="form-select"
-              value={`${sortBy}-${sortOrder}`}
-              onChange={handleSortChange}
-            >
-              <option value="created_at-desc">Mới nhất</option>
-              <option value="created_at-asc">Cũ nhất</option>
-              <option value="total_amount-desc">Giá trị cao nhất</option>
-              <option value="total_amount-asc">Giá trị thấp nhất</option>
-            </select>
+          
+          <div className="filter">
+            <label>Tìm kiếm</label>
+            <input 
+              type="text" 
+              name="search" 
+              value={filters.search} 
+              onChange={handleFilterChange}
+              placeholder="Tìm theo mã đơn hàng, email..."
+            />
+          </div>
+          
+          <div className="filter">
+            <label>Từ ngày</label>
+            <input 
+              type="date" 
+              name="startDate" 
+              value={filters.startDate} 
+              onChange={handleFilterChange}
+            />
+          </div>
+          
+          <div className="filter">
+            <label>Đến ngày</label>
+            <input 
+              type="date" 
+              name="endDate" 
+              value={filters.endDate} 
+              onChange={handleFilterChange}
+            />
           </div>
         </div>
-      </div>
-
-      <div className="table-card">
-        <div className="table-header">
-          <div className="table-title">Danh sách đơn hàng</div>
-        </div>
         
-        {isLoading ? (
-          <div className="loading-state">Đang tải dữ liệu...</div>
-        ) : (
-          <>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Mã đơn hàng</th>
-                  <th>Khách hàng</th>
-                  <th>Trạng thái</th>
-                  <th>Thanh toán</th>
-                  <th>Tổng tiền</th>
-                  <th>Ngày tạo</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.id}</td>
-                    <td>
-                      <div>{order.user.email}</div>
-                      <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>
-                        {order.user.first_name} {order.user.last_name}
-                      </div>
-                    </td>
-                    <td>{renderOrderStatus(order.status)}</td>
-                    <td>
-                      <div>{order.payment_method}</div>
-                      <div>{renderPaymentStatus(order.payment_status)}</div>
-                    </td>
-                    <td>{formatCurrency(order.total_amount)}</td>
-                    <td>{formatDate(order.created_at)}</td>
-                    <td>
-                      <div className="product-actions">
-                        <div 
-                          className="action-btn action-edit"
-                          onClick={() => handleViewOrder(order)}
-                        >
-                          🔍
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="table-footer">
-              <div className="pagination">
-                <div 
-                  className="page-button"
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                >
-                  «
-                </div>
-                {[...Array(totalPages).keys()].map((page) => (
-                  <div 
-                    key={page + 1}
-                    className={`page-button ${currentPage === page + 1 ? 'active' : ''}`}
-                    onClick={() => handlePageChange(page + 1)}
-                  >
-                    {page + 1}
-                  </div>
-                ))}
-                <div 
-                  className="page-button"
-                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                >
-                  »
-                </div>
-              </div>
-              <div className="page-info">
-                Hiển thị {(currentPage - 1) * 10 + 1}-{Math.min(currentPage * 10, filteredOrders.length)} của {filteredOrders.length} đơn hàng
-              </div>
-            </div>
-          </>
-        )}
+        <button 
+          className="clear-filters-btn"
+          onClick={clearFilters}
+          disabled={!Object.values(filters).some(Boolean)}
+        >
+          Xóa bộ lọc
+        </button>
       </div>
-
-      {/* Modal chi tiết đơn hàng */}
-      {showOrderModal && currentOrder && (
-        <div className="modal-overlay">
-          <div className="modal-container" style={{ maxWidth: '800px' }}>
+      
+      {loading && orders.length === 0 ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Đang tải đơn hàng...</p>
+        </div>
+      ) : error ? (
+        <div className="error-state">
+          <p>Lỗi khi tải đơn hàng: {error}</p>
+          <button onClick={() => window.location.reload()}>Thử lại</button>
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">📦</div>
+          <h3>Không tìm thấy đơn hàng</h3>
+          <p>Hãy điều chỉnh bộ lọc hoặc thử lại sau</p>
+        </div>
+      ) : (
+        <div className="orders-table-container">
+          <table className="orders-table">
+            <thead>
+              <tr>
+                <th>Mã đơn hàng</th>
+                <th>Khách hàng</th>
+                <th>Trạng thái</th>
+                <th>Thanh toán</th>
+                <th>Tổng tiền</th>
+                <th>Ngày tạo</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map(order => (
+                <tr key={order.id}>
+                  <td>{order.id}</td>
+                  <td>
+                    <div className="customer-info">
+                      <div className="customer-email">{order.user?.email}</div>
+                      <div className="customer-name">
+                        {order.user?.first_name} {order.user?.last_name}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`order-status ${getOrderStatusDisplay(order.status).class}`}>
+                      {getOrderStatusDisplay(order.status).text}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="payment-info">
+                      <div className="payment-method">{order.payment_method}</div>
+                      <span className={`payment-status ${getPaymentStatusDisplay(order.payment_status).class}`}>
+                        {getPaymentStatusDisplay(order.payment_status).text}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{formatCurrency(order.total_amount)}</td>
+                  <td>{formatDate(order.created_at)}</td>
+                  <td>
+                    <div className="order-actions">
+                      <button 
+                        className="view-btn"
+                        onClick={() => viewOrderDetails(order.id)}
+                      >
+                        Xem chi tiết
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          
+          <div className="pagination-container">
+            <div className="pagination">
+              <button 
+                className="page-btn"
+                disabled={pagination.page === 1}
+                onClick={() => handlePageChange(pagination.page - 1)}
+              >
+                &laquo;
+              </button>
+              
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                .filter(page => {
+                  // Show first page, last page, and pages around current page
+                  return page === 1 || 
+                         page === pagination.totalPages || 
+                         (page >= pagination.page - 1 && page <= pagination.page + 1);
+                })
+                .map((page, index, array) => {
+                  // Add ellipsis
+                  if (index > 0 && array[index - 1] !== page - 1) {
+                    return (
+                      <React.Fragment key={`ellipsis-${page}`}>
+                        <span className="page-ellipsis">...</span>
+                        <button 
+                          className={`page-btn ${pagination.page === page ? 'active' : ''}`}
+                          onClick={() => handlePageChange(page)}
+                        >
+                          {page}
+                        </button>
+                      </React.Fragment>
+                    );
+                  }
+                  return (
+                    <button 
+                      key={page}
+                      className={`page-btn ${pagination.page === page ? 'active' : ''}`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              
+              <button 
+                className="page-btn"
+                disabled={pagination.page === pagination.totalPages}
+                onClick={() => handlePageChange(pagination.page + 1)}
+              >
+                &raquo;
+              </button>
+            </div>
+            
+            <div className="pagination-info">
+              Hiển thị {(pagination.page - 1) * pagination.limit + 1} đến {Math.min(pagination.page * pagination.limit, pagination.totalCount)} của {pagination.totalCount} đơn hàng
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Order Detail Modal */}
+      {showOrderModal && selectedOrder && (
+        <div className="modal-overlay" onClick={() => setShowOrderModal(false)}>
+          <div className="order-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Chi tiết đơn hàng #{currentOrder.id}</h2>
+              <h2>Chi tiết đơn hàng #{selectedOrder.id}</h2>
               <button 
                 className="modal-close"
                 onClick={() => setShowOrderModal(false)}
@@ -508,50 +451,69 @@ const AdminOrderManagement = () => {
                 ×
               </button>
             </div>
+            
             <div className="modal-body">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '12px' }}>Thông tin đơn hàng</h3>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Trạng thái:</strong> {renderOrderStatus(currentOrder.status)}
+              <div className="order-detail-grid">
+                <div className="order-info-section">
+                  <h3>Thông tin đơn hàng</h3>
+                  <div className="info-group">
+                    <label>Trạng thái:</label>
+                    <span className={`order-status ${getOrderStatusDisplay(selectedOrder.status).class}`}>
+                      {getOrderStatusDisplay(selectedOrder.status).text}
+                    </span>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Ngày tạo:</strong> {formatDate(currentOrder.created_at)}
+                  <div className="info-group">
+                    <label>Ngày tạo:</label>
+                    <span>{formatDate(selectedOrder.created_at)}</span>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Cập nhật lần cuối:</strong> {formatDate(currentOrder.updated_at)}
+                  <div className="info-group">
+                    <label>Cập nhật lần cuối:</label>
+                    <span>{formatDate(selectedOrder.updated_at)}</span>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Tổng tiền:</strong> {formatCurrency(currentOrder.total_amount)}
+                  <div className="info-group">
+                    <label>Tổng tiền:</label>
+                    <span className="order-total">{formatCurrency(selectedOrder.total_amount)}</span>
                   </div>
                 </div>
-                <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '12px' }}>Thông tin khách hàng</h3>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Tên:</strong> {currentOrder.user.first_name} {currentOrder.user.last_name}
+                
+                <div className="customer-info-section">
+                  <h3>Thông tin khách hàng</h3>
+                  <div className="info-group">
+                    <label>Tên:</label>
+                    <span>{selectedOrder.user?.first_name} {selectedOrder.user?.last_name}</span>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Email:</strong> {currentOrder.user.email}
+                  <div className="info-group">
+                    <label>Email:</label>
+                    <span>{selectedOrder.user?.email}</span>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Địa chỉ giao hàng:</strong> {currentOrder.shipping_address}
+                  <div className="info-group">
+                    <label>Điện thoại:</label>
+                    <span>{selectedOrder.user?.phone || 'Không có'}</span>
+                  </div>
+                  <div className="info-group">
+                    <label>Địa chỉ giao hàng:</label>
+                    <span>{selectedOrder.shipping_address}</span>
                   </div>
                 </div>
               </div>
-
-              <div style={{ marginBottom: '24px' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '12px' }}>Thông tin thanh toán</h3>
-                <div style={{ marginBottom: '8px' }}>
-                  <strong>Phương thức thanh toán:</strong> {currentOrder.payment_method}
+              
+              <div className="payment-info-section">
+                <h3>Thông tin thanh toán</h3>
+                <div className="info-group">
+                  <label>Phương thức thanh toán:</label>
+                  <span>{selectedOrder.payment_method}</span>
                 </div>
-                <div style={{ marginBottom: '8px' }}>
-                  <strong>Trạng thái thanh toán:</strong> {renderPaymentStatus(currentOrder.payment_status)}
+                <div className="info-group">
+                  <label>Trạng thái thanh toán:</label>
+                  <span className={`payment-status ${getPaymentStatusDisplay(selectedOrder.payment_status).class}`}>
+                    {getPaymentStatusDisplay(selectedOrder.payment_status).text}
+                  </span>
                 </div>
               </div>
-
-              <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '12px' }}>Sản phẩm</h3>
-                <table className="admin-table">
+              
+              <div className="order-items-section">
+                <h3>Sản phẩm</h3>
+                <table className="items-table">
                   <thead>
                     <tr>
                       <th>Sản phẩm</th>
@@ -562,17 +524,17 @@ const AdminOrderManagement = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentOrder.items.map((item) => (
+                    {selectedOrder.items.map((item) => (
                       <tr key={item.id}>
-                        <td style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <img 
-                            src={item.product.image} 
-                            alt={item.product.name} 
-                            style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                          />
-                          <div>{item.product.name}</div>
+                        <td className="product-cell">
+                          {item.product?.image && (
+                            <div className="product-image">
+                              <img src={item.product.image} alt={item.product.name} />
+                            </div>
+                          )}
+                          <span>{item.product?.name}</span>
                         </td>
-                        <td>{item.variant ? item.variant.name : 'N/A'}</td>
+                        <td>{item.variant?.name || 'N/A'}</td>
                         <td>{formatCurrency(item.price)}</td>
                         <td>{item.quantity}</td>
                         <td>{formatCurrency(item.price * item.quantity)}</td>
@@ -581,48 +543,49 @@ const AdminOrderManagement = () => {
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colSpan="4" style={{ textAlign: 'right', fontWeight: '600' }}>Tổng cộng:</td>
-                      <td style={{ fontWeight: '600' }}>{formatCurrency(currentOrder.total_amount)}</td>
+                      <td colSpan="4" className="total-label">Tổng cộng:</td>
+                      <td className="total-value">{formatCurrency(selectedOrder.total_amount)}</td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
             </div>
+            
             <div className="modal-footer">
-              {currentOrder.status === 'pending' && (
+              {selectedOrder.status === 'pending' && (
                 <button 
-                  className="admin-btn btn-primary"
-                  onClick={() => handleUpdateOrderStatus(currentOrder.id, 'processing')}
+                  className="status-btn processing-btn"
+                  onClick={() => updateOrderStatus(selectedOrder.id, 'processing')}
                 >
                   Xử lý đơn hàng
                 </button>
               )}
-              {currentOrder.status === 'processing' && (
+              {selectedOrder.status === 'processing' && (
                 <button 
-                  className="admin-btn btn-primary"
-                  onClick={() => handleUpdateOrderStatus(currentOrder.id, 'shipped')}
+                  className="status-btn shipped-btn"
+                  onClick={() => updateOrderStatus(selectedOrder.id, 'shipped')}
                 >
                   Đánh dấu đã gửi hàng
                 </button>
               )}
-              {currentOrder.status === 'shipped' && (
+              {selectedOrder.status === 'shipped' && (
                 <button 
-                  className="admin-btn btn-primary"
-                  onClick={() => handleUpdateOrderStatus(currentOrder.id, 'delivered')}
+                  className="status-btn delivered-btn"
+                  onClick={() => updateOrderStatus(selectedOrder.id, 'delivered')}
                 >
                   Đánh dấu đã giao hàng
                 </button>
               )}
-              {(currentOrder.status === 'pending' || currentOrder.status === 'processing') && (
+              {(selectedOrder.status === 'pending' || selectedOrder.status === 'processing') && (
                 <button 
-                  className="admin-btn btn-danger"
-                  onClick={() => handleUpdateOrderStatus(currentOrder.id, 'cancelled')}
+                  className="status-btn cancel-btn"
+                  onClick={() => updateOrderStatus(selectedOrder.id, 'cancelled')}
                 >
                   Hủy đơn hàng
                 </button>
               )}
               <button 
-                className="admin-btn btn-secondary"
+                className="close-btn"
                 onClick={() => setShowOrderModal(false)}
               >
                 Đóng

@@ -1,39 +1,71 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import '../styles/AdminDashboard.css';
+import '../styles/MediaLibrary.css';
+import { uploadImage, getMediaLibrary, deleteImage } from '../services/cloudinaryService';
 
 const AdminMediaLibrary = () => {
   const [mediaItems, setMediaItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showMediaModal, setShowMediaModal] = useState(false);
   const [currentFolder, setCurrentFolder] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [nextCursor, setNextCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Giả lập dữ liệu thư viện media
-  useEffect(() => {
-    // Trong thực tế, đây sẽ là API call
-    setTimeout(() => {
-      const mockMediaItems = Array.from({ length: 20 }, (_, i) => ({
-        id: `media-${i + 1}`,
-        url: `https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1`,
-        name: `squishy-image-${i + 1}.jpg`,
-        type: 'image/jpeg',
-        size: Math.floor(Math.random() * 1000000) + 100000, // 100KB - 1MB
-        dimensions: '1200x1200',
-        folder: i % 3 === 0 ? 'products' : i % 3 === 1 ? 'categories' : 'collections',
-        uploaded_at: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString(),
-        public_id: `dudu-store/${i % 3 === 0 ? 'products' : i % 3 === 1 ? 'categories' : 'collections'}/squishy-image-${i + 1}`
+  // Fetch media items
+  const fetchMediaItems = useCallback(async (folder = 'all', cursor = null) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const folderPath = folder === 'all' ? 'dudu-store' : `dudu-store/${folder}`;
+      const result = await getMediaLibrary({
+        folder: folderPath,
+        max_results: 30,
+        next_cursor: cursor
+      });
+      
+      const formattedItems = result.resources.map(resource => ({
+        id: resource.public_id,
+        url: resource.secure_url,
+        name: resource.public_id.split('/').pop(),
+        type: resource.resource_type,
+        format: resource.format,
+        size: resource.bytes,
+        width: resource.width,
+        height: resource.height,
+        folder: resource.folder.split('/').pop(),
+        created_at: resource.created_at,
+        public_id: resource.public_id
       }));
       
-      setMediaItems(mockMediaItems);
+      if (cursor) {
+        setMediaItems(prev => [...prev, ...formattedItems]);
+      } else {
+        setMediaItems(formattedItems);
+      }
+      
+      setNextCursor(result.next_cursor);
+      setHasMore(!!result.next_cursor);
+    } catch (err) {
+      console.error('Error fetching media:', err);
+      setError(err.message || 'Lỗi khi tải thư viện media');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   }, []);
 
-  // Định dạng kích thước file
+  // Initial fetch
+  useEffect(() => {
+    fetchMediaItems(currentFolder);
+  }, [currentFolder, fetchMediaItems]);
+
+  // Format file size
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -42,9 +74,10 @@ const AdminMediaLibrary = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  // Định dạng ngày giờ
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
+  // Format date
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp * 1000); // Cloudinary returns Unix timestamp
     return new Intl.DateTimeFormat('vi-VN', {
       year: 'numeric',
       month: '2-digit',
@@ -54,160 +87,216 @@ const AdminMediaLibrary = () => {
     }).format(date);
   };
 
-  // Xử lý upload file
-  const handleFileUpload = (e) => {
+  // Handle file upload
+  const handleFileUpload = async (e) => {
     const files = e.target.files;
     if (!files.length) return;
-
+    
     setIsUploading(true);
     setUploadProgress(0);
-
-    // Giả lập quá trình upload
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            // Thêm file mới vào danh sách
-            const newMediaItems = Array.from(files).map((file, index) => ({
-              id: `media-new-${Date.now()}-${index}`,
-              url: URL.createObjectURL(file),
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              dimensions: '1200x1200', // Giả định
-              folder: currentFolder === 'all' ? 'products' : currentFolder,
-              uploaded_at: new Date().toISOString(),
-              public_id: `dudu-store/${currentFolder === 'all' ? 'products' : currentFolder}/${file.name}`
-            }));
-            
-            setMediaItems(prev => [...newMediaItems, ...prev]);
-            setIsUploading(false);
-            setUploadProgress(0);
-          }, 500);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 200);
+    
+    try {
+      const uploadedItems = [];
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const folder = currentFolder === 'all' ? 'products' : currentFolder;
+        
+        // Update progress
+        setUploadProgress(Math.round((i / files.length) * 100));
+        
+        // Upload file
+        const result = await uploadImage(file, folder);
+        
+        uploadedItems.push({
+          id: result.public_id,
+          url: result.secure_url,
+          name: result.public_id.split('/').pop(),
+          type: result.resource_type,
+          format: result.format,
+          size: result.bytes,
+          width: result.width,
+          height: result.height,
+          folder: result.folder.split('/').pop(),
+          created_at: Math.floor(Date.now() / 1000), // Current timestamp in seconds
+          public_id: result.public_id
+        });
+      }
+      
+      // Add new items to the list
+      setMediaItems(prev => [...uploadedItems, ...prev]);
+      setUploadProgress(100);
+      
+      // Reset upload state after a delay
+      setTimeout(() => {
+        setIsUploading(false);
+        setUploadProgress(0);
+      }, 1000);
+    } catch (err) {
+      console.error('Error uploading files:', err);
+      setError(err.message || 'Lỗi khi tải lên file');
+      setIsUploading(false);
+    }
   };
 
-  // Xử lý kéo thả file
+  // Handle drag and drop
   const handleDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     
     const files = e.dataTransfer.files;
     if (!files.length) return;
     
-    // Giả lập upload file
     setIsUploading(true);
     setUploadProgress(0);
     
-    // Giả lập quá trình upload
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            // Thêm file mới vào danh sách
-            const newMediaItems = Array.from(files).map((file, index) => ({
-              id: `media-new-${Date.now()}-${index}`,
-              url: URL.createObjectURL(file),
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              dimensions: '1200x1200', // Giả định
-              folder: currentFolder === 'all' ? 'products' : currentFolder,
-              uploaded_at: new Date().toISOString(),
-              public_id: `dudu-store/${currentFolder === 'all' ? 'products' : currentFolder}/${file.name}`
-            }));
-            
-            setMediaItems(prev => [...newMediaItems, ...prev]);
-            setIsUploading(false);
-            setUploadProgress(0);
-          }, 500);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 200);
+    try {
+      const uploadedItems = [];
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const folder = currentFolder === 'all' ? 'products' : currentFolder;
+        
+        // Update progress
+        setUploadProgress(Math.round((i / files.length) * 100));
+        
+        // Upload file
+        const result = await uploadImage(file, folder);
+        
+        uploadedItems.push({
+          id: result.public_id,
+          url: result.secure_url,
+          name: result.public_id.split('/').pop(),
+          type: result.resource_type,
+          format: result.format,
+          size: result.bytes,
+          width: result.width,
+          height: result.height,
+          folder: result.folder.split('/').pop(),
+          created_at: Math.floor(Date.now() / 1000), // Current timestamp in seconds
+          public_id: result.public_id
+        });
+      }
+      
+      // Add new items to the list
+      setMediaItems(prev => [...uploadedItems, ...prev]);
+      setUploadProgress(100);
+      
+      // Reset upload state after a delay
+      setTimeout(() => {
+        setIsUploading(false);
+        setUploadProgress(0);
+      }, 1000);
+    } catch (err) {
+      console.error('Error uploading files:', err);
+      setError(err.message || 'Lỗi khi tải lên file');
+      setIsUploading(false);
+    }
   };
 
-  // Xử lý xem chi tiết media
+  // Handle view media details
   const handleViewMedia = (media) => {
     setSelectedMedia(media);
     setShowMediaModal(true);
   };
 
-  // Xử lý xóa media
-  const handleDeleteMedia = (mediaId) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa file media này?')) {
-      // Trong thực tế, đây sẽ là API call
-      setMediaItems(mediaItems.filter(item => item.id !== mediaId));
+  // Handle delete media
+  const handleDeleteMedia = async (publicId) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa file này?')) {
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      
+      // Delete from Cloudinary
+      await deleteImage(publicId);
+      
+      // Update local state
+      setMediaItems(prev => prev.filter(item => item.public_id !== publicId));
+      
+      // Close modal if open
+      if (selectedMedia && selectedMedia.public_id === publicId) {
+        setShowMediaModal(false);
+        setSelectedMedia(null);
+      }
+      
+      alert('Đã xóa file thành công');
+    } catch (err) {
+      console.error('Error deleting media:', err);
+      setError(err.message || 'Lỗi khi xóa file');
+      alert('Lỗi khi xóa file: ' + (err.message || 'Đã xảy ra lỗi'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Xử lý sao chép URL
+  // Handle copy URL
   const handleCopyUrl = (url) => {
     navigator.clipboard.writeText(url)
       .then(() => {
         alert('Đã sao chép URL vào clipboard!');
       })
       .catch(err => {
-        console.error('Không thể sao chép URL: ', err);
+        console.error('Không thể sao chép URL:', err);
+        alert('Lỗi khi sao chép URL: ' + err.message);
       });
   };
 
-  // Lọc media theo folder
-  const filteredMedia = mediaItems.filter(item => {
-    // Lọc theo folder
-    if (currentFolder !== 'all' && item.folder !== currentFolder) {
-      return false;
+  // Load more media items
+  const loadMore = () => {
+    if (hasMore && !isLoading) {
+      fetchMediaItems(currentFolder, nextCursor);
     }
-    
-    // Lọc theo tìm kiếm
+  };
+
+  // Filter media items
+  const filteredMedia = mediaItems.filter(item => {
     if (searchTerm && !item.name.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
-    
     return true;
   });
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className="media-library"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="page-header">
         <h1 className="page-title">Thư viện media</h1>
         <p className="page-description">Quản lý hình ảnh và tệp đa phương tiện</p>
       </div>
-
-      <div className="form-card">
-        <div className="form-row">
-          <div className="form-group">
-            <label className="form-label">Tìm kiếm</label>
+      
+      <div className="media-filters">
+        <div className="filter-group">
+          <div className="filter">
+            <label>Tìm kiếm</label>
             <input 
               type="text" 
-              className="form-input" 
-              placeholder="Tìm kiếm theo tên file..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Tìm kiếm theo tên file..."
             />
           </div>
-          <div className="form-group">
-            <label className="form-label">Thư mục</label>
+          
+          <div className="filter">
+            <label>Thư mục</label>
             <select 
-              className="form-select"
               value={currentFolder}
-              onChange={(e) => setCurrentFolder(e.target.value)}
+              onChange={(e) => {
+                setCurrentFolder(e.target.value);
+                setMediaItems([]);
+                setNextCursor(null);
+                setHasMore(true);
+              }}
             >
               <option value="all">Tất cả thư mục</option>
               <option value="products">Sản phẩm</option>
@@ -217,9 +306,9 @@ const AdminMediaLibrary = () => {
           </div>
         </div>
       </div>
-
+      
       <div 
-        className="form-card"
+        className="media-upload-container"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
@@ -229,80 +318,105 @@ const AdminMediaLibrary = () => {
             id="file-upload" 
             style={{ display: 'none' }}
             multiple
+            accept="image/*"
             onChange={handleFileUpload}
           />
-          <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'block' }}>
-            <div className="upload-icon">📤</div>
+          <label htmlFor="file-upload" className="upload-label">
+            <div className="upload-icon">🖼️</div>
             <div className="upload-text">Kéo thả file vào đây hoặc click để chọn file</div>
-            {isUploading && (
-              <div style={{ marginTop: '16px' }}>
-                <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '8px', overflow: 'hidden' }}>
-                  <div 
-                    style={{ 
-                      width: `${uploadProgress}%`, 
-                      backgroundColor: '#a855f7', 
-                      height: '100%',
-                      transition: 'width 0.2s ease'
-                    }}
-                  ></div>
-                </div>
-                <div style={{ marginTop: '8px', fontSize: '0.875rem', color: '#6b7280' }}>
-                  Đang tải lên... {uploadProgress}%
-                </div>
-              </div>
-            )}
+            <div className="upload-hint">Hỗ trợ: JPG, PNG, GIF, WEBP (tối đa 10MB)</div>
           </label>
+          
+          {isUploading && (
+            <div className="upload-progress">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+              <div className="progress-text">
+                Đang tải lên... {uploadProgress}%
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      <div className="form-card">
-        <div className="form-section-title">Thư viện hình ảnh</div>
+      
+      <div className="media-content">
+        <h2 className="section-title">Thư viện hình ảnh</h2>
         
-        {isLoading ? (
-          <div className="loading-state">Đang tải dữ liệu...</div>
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+            <button onClick={() => fetchMediaItems(currentFolder)}>Thử lại</button>
+          </div>
+        )}
+        
+        {isLoading && mediaItems.length === 0 ? (
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Đang tải thư viện media...</p>
+          </div>
+        ) : filteredMedia.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">🖼️</div>
+            <h3>Không tìm thấy file media</h3>
+            <p>Hãy tải lên file đầu tiên của bạn hoặc thay đổi bộ lọc</p>
+          </div>
         ) : (
           <>
-            {filteredMedia.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 0', color: '#6b7280' }}>
-                Không tìm thấy file media nào
-              </div>
-            ) : (
-              <div className="media-grid">
-                {filteredMedia.map((media) => (
-                  <div key={media.id} className="media-item">
-                    <img src={media.url} alt={media.name} />
-                    <div className="media-overlay">
-                      <div 
-                        className="media-action"
-                        onClick={() => handleViewMedia(media)}
-                      >
-                        🔍
-                      </div>
-                      <div 
-                        className="media-action"
-                        onClick={() => handleCopyUrl(media.url)}
-                      >
-                        📋
-                      </div>
-                      <div 
-                        className="media-action"
-                        onClick={() => handleDeleteMedia(media.id)}
-                      >
-                        🗑️
-                      </div>
-                    </div>
+            <div className="media-grid">
+              {filteredMedia.map((media) => (
+                <div key={media.id} className="media-item">
+                  <img src={media.url} alt={media.name} />
+                  <div className="media-overlay">
+                    <button 
+                      className="media-action view"
+                      onClick={() => handleViewMedia(media)}
+                      title="Xem chi tiết"
+                    >
+                      🔍
+                    </button>
+                    <button 
+                      className="media-action copy"
+                      onClick={() => handleCopyUrl(media.url)}
+                      title="Sao chép URL"
+                    >
+                      📋
+                    </button>
+                    <button 
+                      className="media-action delete"
+                      onClick={() => handleDeleteMedia(media.public_id)}
+                      title="Xóa"
+                    >
+                      🗑️
+                    </button>
                   </div>
-                ))}
+                  <div className="media-name">{media.name}</div>
+                </div>
+              ))}
+            </div>
+            
+            {hasMore && (
+              <div className="load-more">
+                <button 
+                  className="load-more-btn"
+                  onClick={loadMore}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Đang tải...' : 'Tải thêm'}
+                </button>
               </div>
             )}
           </>
         )}
       </div>
-
-      {/* Modal xem chi tiết media */}
+      
+      {/* Media Detail Modal */}
       {showMediaModal && selectedMedia && (
-        <div className="modal-overlay">
-          <div className="modal-container" style={{ maxWidth: '800px' }}>
+        <div className="modal-overlay" onClick={() => setShowMediaModal(false)}>
+          <div className="media-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Chi tiết media</h2>
               <button 
@@ -312,61 +426,59 @@ const AdminMediaLibrary = () => {
                 ×
               </button>
             </div>
+            
             <div className="modal-body">
-              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-                <div style={{ flex: '0 0 300px' }}>
-                  <img 
-                    src={selectedMedia.url} 
-                    alt={selectedMedia.name} 
-                    style={{ width: '100%', borderRadius: '8px', objectFit: 'cover' }}
-                  />
+              <div className="media-detail-layout">
+                <div className="media-preview">
+                  <img src={selectedMedia.url} alt={selectedMedia.name} />
                 </div>
-                <div style={{ flex: '1' }}>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Tên file</div>
+                
+                <div className="media-info">
+                  <div className="info-group">
+                    <label>Tên file:</label>
                     <div>{selectedMedia.name}</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Loại file</div>
-                    <div>{selectedMedia.type}</div>
+                  
+                  <div className="info-group">
+                    <label>Loại file:</label>
+                    <div>{selectedMedia.type}/{selectedMedia.format}</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Kích thước</div>
+                  
+                  <div className="info-group">
+                    <label>Kích thước:</label>
                     <div>{formatFileSize(selectedMedia.size)}</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Kích thước ảnh</div>
-                    <div>{selectedMedia.dimensions}</div>
+                  
+                  <div className="info-group">
+                    <label>Kích thước ảnh:</label>
+                    <div>{selectedMedia.width} × {selectedMedia.height} px</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Thư mục</div>
+                  
+                  <div className="info-group">
+                    <label>Thư mục:</label>
                     <div>{selectedMedia.folder}</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Ngày tải lên</div>
-                    <div>{formatDate(selectedMedia.uploaded_at)}</div>
+                  
+                  <div className="info-group">
+                    <label>Ngày tải lên:</label>
+                    <div>{formatDate(selectedMedia.created_at)}</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>Public ID</div>
-                    <div>{selectedMedia.public_id}</div>
+                  
+                  <div className="info-group">
+                    <label>Public ID:</label>
+                    <div className="public-id">{selectedMedia.public_id}</div>
                   </div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>URL</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  
+                  <div className="info-group">
+                    <label>URL:</label>
+                    <div className="url-copy">
                       <input 
                         type="text" 
                         value={selectedMedia.url} 
                         readOnly 
-                        style={{ 
-                          flex: '1', 
-                          padding: '8px 12px', 
-                          borderRadius: '6px', 
-                          border: '1px solid #d1d5db',
-                          fontSize: '0.875rem'
-                        }}
                       />
                       <button 
-                        className="admin-btn btn-primary"
+                        className="copy-btn"
                         onClick={() => handleCopyUrl(selectedMedia.url)}
                       >
                         Sao chép
@@ -376,18 +488,16 @@ const AdminMediaLibrary = () => {
                 </div>
               </div>
             </div>
+            
             <div className="modal-footer">
               <button 
-                className="admin-btn btn-danger"
-                onClick={() => {
-                  handleDeleteMedia(selectedMedia.id);
-                  setShowMediaModal(false);
-                }}
+                className="delete-btn"
+                onClick={() => handleDeleteMedia(selectedMedia.public_id)}
               >
                 Xóa
               </button>
               <button 
-                className="admin-btn btn-secondary"
+                className="close-btn"
                 onClick={() => setShowMediaModal(false)}
               >
                 Đóng

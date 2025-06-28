@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import '../styles/AdminDashboard.css';
+import '../styles/AdminAnalytics.css';
+import supabase from '../services/supabaseClient';
 
-// Đăng ký các thành phần Chart.js
+// Register ChartJS components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -18,85 +20,151 @@ ChartJS.register(
 );
 
 const AdminAnalytics = () => {
-  const [period, setPeriod] = useState('week');
+  const [period, setPeriod] = useState('month');
   const [category, setCategory] = useState('all');
   const [viewsData, setViewsData] = useState(null);
   const [salesData, setSalesData] = useState(null);
   const [topProducts, setTopProducts] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Giả lập dữ liệu phân tích
+  // Fetch analytics data
   useEffect(() => {
-    // Trong thực tế, đây sẽ là API call
-    setTimeout(() => {
-      // Dữ liệu lượt xem theo thời gian
-      const mockViewsData = {
-        week: {
-          labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
-          values: [120, 190, 150, 220, 180, 250, 300]
-        },
-        month: {
-          labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
-          values: [850, 950, 1100, 1250]
-        },
-        year: {
-          labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-          values: [2500, 2800, 3200, 3500, 3800, 4200, 4500, 4800, 5200, 5500, 5800, 6200]
-        }
-      };
-      
-      // Dữ liệu doanh thu theo thời gian
-      const mockSalesData = {
-        week: {
-          labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
-          values: [1200000, 1900000, 1500000, 2200000, 1800000, 2500000, 3000000]
-        },
-        month: {
-          labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
-          values: [8500000, 9500000, 11000000, 12500000]
-        },
-        year: {
+    const fetchAnalyticsData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Fetch product views by date
+        const { data: viewsByDate, error: viewsError } = await supabase
+          .from('product_view_trends_by_date')
+          .select('*')
+          .order('date', { ascending: true });
+        
+        if (viewsError) throw viewsError;
+        
+        // Fetch top viewed products
+        const { data: topViewedProducts, error: topProductsError } = await supabase
+          .from('product_view_analytics')
+          .select('*')
+          .order('view_count', { ascending: false })
+          .limit(10);
+        
+        if (topProductsError) throw topProductsError;
+        
+        // Fetch views by category
+        const { data: viewsByCategory, error: categoryError } = await supabase
+          .from('product_view_by_category')
+          .select('*')
+          .order('view_count', { ascending: false });
+        
+        if (categoryError) throw categoryError;
+        
+        // Fetch sales data (mock data for now)
+        const mockSalesData = {
           labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
           values: [25000000, 28000000, 32000000, 35000000, 38000000, 42000000, 45000000, 48000000, 52000000, 55000000, 58000000, 62000000]
-        }
-      };
-      
-      // Dữ liệu sản phẩm được xem nhiều nhất
-      const mockTopProducts = [
-        { id: 'PROD-001', name: 'DIMOO Premium Collection', category: 'DIMOO', views: 245, unique_viewers: 198, conversion_rate: 12.5 },
-        { id: 'PROD-003', name: 'MOLLY Exclusive Series', category: 'MOLLY', views: 312, unique_viewers: 256, conversion_rate: 15.2 },
-        { id: 'PROD-005', name: 'LABUBU Special Edition', category: 'LABUBU', views: 278, unique_viewers: 215, conversion_rate: 13.8 },
-        { id: 'PROD-002', name: 'DIMOO Limited Edition', category: 'DIMOO', views: 189, unique_viewers: 154, conversion_rate: 10.5 },
-        { id: 'PROD-004', name: 'MOLLY Deluxe Collection', category: 'MOLLY', views: 165, unique_viewers: 132, conversion_rate: 9.8 }
-      ];
-      
-      setViewsData(mockViewsData);
-      setSalesData(mockSalesData);
-      setTopProducts(mockTopProducts);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+        };
+        
+        // Process views data
+        const processedViewsData = processViewsData(viewsByDate, period);
+        
+        setViewsData(processedViewsData);
+        setSalesData(mockSalesData);
+        setTopProducts(topViewedProducts || []);
+        setCategoryData(viewsByCategory || []);
+      } catch (err) {
+        console.error('Error fetching analytics data:', err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchAnalyticsData();
+  }, [period]);
 
-  // Dữ liệu biểu đồ lượt xem
+  // Process views data for chart based on period
+  const processViewsData = (data, period) => {
+    if (!data || data.length === 0) return null;
+    
+    // Sort data by date
+    const sortedData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    let filteredData;
+    const now = new Date();
+    
+    switch (period) {
+      case 'week':
+        // Last 7 days
+        const weekAgo = new Date(now);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        filteredData = sortedData.filter(item => new Date(item.date) >= weekAgo);
+        break;
+      case 'month':
+        // Last 30 days
+        const monthAgo = new Date(now);
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        filteredData = sortedData.filter(item => new Date(item.date) >= monthAgo);
+        break;
+      case 'year':
+        // Last 365 days
+        const yearAgo = new Date(now);
+        yearAgo.setDate(yearAgo.getDate() - 365);
+        filteredData = sortedData.filter(item => new Date(item.date) >= yearAgo);
+        break;
+      default:
+        filteredData = sortedData.slice(-30); // Default to last 30 days
+    }
+    
+    // Format dates for display
+    const labels = filteredData.map(item => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+    });
+    
+    const viewCounts = filteredData.map(item => item.view_count);
+    
+    return {
+      labels,
+      viewCounts,
+      totalViews: viewCounts.reduce((sum, count) => sum + count, 0),
+      uniqueProducts: filteredData.reduce((sum, item) => sum + item.unique_products, 0),
+      uniqueUsers: filteredData.reduce((sum, item) => sum + item.unique_users, 0)
+    };
+  };
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount || 0);
+  };
+
+  // Prepare chart data
   const viewsChartData = {
-    labels: viewsData?.[period]?.labels || [],
+    labels: viewsData?.labels || [],
     datasets: [
       {
         label: 'Lượt xem',
-        data: viewsData?.[period]?.values || [],
+        data: viewsData?.viewCounts || [],
         backgroundColor: '#ec4899',
-        borderRadius: 6
+        borderColor: '#ec4899',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
       }
     ]
   };
 
-  // Dữ liệu biểu đồ doanh thu
   const salesChartData = {
-    labels: salesData?.[period]?.labels || [],
+    labels: salesData?.labels || [],
     datasets: [
       {
         label: 'Doanh thu',
-        data: salesData?.[period]?.values || [],
+        data: salesData?.values || [],
         borderColor: '#a855f7',
         backgroundColor: 'rgba(168, 85, 247, 0.1)',
         tension: 0.4,
@@ -105,34 +173,90 @@ const AdminAnalytics = () => {
     ]
   };
 
-  // Dữ liệu biểu đồ phân bố lượt xem theo danh mục
   const categoryViewsData = {
-    labels: ['DIMOO', 'MOLLY', 'LABUBU'],
+    labels: categoryData.slice(0, 5).map(cat => cat.category_name),
     datasets: [
       {
-        data: [40, 35, 25],
+        data: categoryData.slice(0, 5).map(cat => cat.view_count),
         backgroundColor: [
           '#a855f7',
           '#ec4899',
-          '#3b82f6'
+          '#3b82f6',
+          '#10b981',
+          '#f59e0b'
         ],
         borderWidth: 0
       }
     ]
   };
 
-  // Định dạng tiền tệ VND
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(amount);
+  // Chart options
+  const lineChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0
+        }
+      }
+    }
+  };
+
+  const salesChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label: function(context) {
+            return formatCurrency(context.raw);
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value) {
+            return formatCurrency(value).replace('₫', '') + 'đ';
+          }
+        }
+      }
+    }
+  };
+
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
+    }
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className="analytics-dashboard"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="page-header">
@@ -161,193 +285,151 @@ const AdminAnalytics = () => {
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value="all">Tất cả danh mục</option>
-            <option value="dimoo">DIMOO</option>
-            <option value="molly">MOLLY</option>
-            <option value="labubu">LABUBU</option>
+            {categoryData.map(cat => (
+              <option key={cat.category_id} value={cat.category_id}>
+                {cat.category_name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="loading-state">Đang tải dữ liệu...</div>
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Đang tải dữ liệu phân tích...</p>
+        </div>
+      ) : error ? (
+        <div className="error-state">
+          <p>Lỗi khi tải dữ liệu: {error}</p>
+          <button onClick={() => window.location.reload()}>Thử lại</button>
+        </div>
       ) : (
         <>
-          <div className="charts-row">
-            <div className="chart-card">
-              <div className="chart-header">
-                <div className="chart-title">Lượt xem sản phẩm theo thời gian</div>
-                <div className="chart-actions">
-                  <div 
-                    className={`chart-period ${period === 'week' ? 'active' : ''}`}
-                    onClick={() => setPeriod('week')}
-                  >
-                    Tuần
-                  </div>
-                  <div 
-                    className={`chart-period ${period === 'month' ? 'active' : ''}`}
-                    onClick={() => setPeriod('month')}
-                  >
-                    Tháng
-                  </div>
-                  <div 
-                    className={`chart-period ${period === 'year' ? 'active' : ''}`}
-                    onClick={() => setPeriod('year')}
-                  >
-                    Năm
-                  </div>
-                </div>
-              </div>
-              <div className="chart-container">
-                <Bar 
-                  data={viewsChartData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        display: false
-                      }
-                    },
-                    scales: {
-                      y: {
-                        beginAtZero: true
-                      }
-                    }
-                  }}
-                />
+          <div className="analytics-summary">
+            <div className="summary-card">
+              <div className="summary-icon" style={{ background: 'rgba(236, 72, 153, 0.1)', color: '#ec4899' }}>👁️</div>
+              <div className="summary-content">
+                <h3>Tổng lượt xem</h3>
+                <p className="summary-value">{viewsData?.totalViews || 0}</p>
+                <p className="summary-period">trong {getPeriodDisplay(period)}</p>
               </div>
             </div>
-
-            <div className="chart-card">
-              <div className="chart-header">
-                <div className="chart-title">Phân bố lượt xem theo danh mục</div>
+            
+            <div className="summary-card">
+              <div className="summary-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>🔍</div>
+              <div className="summary-content">
+                <h3>Sản phẩm được xem</h3>
+                <p className="summary-value">{viewsData?.uniqueProducts || 0}</p>
+                <p className="summary-period">sản phẩm khác nhau</p>
               </div>
+            </div>
+            
+            <div className="summary-card">
+              <div className="summary-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>👥</div>
+              <div className="summary-content">
+                <h3>Người xem duy nhất</h3>
+                <p className="summary-value">{viewsData?.uniqueUsers || 0}</p>
+                <p className="summary-period">người dùng đã đăng nhập</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="charts-container">
+            <div className="chart-card">
+              <h3>Lượt xem theo thời gian</h3>
               <div className="chart-container">
-                <Pie 
-                  data={categoryViewsData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        position: 'bottom'
-                      }
-                    }
-                  }}
-                />
+                <Line data={viewsChartData} options={lineChartOptions} />
+              </div>
+            </div>
+            
+            <div className="chart-card">
+              <h3>Lượt xem theo danh mục</h3>
+              <div className="chart-container">
+                <Pie data={categoryViewsData} options={pieChartOptions} />
               </div>
             </div>
           </div>
 
           <div className="chart-card">
-            <div className="chart-header">
-              <div className="chart-title">Doanh thu theo thời gian</div>
-              <div className="chart-actions">
-                <div 
-                  className={`chart-period ${period === 'week' ? 'active' : ''}`}
-                  onClick={() => setPeriod('week')}
-                >
-                  Tuần
-                </div>
-                <div 
-                  className={`chart-period ${period === 'month' ? 'active' : ''}`}
-                  onClick={() => setPeriod('month')}
-                >
-                  Tháng
-                </div>
-                <div 
-                  className={`chart-period ${period === 'year' ? 'active' : ''}`}
-                  onClick={() => setPeriod('year')}
-                >
-                  Năm
-                </div>
-              </div>
-            </div>
+            <h3>Doanh thu theo thời gian</h3>
             <div className="chart-container">
-              <Line 
-                data={salesChartData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      display: false
-                    }
-                  },
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      ticks: {
-                        callback: function(value) {
-                          return formatCurrency(value).replace('₫', '') + 'đ';
-                        }
-                      }
-                    }
-                  }
-                }}
-              />
+              <Line data={salesChartData} options={salesChartOptions} />
             </div>
           </div>
 
-          <div className="table-card">
-            <div className="table-header">
-              <div className="table-title">Sản phẩm được xem nhiều nhất</div>
-            </div>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Sản phẩm</th>
-                  <th>Danh mục</th>
-                  <th>Lượt xem</th>
-                  <th>Người xem duy nhất</th>
-                  <th>Tỷ lệ chuyển đổi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topProducts.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>{product.category}</td>
-                    <td>{product.views}</td>
-                    <td>{product.unique_viewers}</td>
-                    <td>{product.conversion_rate}%</td>
+          <div className="analytics-table">
+            <h3>Sản phẩm được xem nhiều nhất</h3>
+            <div className="table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Lượt xem</th>
+                    <th>Người xem duy nhất</th>
+                    <th>Lần xem gần nhất</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {topProducts.map((product) => (
+                    <tr key={product.product_id}>
+                      <td className="product-cell">
+                        <div className="admin-product-image">
+                          <img src={product.image || 'https://via.placeholder.com/40'} alt={product.product_name} />
+                        </div>
+                        <span>{product.product_name}</span>
+                      </td>
+                      <td>{product.view_count}</td>
+                      <td>{product.unique_viewers || 0}</td>
+                      <td>{formatDate(product.last_viewed_at)}</td>
+                    </tr>
+                  ))}
+                  {topProducts.length === 0 && (
+                    <tr>
+                      <td colSpan="4" className="empty-row">
+                        Không có dữ liệu lượt xem
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div className="form-card">
-            <div className="form-section-title">Xuất báo cáo</div>
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Loại báo cáo</label>
-                <select className="form-select">
+          <div className="export-section">
+            <h3>Xuất báo cáo</h3>
+            <div className="export-options">
+              <div className="export-option">
+                <label>Loại báo cáo:</label>
+                <select className="export-select">
                   <option value="product_views">Lượt xem sản phẩm</option>
                   <option value="sales">Doanh thu</option>
                   <option value="user_activity">Hoạt động người dùng</option>
                 </select>
               </div>
-              <div className="form-group">
-                <label className="form-label">Định dạng</label>
-                <select className="form-select">
+              
+              <div className="export-option">
+                <label>Định dạng:</label>
+                <select className="export-select">
                   <option value="csv">CSV</option>
                   <option value="json">JSON</option>
                   <option value="pdf">PDF</option>
                 </select>
               </div>
-              <div className="form-group">
-                <label className="form-label">Thời gian</label>
-                <select className="form-select">
+              
+              <div className="export-option">
+                <label>Thời gian:</label>
+                <select className="export-select">
                   <option value="7days">7 ngày qua</option>
                   <option value="30days">30 ngày qua</option>
                   <option value="90days">90 ngày qua</option>
                   <option value="year">Năm nay</option>
                 </select>
               </div>
-            </div>
-            <div className="form-actions">
-              <button className="admin-btn btn-primary">Xuất báo cáo</button>
+              
+              <button className="export-btn">
+                Xuất báo cáo
+              </button>
             </div>
           </div>
         </>
@@ -355,5 +437,28 @@ const AdminAnalytics = () => {
     </motion.div>
   );
 };
+
+// Helper function to format date
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('vi-VN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
+}
+
+// Helper function to get period display text
+function getPeriodDisplay(period) {
+  switch (period) {
+    case 'week': return '7 ngày qua';
+    case 'month': return '30 ngày qua';
+    case 'year': return 'năm nay';
+    default: return 'khoảng thời gian';
+  }
+}
 
 export default AdminAnalytics;
