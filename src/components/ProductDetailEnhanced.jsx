@@ -8,12 +8,10 @@ import '../styles/ProductDetailEnhanced.css';
 const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState('description');
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -42,16 +40,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     window.addEventListener('scroll', toggleVisibility);
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
-
-  useEffect(() => {
-    if (product?.variants?.length > 0) {
-      setSelectedVariant(product.variants[0]);
-    }
-    
-    if (product?.colors?.length > 0) {
-      setSelectedColor(product.colors[0]);
-    }
-  }, [product]);
 
   // Handle 360 rotation
   const handleRotationStart = (e) => {
@@ -121,22 +109,9 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     product.image
   ];
 
-  const variants = product.variants || [
-    { id: 1, name: 'Kích thước S', price: product.price, stock: 10 },
-    { id: 2, name: 'Kích thước M', price: '350.000đ', stock: 5 },
-    { id: 3, name: 'Kích thước L', price: '450.000đ', stock: 3 }
-  ];
-
-  const colors = product.colors || [
-    { id: 1, name: 'Hồng', code: '#ff6b9d' },
-    { id: 2, name: 'Tím', code: '#a855f7' },
-    { id: 3, name: 'Xanh', code: '#0ea5e9' },
-    { id: 4, name: 'Vàng', code: '#f59e0b' }
-  ];
-
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
-    const maxStock = selectedVariant?.stock || 10;
+    const maxStock = 10;
     if (newQuantity >= 1 && newQuantity <= maxStock) {
       setQuantity(newQuantity);
     }
@@ -266,69 +241,21 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
 
               <div className="product-price-section">
                 <div className="price-info">
-                  {selectedVariant?.originalPrice && (
-                    <span className="original-price">{selectedVariant.originalPrice}</span>
+                  {product.originalPrice && (
+                    <span className="original-price">{product.originalPrice}</span>
                   )}
-                  <span className="current-price">{selectedVariant?.price || product.price}</span>
-                  {selectedVariant?.originalPrice && (
+                  <span className="current-price">{product.price}</span>
+                  {product.originalPrice && (
                     <span className="discount">-30%</span>
                   )}
                 </div>
                 <div className="stock-info">
-                  <span className={`stock-status ${(selectedVariant?.stock || 10) > 0 ? 'in-stock' : 'out-stock'}`}>
-                    {(selectedVariant?.stock || 10) > 0 ? '✅ Còn hàng' : '❌ Hết hàng'}
+                  <span className="stock-status in-stock">
+                    ✅ Còn hàng
                   </span>
-                  <span className="stock-count">({selectedVariant?.stock || 10} sản phẩm)</span>
+                  <span className="stock-count">(10 sản phẩm)</span>
                 </div>
               </div>
-
-              {/* Product Variants */}
-              {variants.length > 0 && (
-                <div className="product-variants">
-                  <h3>Chọn kích thước:</h3>
-                  <div className="variants-grid">
-                    {variants.map((variant) => (
-                      <motion.button
-                        key={variant.id}
-                        className={`variant-option ${selectedVariant?.id === variant.id ? 'active' : ''}`}
-                        onClick={() => setSelectedVariant(variant)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        disabled={variant.stock === 0}
-                      >
-                        <span className="variant-name">{variant.name}</span>
-                        <span className="variant-price">{variant.price}</span>
-                        {variant.stock === 0 && <span className="out-of-stock">Hết hàng</span>}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Color Selection */}
-              {colors.length > 0 && (
-                <div className="product-colors">
-                  <h3>Chọn màu sắc:</h3>
-                  <div className="colors-grid">
-                    {colors.map((color) => (
-                      <motion.button
-                        key={color.id}
-                        className={`color-option ${selectedColor?.id === color.id ? 'active' : ''}`}
-                        onClick={() => setSelectedColor(color)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        style={{ backgroundColor: color.code }}
-                        aria-label={color.name}
-                      >
-                        {selectedColor?.id === color.id && <span className="color-check">✓</span>}
-                      </motion.button>
-                    ))}
-                  </div>
-                  <div className="selected-color-name">
-                    Màu: <strong>{selectedColor?.name}</strong>
-                  </div>
-                </div>
-              )}
 
               {/* Quantity Selection */}
               <div className="quantity-section">
@@ -347,7 +274,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     onClick={() => handleQuantityChange(1)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    disabled={quantity >= (selectedVariant?.stock || 10)}
+                    disabled={quantity >= 10}
                   >
                     +
                   </motion.button>
@@ -361,7 +288,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   onClick={handleAddToCart}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  disabled={(selectedVariant?.stock || 10) === 0}
                 >
                   🛒 Thêm vào giỏ hàng
                 </motion.button>
@@ -370,7 +296,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   onClick={handleBuyNow}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  disabled={(selectedVariant?.stock || 10) === 0}
                 >
                   ⚡ Mua ngay
                 </motion.button>
