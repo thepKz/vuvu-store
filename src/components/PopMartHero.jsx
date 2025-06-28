@@ -83,15 +83,6 @@ const PopMartHero = ({ onNavigate }) => {
               <span className="title-line-2">Squishy Collection</span>
             </motion.h1>
 
-            <motion.p 
-              className="hero-subtitle"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-            >
-              Khám phá bộ sưu tập squishy cao cấp được thiết kế đặc biệt cho những cô gái yêu thích sự dễ thương và chất lượng.
-            </motion.p>
-
             <motion.div 
               className="hero-buttons"
               initial={{ opacity: 0, y: 20 }}
