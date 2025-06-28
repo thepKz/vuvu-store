@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './styles/global.css';
-import EnhancedHomePage from './components/EnhancedHomePage';
+import HomePage from './components/HomePage';
 import ProductsPage from './components/ProductsPage';
 import ProductDetailPage from './components/ProductDetailPage';
 import AboutPagePopMart from './components/AboutPagePopMart';
@@ -45,7 +45,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <EnhancedHomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
+        return <HomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'products':
         return <ProductsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'product-detail':
@@ -59,7 +59,7 @@ function App() {
       case 'login':
         return <LoginPage onNavigate={handleNavigation} />;
       default:
-        return <EnhancedHomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
+        return <HomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
     }
   };
 
