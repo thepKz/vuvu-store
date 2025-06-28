@@ -21,7 +21,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
       name: "DIMOO Premium Collection",
       price: "230.000đ",
       originalPrice: null,
-      badge: "New",
       rating: 4.9
     },
     {
@@ -30,7 +29,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
       name: "DIMOO Limited Edition",
       price: "253.000đ",
       originalPrice: null,
-      badge: "Hot",
       rating: 4.8
     },
     {
@@ -39,7 +37,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
       name: "MOLLY Exclusive Series",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
       rating: 4.7
     },
     {
@@ -48,7 +45,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
       name: "MOLLY Deluxe Collection",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
       rating: 4.9
     },
     {
@@ -57,7 +53,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
       name: "LABUBU Special Edition",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
       rating: 4.8
     },
     {
@@ -66,7 +61,6 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
       name: "LABUBU Collector Series",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
       rating: 4.6
     }
   ];
@@ -105,15 +99,15 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
     }
   };
 
+  const handleImageView = (imageUrl, productName) => {
+    window.open(imageUrl, '_blank');
+  };
+
   const handleViewAllProducts = () => {
     if (onNavigate) {
       onNavigate('products');
       window.scrollTo(0, 0);
     }
-  };
-
-  const handleImageView = (imageUrl, productName) => {
-    window.open(imageUrl, '_blank');
   };
 
   return (
@@ -144,35 +138,23 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
               className="product-card"
               variants={productVariants}
               whileHover={{ 
-                y: -8,
-                scale: 1.02,
-                transition: { duration: 0.3 }
+                y: -4,
+                transition: { duration: 0.2 }
               }}
               onClick={() => handleProductClick(product)}
             >
-              {product.badge && (
-                <motion.div 
-                  className={`product-badge badge-${product.badge.toLowerCase()}`}
-                  initial={{ scale: 0, rotate: -10 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.3, type: "spring" }}
-                >
-                  {product.badge}
-                </motion.div>
-              )}
-              
               <div className="product-image-container">
                 <img src={product.image} alt={product.name} className="product-image" />
                 <motion.div 
                   className="product-overlay"
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <motion.button
                     className="quick-view-btn"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleImageView(product.image, product.name);
@@ -209,21 +191,16 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
                 </div>
                 
                 <motion.button
-                  className="add-to-cart-btn"
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 8px 25px rgba(168, 85, 247, 0.3)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
+                  className="product-detail-btn"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" strokeWidth="2"/>
+                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" strokeWidth="2"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                   </svg>
-                  Thêm vào giỏ
+                  Chi tiết sản phẩm
                 </motion.button>
               </div>
             </motion.div>
@@ -239,11 +216,8 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
           <motion.button
             className="view-all-btn"
             onClick={handleViewAllProducts}
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 12px 35px rgba(168, 85, 247, 0.3)"
-            }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <span>Xem tất cả sản phẩm</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

@@ -28,6 +28,7 @@ const Header = ({ currentPage, onNavigate }) => {
   const menuItems = [
     { name: 'Trang chủ', page: 'home' },
     { name: 'Sản phẩm', page: 'products' },
+    { name: 'Bộ sưu tập', page: 'collections' },
     { name: 'Về chúng tôi', page: 'about' },
     { name: 'Liên hệ', page: 'contact' }
   ];
@@ -100,7 +101,6 @@ const Header = ({ currentPage, onNavigate }) => {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleNavigation('login')}
                 >
-                  <span className="login-icon">👤</span>
                   Đăng nhập
                 </motion.button>
               </motion.li>

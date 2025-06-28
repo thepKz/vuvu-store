@@ -3,9 +3,10 @@ import './styles/global.css';
 import EnhancedHomePage from './components/EnhancedHomePage';
 import ProductsPage from './components/ProductsPage';
 import ProductDetailPage from './components/ProductDetailPage';
-import AboutPage from './components/AboutPage';
+import AboutPagePopMart from './components/AboutPagePopMart';
 import ContactPage from './components/ContactPage';
 import LoginPage from './components/LoginPage';
+import CollectionsPage from './components/CollectionsPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -49,8 +50,10 @@ function App() {
         return <ProductsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'product-detail':
         return <ProductDetailPage product={selectedProduct} onNavigate={handleNavigation} />;
+      case 'collections':
+        return <CollectionsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'about':
-        return <AboutPage onNavigate={handleNavigation} />;
+        return <AboutPagePopMart onNavigate={handleNavigation} />;
       case 'contact':
         return <ContactPage onNavigate={handleNavigation} />;
       case 'login':
