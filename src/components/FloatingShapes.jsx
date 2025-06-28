@@ -6,46 +6,13 @@ const FloatingShapes = () => {
   const shapes = [
     {
       id: 1,
-      type: 'blob',
-      size: 80,
-      color: 'linear-gradient(45deg, #ff6b9d, #ffa8cc)',
+      type: 'circle',
+      size: 120,
+      color: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(190, 24, 93, 0.05))',
       position: { top: '10%', left: '5%' },
       animation: {
-        y: [0, -20, 0],
-        x: [0, 10, 0],
-        rotate: [0, 5, -5, 0],
-        transition: {
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      }
-    },
-    {
-      id: 2,
-      type: 'circle',
-      size: 60,
-      color: 'linear-gradient(45deg, #a8e6cf, #88d8a3)',
-      position: { top: '20%', right: '8%' },
-      animation: {
-        scale: [1, 1.2, 1],
-        opacity: [0.6, 0.8, 0.6],
-        transition: {
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      }
-    },
-    {
-      id: 3,
-      type: 'square',
-      size: 40,
-      color: 'linear-gradient(45deg, #ffd93d, #ffb74d)',
-      position: { top: '60%', left: '10%' },
-      animation: {
         y: [0, -30, 0],
-        rotate: [0, 180, 360],
+        scale: [1, 1.1, 1],
         transition: {
           duration: 8,
           repeat: Infinity,
@@ -54,49 +21,87 @@ const FloatingShapes = () => {
       }
     },
     {
+      id: 2,
+      type: 'circle',
+      size: 80,
+      color: 'linear-gradient(135deg, rgba(255, 182, 193, 0.2), rgba(255, 105, 180, 0.1))',
+      position: { top: '20%', right: '8%' },
+      animation: {
+        y: [0, 25, 0],
+        x: [0, 15, 0],
+        transition: {
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1
+        }
+      }
+    },
+    {
+      id: 3,
+      type: 'circle',
+      size: 60,
+      color: 'linear-gradient(135deg, rgba(252, 231, 243, 0.8), rgba(249, 168, 212, 0.4))',
+      position: { top: '60%', left: '10%' },
+      animation: {
+        y: [0, -20, 0],
+        scale: [1, 1.2, 1],
+        transition: {
+          duration: 7,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }
+      }
+    },
+    {
       id: 4,
-      type: 'triangle',
-      size: 50,
-      color: '#ff9a9e',
+      type: 'circle',
+      size: 100,
+      color: 'linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(190, 24, 93, 0.04))',
       position: { top: '70%', right: '15%' },
       animation: {
-        rotate: [0, 360],
-        scale: [1, 1.3, 1],
+        y: [0, -35, 0],
+        x: [0, -10, 0],
         transition: {
-          rotate: { duration: 8, repeat: Infinity, ease: "linear" },
-          scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.5
         }
       }
     },
     {
       id: 5,
-      type: 'heart',
-      size: 35,
-      color: '#ff6b9d',
+      type: 'circle',
+      size: 40,
+      color: 'linear-gradient(135deg, rgba(255, 182, 193, 0.3), rgba(255, 105, 180, 0.15))',
       position: { top: '40%', right: '5%' },
       animation: {
-        y: [0, -15, 0],
-        x: [0, 5, 0],
-        scale: [1, 1.2, 1],
+        y: [0, 15, 0],
+        scale: [1, 1.3, 1],
         transition: {
-          duration: 4,
+          duration: 5,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
+          delay: 3
         }
       }
     },
     {
       id: 6,
-      type: 'star',
-      size: 45,
-      color: '#ffa8cc',
+      type: 'circle',
+      size: 70,
+      color: 'linear-gradient(135deg, rgba(252, 231, 243, 0.6), rgba(249, 168, 212, 0.3))',
       position: { top: '80%', left: '20%' },
       animation: {
-        rotate: [0, 360],
-        y: [0, -10, 0],
+        y: [0, -25, 0],
+        x: [0, 20, 0],
         transition: {
-          rotate: { duration: 10, repeat: Infinity, ease: "linear" },
-          y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1.5
         }
       }
     }
@@ -108,141 +113,74 @@ const FloatingShapes = () => {
       width: `${shape.size}px`,
       height: `${shape.size}px`,
       background: shape.color,
+      borderRadius: '50%',
       opacity: 0.7,
       zIndex: 1,
+      filter: 'blur(0.5px)',
       ...shape.position
     };
 
-    switch (shape.type) {
-      case 'blob':
-        return (
-          <motion.div
-            key={shape.id}
-            className="floating-shape blob"
-            style={{
-              ...baseStyle,
-              borderRadius: '50% 40% 60% 30%'
-            }}
-            animate={shape.animation}
-          />
-        );
-      
-      case 'circle':
-        return (
-          <motion.div
-            key={shape.id}
-            className="floating-shape circle"
-            style={{
-              ...baseStyle,
-              borderRadius: '50%'
-            }}
-            animate={shape.animation}
-          />
-        );
-      
-      case 'square':
-        return (
-          <motion.div
-            key={shape.id}
-            className="floating-shape square"
-            style={{
-              ...baseStyle,
-              borderRadius: '20%'
-            }}
-            animate={shape.animation}
-          />
-        );
-      
-      case 'triangle':
-        return (
-          <motion.div
-            key={shape.id}
-            className="floating-shape triangle"
-            style={{
-              ...baseStyle,
-              background: shape.color,
-              clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
-            }}
-            animate={shape.animation}
-          />
-        );
-      
-      case 'heart':
-        return (
-          <motion.div
-            key={shape.id}
-            className="floating-shape heart"
-            style={{
-              ...baseStyle,
-              transform: 'rotate(-45deg)'
-            }}
-            animate={shape.animation}
-          >
-            <div style={{
-              width: `${shape.size}px`,
-              height: `${shape.size}px`,
-              background: shape.color,
-              borderRadius: '50%',
-              position: 'absolute',
-              left: `-${shape.size/2}px`,
-              top: '0'
-            }} />
-            <div style={{
-              width: `${shape.size}px`,
-              height: `${shape.size}px`,
-              background: shape.color,
-              borderRadius: '50%',
-              position: 'absolute',
-              right: '0',
-              top: `-${shape.size/2}px`
-            }} />
-          </motion.div>
-        );
-      
-      case 'star':
-        return (
-          <motion.div
-            key={shape.id}
-            className="floating-shape star"
-            style={{
-              ...baseStyle,
-              clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
-            }}
-            animate={shape.animation}
-          />
-        );
-      
-      default:
-        return null;
-    }
+    return (
+      <motion.div
+        key={shape.id}
+        className="floating-shape"
+        style={baseStyle}
+        animate={shape.animation}
+      />
+    );
   };
 
   return (
     <div className="floating-shapes-container">
       {shapes.map(renderShape)}
       
-      {/* Large background gradient blob */}
+      {/* Large background gradient elements */}
       <motion.div
-        className="bg-gradient-blob"
+        className="bg-gradient-element element-1"
         animate={{
           scale: [1, 1.1, 1],
-          rotate: [0, 180, 360],
+          opacity: [0.3, 0.5, 0.3],
         }}
         transition={{
-          duration: 20,
+          duration: 12,
           repeat: Infinity,
-          ease: "linear"
+          ease: "easeInOut"
         }}
         style={{
           position: 'absolute',
-          top: '30%',
-          right: '20%',
+          top: '15%',
+          right: '10%',
           width: '300px',
           height: '300px',
-          background: 'linear-gradient(45deg, rgba(255, 107, 157, 0.1), rgba(255, 168, 204, 0.1))',
-          borderRadius: '30% 70% 70% 30%',
+          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.05), rgba(190, 24, 93, 0.02))',
+          borderRadius: '50%',
           zIndex: 0,
-          opacity: 0.3
+          filter: 'blur(2px)'
+        }}
+      />
+      
+      <motion.div
+        className="bg-gradient-element element-2"
+        animate={{
+          scale: [1.1, 1, 1.1],
+          opacity: [0.2, 0.4, 0.2],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 3
+        }}
+        style={{
+          position: 'absolute',
+          bottom: '10%',
+          left: '5%',
+          width: '400px',
+          height: '400px',
+          background: 'linear-gradient(135deg, rgba(255, 182, 193, 0.08), rgba(255, 105, 180, 0.04))',
+          borderRadius: '50%',
+          zIndex: 0,
+          filter: 'blur(3px)'
         }}
       />
     </div>
