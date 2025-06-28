@@ -1,5 +1,5 @@
 .new-hero-section {
-  min-height: 90vh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   position: relative;
@@ -12,7 +12,7 @@
     rgba(243, 232, 255, 0.9) 80%, 
     rgba(255, 255, 255, 0.95) 100%
   );
-  padding: 40px 0;
+  padding: 60px 0;
 }
 
 /* Background Effects */
@@ -60,6 +60,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  pointer-events: none;
 }
 
 .particle {
@@ -86,22 +87,25 @@
 .particle-11 { width: 11px; height: 11px; top: 25%; left: 45%; }
 .particle-12 { width: 19px; height: 19px; top: 75%; right: 60%; }
 
-/* Hero Layout */
+/* Hero Layout - Flexible */
 .hero-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
   align-items: center;
   position: relative;
   z-index: 2;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
+  width: 100%;
 }
 
-/* Hero Content */
+/* Hero Content - Flexible */
 .hero-content {
-  max-width: 550px;
+  flex: 1;
+  max-width: none;
+  min-width: 0;
 }
 
 .hero-badge {
@@ -113,7 +117,7 @@
   border: 1px solid rgba(168, 85, 247, 0.2);
   padding: 10px 24px;
   border-radius: 50px;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   box-shadow: 0 8px 25px rgba(168, 85, 247, 0.15);
 }
 
@@ -138,13 +142,13 @@
 }
 
 .hero-title {
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   line-height: 1.1;
 }
 
 .title-primary {
   display: block;
-  font-size: 5.5rem;
+  font-size: clamp(3rem, 8vw, 5.5rem);
   font-weight: 900;
   background: linear-gradient(135deg, #1f2937, #374151);
   -webkit-background-clip: text;
@@ -155,7 +159,7 @@
 
 .title-secondary {
   display: block;
-  font-size: 4.8rem;
+  font-size: clamp(2.5rem, 7vw, 4.8rem);
   font-weight: 800;
   background: linear-gradient(135deg, #a855f7, #ec4899);
   -webkit-background-clip: text;
@@ -220,16 +224,19 @@
   transform: translateX(4px);
 }
 
-/* Hero Visual */
+/* Hero Visual - Flexible */
 .hero-visual {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 0;
 }
 
 .visual-showcase {
   position: relative;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   height: 500px;
   perspective: 1200px;
 }
@@ -239,7 +246,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) perspective(1200px) rotateY(10deg) rotateX(5deg);
-  width: 350px;
+  width: min(350px, 80%);
   height: 420px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(30px);
@@ -390,27 +397,35 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .new-hero-section {
-    min-height: 80vh;
-    padding: 20px 0;
+    min-height: auto;
+    padding: 40px 0;
   }
 
   .hero-layout {
-    grid-template-columns: 1fr;
-    gap: 50px;
+    flex-direction: column;
+    gap: 40px;
     text-align: center;
     padding: 0 15px;
   }
 
+  .hero-content {
+    order: 1;
+  }
+
+  .hero-visual {
+    order: 2;
+  }
+
   .title-primary {
-    font-size: 3.5rem;
+    font-size: clamp(2.5rem, 10vw, 3.5rem);
   }
 
   .title-secondary {
-    font-size: 3rem;
+    font-size: clamp(2rem, 8vw, 3rem);
   }
 
   .hero-badge {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   .hero-actions {
@@ -418,13 +433,14 @@
   }
 
   .visual-showcase {
-    width: 350px;
+    width: 100%;
+    max-width: 350px;
     height: 350px;
     margin: 0 auto;
   }
 
   .main-product-card {
-    width: 280px;
+    width: min(280px, 90%);
     height: 340px;
     padding: 20px;
   }
@@ -434,7 +450,7 @@
   }
 
   .info-card {
-    display: none; /* Hide on mobile for cleaner look */
+    display: none;
   }
 
   .particle {
@@ -443,21 +459,30 @@
 }
 
 @media (max-width: 480px) {
+  .new-hero-section {
+    padding: 30px 0;
+  }
+
+  .hero-layout {
+    gap: 30px;
+    padding: 0 10px;
+  }
+
   .title-primary {
-    font-size: 2.8rem;
+    font-size: clamp(2rem, 12vw, 2.8rem);
   }
 
   .title-secondary {
-    font-size: 2.3rem;
+    font-size: clamp(1.8rem, 10vw, 2.3rem);
   }
 
   .visual-showcase {
-    width: 300px;
+    max-width: 300px;
     height: 300px;
   }
 
   .main-product-card {
-    width: 240px;
+    width: min(240px, 95%);
     height: 300px;
     padding: 16px;
   }
@@ -469,6 +494,8 @@
   .cta-button {
     padding: 16px 28px;
     font-size: 1.1rem;
+    width: 100%;
+    max-width: 300px;
   }
 }
 
