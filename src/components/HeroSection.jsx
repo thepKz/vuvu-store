@@ -222,3 +222,5 @@ const HeroSection = ({ onNavigate, onProductSelect }) => {
 };
 
 export default HeroSection;
+  )
+}
