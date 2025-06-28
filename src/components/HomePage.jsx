@@ -6,6 +6,13 @@ import PopMartProducts from './PopMartProducts';
 import Footer from './Footer';
 
 const HomePage = ({ onNavigate, onProductSelect }) => {
+  // Social media and Shopee links
+  const socialLinks = {
+    facebook: 'https://www.facebook.com/your-facebook-page',
+    instagram: 'https://www.instagram.com/your-instagram-page',
+    shopee: 'https://shopee.vn/shop/your-shop-id'
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -33,7 +40,7 @@ const HomePage = ({ onNavigate, onProductSelect }) => {
             </div>
             <div className="banner-actions">
               <motion.a 
-                href="https://shopee.vn/shop/123456789" 
+                href={socialLinks.shopee}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="shopee-link"
@@ -56,6 +63,78 @@ const HomePage = ({ onNavigate, onProductSelect }) => {
                 Xem tất cả sản phẩm
               </motion.button>
             </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Social Media Section */}
+      <section className="social-media-section">
+        <div className="container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2>Kết nối với chúng tôi</h2>
+            <p>Theo dõi chúng tôi trên các nền tảng mạng xã hội để cập nhật những sản phẩm mới nhất</p>
+          </motion.div>
+          
+          <div className="social-platforms">
+            <motion.a
+              href={socialLinks.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-platform facebook"
+              whileHover={{ y: -10, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="platform-icon">📘</div>
+              <h3>Facebook</h3>
+              <p>Theo dõi chúng tôi trên Facebook để cập nhật tin tức và khuyến mãi mới nhất</p>
+              <div className="platform-cta">Theo dõi ngay</div>
+            </motion.a>
+            
+            <motion.a
+              href={socialLinks.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-platform instagram"
+              whileHover={{ y: -10, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="platform-icon">📷</div>
+              <h3>Instagram</h3>
+              <p>Khám phá hình ảnh sản phẩm mới nhất và đẹp nhất trên Instagram</p>
+              <div className="platform-cta">Theo dõi ngay</div>
+            </motion.a>
+            
+            <motion.a
+              href={socialLinks.shopee}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-platform shopee"
+              whileHover={{ y: -10, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="platform-icon">🛒</div>
+              <h3>Shopee</h3>
+              <p>Mua sắm sản phẩm của chúng tôi trên Shopee với nhiều ưu đãi hấp dẫn</p>
+              <div className="platform-cta">Mua sắm ngay</div>
+            </motion.a>
           </div>
         </div>
       </section>

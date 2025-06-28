@@ -54,7 +54,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: null,
       badge: "Mới",
       category: "dimoo",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567890"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567890",
+      images: [lubu1, lubu2, lubu3]
     },
     {
       id: 2,
@@ -65,7 +66,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: null,
       badge: "Hot",
       category: "dimoo",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567891"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567891",
+      images: [lubu2, lubu3, lubu4]
     },
     {
       id: 3,
@@ -76,7 +78,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "molly",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567892"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567892",
+      images: [lubu3, lubu4, lubu5]
     },
     {
       id: 4,
@@ -87,7 +90,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "molly",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567893"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567893",
+      images: [lubu4, lubu5, lubu6]
     },
     {
       id: 5,
@@ -98,7 +102,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567894"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567894",
+      images: [lubu5, lubu6, lubu7]
     },
     {
       id: 6,
@@ -109,7 +114,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567895"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567895",
+      images: [lubu6, lubu7, lubu8]
     },
     {
       id: 7,
@@ -120,7 +126,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567896"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567896",
+      images: [lubu7, lubu8, lubu1]
     },
     {
       id: 8,
@@ -131,7 +138,8 @@ const ShopeeProductsPage = ({ onNavigate, onProductSelect }) => {
       originalPrice: "1.150.000đ",
       badge: "Sale",
       category: "labubu",
-      shopeeUrl: "https://shopee.vn/product/123456789/1234567897"
+      shopeeUrl: "https://shopee.vn/product/123456789/1234567897",
+      images: [lubu8, lubu1, lubu2]
     }
   ];
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './styles/global.css';
+import './styles/HomePage.css';
 import HomePage from './components/HomePage';
 import ShopeeProductsPage from './components/ShopeeProductsPage';
 import ShopeeProductDetail from './components/ShopeeProductDetail';

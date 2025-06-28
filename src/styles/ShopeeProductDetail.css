@@ -59,7 +59,6 @@
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  aspect-ratio: 1;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
@@ -283,6 +282,44 @@
   height: 24px;
 }
 
+.social-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.social-btn {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+}
+
+.social-btn.facebook {
+  background: #4267B2;
+  color: white;
+}
+
+.social-btn.facebook:hover {
+  background: #365899;
+}
+
+.social-btn.instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: white;
+}
+
+.social-btn.instagram:hover {
+  opacity: 0.9;
+}
+
 .back-to-products-btn {
   background: #f5f5f5;
   color: #666;
@@ -475,6 +512,10 @@
 
   .banner-btn {
     width: 100%;
+  }
+
+  .social-actions {
+    grid-template-columns: 1fr;
   }
 
   .scroll-to-top {

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import ReactImageMagnify from 'react-image-magnify';
 import Header from './Header';
 import Footer from './Footer';
 import '../styles/ShopeeProductDetail.css';
@@ -7,6 +8,11 @@ import '../styles/ShopeeProductDetail.css';
 const ShopeeProductDetail = ({ product, onNavigate }) => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [socialLinks, setSocialLinks] = useState({
+    facebook: 'https://www.facebook.com/your-facebook-page',
+    instagram: 'https://www.instagram.com/your-instagram-page',
+    shopee: 'https://shopee.vn/shop/your-shop-id'
+  });
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -58,16 +64,21 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
     );
   }
 
-  // Mock multiple images
-  const images = [product.image, product.image, product.image]; 
+  // Mock multiple images - in a real app, these would come from the product data
+  const images = product.images || [product.image, product.image, product.image]; 
 
   // Handle Shopee redirect
   const handleShopeeRedirect = () => {
     if (product.shopeeUrl) {
       window.open(product.shopeeUrl, '_blank');
     } else {
-      alert('Liên kết Shopee không có sẵn cho sản phẩm này');
+      window.open(socialLinks.shopee, '_blank');
     }
+  };
+
+  // Handle social media redirects
+  const handleSocialRedirect = (platform) => {
+    window.open(socialLinks[platform], '_blank');
   };
 
   return (
@@ -104,13 +115,26 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
               transition={{ duration: 0.8 }}
             >
               <div className="main-image">
-                <motion.img 
-                  src={images[selectedImage]} 
-                  alt={product.name}
-                  key={selectedImage}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
+                <ReactImageMagnify
+                  {...{
+                    smallImage: {
+                      alt: product.name,
+                      isFluidWidth: true,
+                      src: images[selectedImage]
+                    },
+                    largeImage: {
+                      src: images[selectedImage],
+                      width: 1200,
+                      height: 1200
+                    },
+                    enlargedImageContainerDimensions: {
+                      width: '150%',
+                      height: '150%'
+                    },
+                    isHintEnabled: true,
+                    shouldHideHintAfterFirstActivation: false,
+                    hintTextMouse: 'Hover to zoom'
+                  }}
                 />
                 {product.badge && (
                   <div className={`product-badge badge-${product.badge.toLowerCase()}`}>
@@ -194,6 +218,28 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
                   Mua ngay trên Shopee
                 </motion.button>
                 
+                <div className="social-actions">
+                  <motion.button 
+                    className="social-btn facebook"
+                    onClick={() => handleSocialRedirect('facebook')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>📘</span>
+                    <span>Liên hệ qua Facebook</span>
+                  </motion.button>
+                  
+                  <motion.button 
+                    className="social-btn instagram"
+                    onClick={() => handleSocialRedirect('instagram')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>📷</span>
+                    <span>Xem trên Instagram</span>
+                  </motion.button>
+                </div>
+                
                 <motion.button 
                   className="back-to-products-btn"
                   onClick={() => onNavigate('products')}
@@ -247,7 +293,7 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
                 <p>Khám phá thêm nhiều sản phẩm hấp dẫn và ưu đãi độc quyền</p>
               </div>
               <motion.a 
-                href="https://shopee.vn/shop/123456789" 
+                href={socialLinks.shopee}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="banner-btn"

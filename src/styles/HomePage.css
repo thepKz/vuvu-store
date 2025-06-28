@@ -1,0 +1,259 @@
+/* Shopee Banner */
+.shopee-home-banner {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #fff5f3, #fff0ed);
+  position: relative;
+}
+
+.shopee-home-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23ee4d2d" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
+  opacity: 0.5;
+}
+
+.banner-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.banner-text {
+  flex: 1;
+}
+
+.banner-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ee4d2d;
+  margin-bottom: 15px;
+}
+
+.banner-text p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.banner-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+}
+
+.banner-features li {
+  padding: 8px 0;
+  font-size: 1.1rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.banner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 250px;
+}
+
+.shopee-link {
+  background: #ee4d2d;
+  color: white;
+  text-decoration: none;
+  padding: 16px 25px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(238, 77, 45, 0.3);
+}
+
+.shopee-link:hover {
+  background: #d73211;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(238, 77, 45, 0.4);
+}
+
+.shopee-logo {
+  height: 24px;
+}
+
+.products-link {
+  background: white;
+  color: #ee4d2d;
+  border: 2px solid #ee4d2d;
+  padding: 14px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.products-link:hover {
+  background: rgba(238, 77, 45, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Social Media Section */
+.social-media-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #fff0ed, #ffffff);
+}
+
+.social-platforms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.social-platform {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-platform.facebook {
+  border-top: 5px solid #4267B2;
+}
+
+.social-platform.instagram {
+  border-top: 5px solid #E1306C;
+}
+
+.social-platform.shopee {
+  border-top: 5px solid #ee4d2d;
+}
+
+.platform-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.social-platform h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.social-platform p {
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.platform-cta {
+  background: #f5f5f5;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.social-platform.facebook:hover .platform-cta {
+  background: #4267B2;
+  color: white;
+}
+
+.social-platform.instagram:hover .platform-cta {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: white;
+}
+
+.social-platform.shopee:hover .platform-cta {
+  background: #ee4d2d;
+  color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .shopee-home-banner {
+    padding: 60px 0;
+  }
+
+  .banner-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .banner-text h2 {
+    font-size: 2rem;
+  }
+
+  .banner-text p {
+    font-size: 1.1rem;
+  }
+
+  .banner-features li {
+    justify-content: center;
+  }
+
+  .banner-actions {
+    width: 100%;
+  }
+
+  .social-platforms {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .shopee-home-banner {
+    padding: 50px 0;
+  }
+
+  .banner-text h2 {
+    font-size: 1.8rem;
+  }
+
+  .banner-text p {
+    font-size: 1rem;
+  }
+
+  .banner-features li {
+    font-size: 1rem;
+  }
+
+  .shopee-link,
+  .products-link {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .social-platform {
+    padding: 25px 20px;
+  }
+
+  .platform-icon {
+    font-size: 2.5rem;
+  }
+
+  .social-platform h3 {
+    font-size: 1.3rem;
+  }
+}

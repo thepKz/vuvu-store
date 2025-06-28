@@ -44,10 +44,10 @@ const ShopeeProductCard = ({ product, onViewDetails }) => {
         <p className="product-description">{product.description}</p>
         
         <div className="product-price">
-          <span className="current-price">{product.price}</span>
           {product.originalPrice && (
             <span className="original-price">{product.originalPrice}</span>
           )}
+          <span className="current-price">{product.price}</span>
         </div>
         
         <motion.button
