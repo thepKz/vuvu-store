@@ -572,4 +572,14 @@
     height: 40px;
     font-size: 1.2rem;
   }
+  
+  .feature-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .feature-icon {
+    margin-bottom: 5px;
+  }
 }

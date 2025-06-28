@@ -19,7 +19,14 @@ const ShopeeProductCard = ({ product, onViewDetails }) => {
       onClick={() => onViewDetails(product)}
     >
       <div className="product-image-container">
-        <img src={product.image} alt={product.name} className="product-image" />
+        <img 
+          src={product.image} 
+          alt={product.name} 
+          className="product-image"
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
+          }}
+        />
         
         {product.badge && (
           <div className={`product-badge badge-${product.badge.toLowerCase()}`}>

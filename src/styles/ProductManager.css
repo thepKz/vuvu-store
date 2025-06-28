@@ -314,63 +314,6 @@
   background: rgba(59, 130, 246, 0.2);
 }
 
-.pagination-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.pagination {
-  display: flex;
-  gap: 5px;
-}
-
-.page-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f3f4f6;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: #4b5563;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: #e5e7eb;
-}
-
-.page-btn.active {
-  background: #a855f7;
-  color: white;
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-ellipsis {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  font-size: 0.9rem;
-  color: #6b7280;
-}
-
-.pagination-info {
-  font-size: 0.9rem;
-  color: #6b7280;
-}
-
 .loading-state,
 .error-state,
 .empty-state {
@@ -413,7 +356,7 @@
   margin: 0;
 }
 
-/* Edit Modal */
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -427,7 +370,7 @@
   z-index: 1000;
 }
 
-.edit-modal {
+.product-modal {
   background: white;
   border-radius: 12px;
   width: 90%;
@@ -465,8 +408,15 @@
   color: #ef4444;
 }
 
-.edit-modal form {
+.modal-body {
   padding: 25px;
+}
+
+/* Product Form Styles */
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }
 
 .form-grid {
@@ -526,7 +476,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 30px;
+  margin-top: 10px;
   border-top: 1px solid #e5e7eb;
   padding-top: 20px;
 }
@@ -611,12 +561,24 @@
     flex-direction: column;
     gap: 10px;
   }
-}
-
-@media (max-width: 480px) {
+  
   .products-table {
     display: block;
     overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-manager {
+    padding: 15px;
+  }
+  
+  .manager-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .add-product-btn {
+    width: 100%;
   }
   
   .actions-cell {
@@ -629,14 +591,13 @@
     font-size: 0.8rem;
   }
   
-  .pagination-container {
+  .form-actions {
     flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
+    gap: 10px;
   }
   
-  .pagination {
+  .cancel-btn,
+  .save-btn {
     width: 100%;
-    justify-content: center;
   }
 }

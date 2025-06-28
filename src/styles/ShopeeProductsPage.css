@@ -317,7 +317,8 @@
   }
 
   .shopee-products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
   }
 
   .scroll-to-top {
@@ -326,5 +327,35 @@
     width: 40px;
     height: 40px;
     font-size: 1.2rem;
+  }
+  
+  .products-sidebar {
+    padding: 20px;
+  }
+  
+  .filter-section h3 {
+    font-size: 1.1rem;
+  }
+  
+  .category-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .shopee-promo {
+    padding: 20px 15px;
+  }
+  
+  .shopee-promo h3 {
+    font-size: 1rem;
+  }
+  
+  .shopee-promo p {
+    font-size: 0.85rem;
+  }
+  
+  .shopee-shop-link {
+    padding: 8px 15px;
+    font-size: 0.9rem;
   }
 }
