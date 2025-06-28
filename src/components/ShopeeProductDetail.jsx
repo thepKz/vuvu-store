@@ -193,7 +193,7 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
 
               <div className="product-description">
                 <h3>Mô tả sản phẩm</h3>
-                <p>{product.description || "Sản phẩm squishy cao cấp với thiết kế độc đáo, chất liệu mềm mại và an toàn. Phù hợp làm quà tặng hoặc sưu tập."}</p>
+                <p>{product.description || "MOLLY SQUISHY KHỔNG LỒ 100% Loạt 2-C. Sản phẩm squishy cao cấp với thiết kế độc đáo, chất liệu mềm mại và an toàn. Phù hợp làm quà tặng hoặc sưu tập."}</p>
                 <ul>
                   <li>✨ Chất liệu cao cấp, an toàn cho trẻ em</li>
                   <li>🌟 Thiết kế dễ thương, màu sắc tươi sáng</li>
@@ -225,8 +225,7 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <span>📘</span>
-                    <span>Liên hệ qua Facebook</span>
+                    Liên hệ qua Facebook
                   </motion.button>
                   
                   <motion.button 
@@ -235,8 +234,7 @@ const ShopeeProductDetail = ({ product, onNavigate }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <span>📷</span>
-                    <span>Xem trên Instagram</span>
+                    Xem trên Instagram
                   </motion.button>
                 </div>
                 
