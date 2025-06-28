@@ -59,7 +59,7 @@ app.use('/api/users', authMiddleware, userRoutes);
 app.use('/api/orders', authMiddleware, orderRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/analytics', analyticsRoutes);
-app.use('/api/admin', authMiddleware, adminRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

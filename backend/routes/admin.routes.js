@@ -1,29 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/admin.controller');
-const { restrictTo } = require('../middleware/authMiddleware');
+const { authMiddleware, restrictTo } = require('../middleware/authMiddleware');
 
-// All admin routes require admin role
+// Import admin sub-routes
+const productManagerRoutes = require('./admin/productManager.routes');
+const orderManagerRoutes = require('./admin/orderManager.routes');
+const userManagerRoutes = require('./admin/userManager.routes');
+const settingsManagerRoutes = require('./admin/settingsManager.routes');
+const analyticsManagerRoutes = require('./admin/analyticsManager.routes');
+const mediaManagerRoutes = require('./admin/mediaManager.routes');
+const reportManagerRoutes = require('./admin/reportManager.routes');
+const dashboardRoutes = require('./dashboard.routes');
+
+// All admin routes require authentication and admin role
+router.use(authMiddleware);
 router.use(restrictTo('admin'));
 
-// Dashboard
-router.get('/dashboard', adminController.getDashboardStats);
-
-// Bulk operations
-router.post('/products/bulk-create', adminController.bulkCreateProducts);
-router.patch('/products/bulk-update', adminController.bulkUpdateProducts);
-router.delete('/products/bulk-delete', adminController.bulkDeleteProducts);
-
-// Export data
-router.get('/export/products', adminController.exportProducts);
-router.get('/export/orders', adminController.exportOrders);
-router.get('/export/users', adminController.exportUsers);
-
-// Import data
-router.post('/import/products', adminController.importProducts);
-
-// System settings
-router.get('/settings', adminController.getSettings);
-router.patch('/settings', adminController.updateSettings);
+// Mount admin sub-routes
+router.use('/products', productManagerRoutes);
+router.use('/orders', orderManagerRoutes);
+router.use('/users', userManagerRoutes);
+router.use('/settings', settingsManagerRoutes);
+router.use('/analytics', analyticsManagerRoutes);
+router.use('/media', mediaManagerRoutes);
+router.use('/reports', reportManagerRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 module.exports = router;

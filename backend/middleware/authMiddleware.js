@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const db = require('../config/db.config');
+const { AppError } = require('./errorHandler');
 
 /**
  * Authentication middleware
@@ -15,10 +16,7 @@ exports.authMiddleware = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({
-        status: 'error',
-        message: 'You are not logged in. Please log in to get access.'
-      });
+      return next(new AppError('You are not logged in. Please log in to get access.', 401));
     }
 
     // 2) Verify token
@@ -32,10 +30,7 @@ exports.authMiddleware = async (req, res, next) => {
 
     const currentUser = result.rows[0];
     if (!currentUser) {
-      return res.status(401).json({
-        status: 'error',
-        message: 'The user belonging to this token no longer exists.'
-      });
+      return next(new AppError('The user belonging to this token no longer exists.', 401));
     }
 
     // 4) Check if user changed password after the token was issued
@@ -51,10 +46,7 @@ exports.authMiddleware = async (req, res, next) => {
       );
 
       if (decoded.iat < changedTimestamp) {
-        return res.status(401).json({
-          status: 'error',
-          message: 'User recently changed password. Please log in again.'
-        });
+        return next(new AppError('User recently changed password. Please log in again.', 401));
       }
     }
 
@@ -62,10 +54,7 @@ exports.authMiddleware = async (req, res, next) => {
     req.user = currentUser;
     next();
   } catch (error) {
-    return res.status(401).json({
-      status: 'error',
-      message: 'Invalid token. Please log in again.'
-    });
+    next(new AppError('Invalid token. Please log in again.', 401));
   }
 };
 
@@ -76,10 +65,7 @@ exports.authMiddleware = async (req, res, next) => {
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
-        status: 'error',
-        message: 'You do not have permission to perform this action'
-      });
+      return next(new AppError('You do not have permission to perform this action', 403));
     }
     next();
   };
