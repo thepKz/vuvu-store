@@ -84,25 +84,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     { id: 3, name: 'Kích thước L', price: '450.000đ', stock: 3 }
   ];
 
-  const reviews = [
-    {
-      id: 1,
-      user: 'Nguyễn Thị A',
-      rating: 5,
-      comment: 'Sản phẩm rất đẹp và chất lượng tốt!',
-      date: '2024-01-15',
-      verified: true
-    },
-    {
-      id: 2,
-      user: 'Trần Văn B',
-      rating: 4,
-      comment: 'Giao hàng nhanh, đóng gói cẩn thận.',
-      date: '2024-01-10',
-      verified: true
-    }
-  ];
-
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
     const maxStock = selectedVariant?.stock || 10;
@@ -214,16 +195,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
             >
               <div className="product-header">
                 <h1 className="product-title">{product.name}</h1>
-                <div className="product-rating">
-                  <div className="stars">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className={`star ${i < Math.floor(product.rating || 4.5) ? 'filled' : ''}`}>
-                        ⭐
-                      </span>
-                    ))}
-                  </div>
-                  <span className="rating-text">({product.rating || 4.5}) • {reviews.length} đánh giá</span>
-                </div>
               </div>
 
               <div className="product-price-section">
@@ -348,14 +319,13 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <div className="tabs-header">
-              {['description', 'reviews', 'shipping'].map((tab) => (
+              {['description', 'shipping'].map((tab) => (
                 <button
                   key={tab}
                   className={`tab-button ${activeTab === tab ? 'active' : ''}`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab === 'description' && 'Mô tả sản phẩm'}
-                  {tab === 'reviews' && `Đánh giá (${reviews.length})`}
                   {tab === 'shipping' && 'Vận chuyển'}
                 </button>
               ))}
@@ -381,40 +351,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                       <li>🎁 Phù hợp làm quà tặng cho mọi lứa tuổi</li>
                       <li>🧼 Dễ dàng vệ sinh và bảo quản</li>
                     </ul>
-                  </div>
-                )}
-
-                {activeTab === 'reviews' && (
-                  <div className="reviews-content">
-                    <div className="reviews-summary">
-                      <div className="rating-overview">
-                        <span className="avg-rating">{product.rating || 4.5}</span>
-                        <div className="stars-large">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className={i < Math.floor(product.rating || 4.5) ? 'filled' : ''}>⭐</span>
-                          ))}
-                        </div>
-                        <span>Dựa trên {reviews.length} đánh giá</span>
-                      </div>
-                    </div>
-                    
-                    <div className="reviews-list">
-                      {reviews.map((review) => (
-                        <div key={review.id} className="review-item">
-                          <div className="review-header">
-                            <span className="reviewer-name">{review.user}</span>
-                            {review.verified && <span className="verified-badge">✅ Đã mua hàng</span>}
-                            <span className="review-date">{review.date}</span>
-                          </div>
-                          <div className="review-rating">
-                            {[...Array(5)].map((_, i) => (
-                              <span key={i} className={i < review.rating ? 'filled' : ''}>⭐</span>
-                            ))}
-                          </div>
-                          <p className="review-comment">{review.comment}</p>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 )}
 

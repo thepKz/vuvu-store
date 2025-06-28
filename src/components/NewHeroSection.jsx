@@ -122,7 +122,7 @@ const NewHeroSection = ({ onNavigate }) => {
                 </div>
               </motion.div>
 
-              {/* Floating Info Cards - NO ICONS */}
+              {/* Floating Info Cards */}
               <motion.div 
                 className="info-card card-1"
                 animate={{
@@ -151,7 +151,7 @@ const NewHeroSection = ({ onNavigate }) => {
                   delay: 1
                 }}
               >
-                <span>Premium</span>
+                <span>✨ Premium</span>
               </motion.div>
 
               {/* Background Glow */}

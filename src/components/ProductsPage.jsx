@@ -264,7 +264,7 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
                         <img src={product.image} alt={product.name} className="product-image" />
                         <div className="product-overlay">
                           <button className="quick-view-btn">
-                            <span>👁️</span>
+                            <span>🔍</span>
                             Xem chi tiết
                           </button>
                         </div>
@@ -273,17 +273,6 @@ const ProductsPage = ({ onNavigate, onProductSelect }) => {
                       <div className="product-info">
                         <h3 className="product-name">{product.name}</h3>
                         <p className="product-description">{product.description}</p>
-                        
-                        <div className="product-rating">
-                          <div className="stars">
-                            {[...Array(5)].map((_, i) => (
-                              <span key={i} className={`star ${i < Math.floor(product.rating) ? 'filled' : ''}`}>
-                                ⭐
-                              </span>
-                            ))}
-                          </div>
-                          <span className="rating-text">({product.rating})</span>
-                        </div>
                         
                         <div className="product-price">
                           {product.originalPrice && (
