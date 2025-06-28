@@ -214,7 +214,7 @@ const AdminDashboard = () => {
                     <tr key={product.id}>
                       <td className="product-cell">
                         {product.image && (
-                          <div className="product-image">
+                          <div className="admin-product-image">
                             <img src={product.image} alt={product.name} />
                           </div>
                         )}

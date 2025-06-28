@@ -176,16 +176,16 @@ const ProductRecommendations = ({ onNavigate, onProductSelect, currentProduct })
               }}
               onClick={() => handleProductClick(product)}
             >
-              <div className="product-image-container">
-                <img src={product.image} alt={product.name} className="product-image" />
+              <div className="recommendation-product-image-container">
+                <img src={product.image} alt={product.name} className="recommendation-product-image" />
                 <motion.div 
-                  className="product-overlay"
+                  className="recommendation-product-overlay"
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
                   <motion.button
-                    className="quick-view-btn"
+                    className="recommendation-quick-view-btn"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                   >
@@ -197,38 +197,38 @@ const ProductRecommendations = ({ onNavigate, onProductSelect, currentProduct })
                 </motion.div>
               </div>
               
-              <div className="product-info">
-                <h3 className="product-name">{product.name}</h3>
-                <p className="product-description">{product.description}</p>
+              <div className="recommendation-product-info">
+                <h3 className="recommendation-product-name">{product.name}</h3>
+                <p className="recommendation-product-description">{product.description}</p>
                 
-                <div className="product-rating">
-                  <div className="rating-stars">
+                <div className="recommendation-product-rating">
+                  <div className="recommendation-rating-stars">
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className={i < Math.floor(product.rating) ? 'filled' : ''}>
                         ⭐
                       </span>
                     ))}
                   </div>
-                  <span className="rating-value">({product.rating})</span>
+                  <span className="recommendation-rating-value">({product.rating})</span>
                 </div>
                 
-                <div className="product-price">
-                  <span className="current-price">{product.price}</span>
+                <div className="recommendation-product-price">
+                  <span className="recommendation-current-price">{product.price}</span>
                   {product.originalPrice && (
-                    <span className="original-price">{product.originalPrice}</span>
+                    <span className="recommendation-original-price">{product.originalPrice}</span>
                   )}
                 </div>
 
-                <div className="product-tags">
+                <div className="recommendation-product-tags">
                   {product.tags.slice(0, 2).map((tag, tagIndex) => (
-                    <span key={tagIndex} className="product-tag">
+                    <span key={tagIndex} className="recommendation-product-tag">
                       {tag}
                     </span>
                   ))}
                 </div>
                 
                 <motion.button
-                  className="view-product-btn"
+                  className="recommendation-view-product-btn"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={(e) => e.stopPropagation()}

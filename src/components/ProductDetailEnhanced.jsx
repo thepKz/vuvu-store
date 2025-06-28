@@ -338,6 +338,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <span>📘</span>
                     <span>Facebook</span>
                   </motion.button>
+                  
                   <motion.button 
                     className="share-btn twitter"
                     whileHover={{ scale: 1.1, y: -3 }}
@@ -346,6 +347,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <span>🐦</span>
                     <span>Twitter</span>
                   </motion.button>
+                  
                   <motion.button 
                     className="share-btn pinterest"
                     whileHover={{ scale: 1.1, y: -3 }}
