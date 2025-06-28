@@ -86,6 +86,24 @@ const Header = ({ currentPage, onNavigate }) => {
                   </motion.button>
                 </motion.li>
               ))}
+              
+              {/* Login Button */}
+              <motion.li 
+                className="nav-item login-item"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * menuItems.length }}
+              >
+                <motion.button
+                  className="login-btn-header"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleNavigation('login')}
+                >
+                  <span className="login-icon">👤</span>
+                  Đăng nhập
+                </motion.button>
+              </motion.li>
             </ul>
           </nav>
 

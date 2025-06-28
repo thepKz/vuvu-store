@@ -5,6 +5,7 @@ import ProductsPage from './components/ProductsPage';
 import ProductDetailPage from './components/ProductDetailPage';
 import AboutPage from './components/AboutPage';
 import ContactPage from './components/ContactPage';
+import LoginPage from './components/LoginPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -43,6 +44,8 @@ function App() {
         return <AboutPage onNavigate={handleNavigation} />;
       case 'contact':
         return <ContactPage onNavigate={handleNavigation} />;
+      case 'login':
+        return <LoginPage onNavigate={handleNavigation} />;
       default:
         return <HomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
     }

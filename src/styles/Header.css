@@ -36,6 +36,7 @@
   gap: 30px;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
 .nav-link {
@@ -70,6 +71,36 @@
 .nav-link.active {
   color: var(--primary-pink);
   font-weight: 600;
+}
+
+/* Login Button in Header */
+.login-item {
+  margin-left: 20px;
+}
+
+.login-btn-header {
+  background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink));
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+.login-btn-header:hover {
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+  transform: translateY(-2px);
+}
+
+.login-icon {
+  font-size: 16px;
 }
 
 .menu-toggle {
@@ -155,5 +186,28 @@
     padding: 10px 0;
     display: block;
     text-align: center;
+  }
+
+  .login-item {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .login-btn-header {
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-list {
+    padding: 25px 15px;
+    gap: 15px;
+  }
+
+  .login-btn-header {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }
