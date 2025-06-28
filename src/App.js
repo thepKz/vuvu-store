@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './styles/global.css';
-import HomePage from './components/HomePage';
+import EnhancedHomePage from './components/EnhancedHomePage';
 import ProductsPage from './components/ProductsPage';
 import ProductDetailPage from './components/ProductDetailPage';
 import AboutPage from './components/AboutPage';
@@ -20,8 +20,17 @@ function App() {
     });
   }, [currentPage]);
 
-  const handleNavigation = (page) => {
+  const handleNavigation = (page, params = {}) => {
     setCurrentPage(page);
+    // Handle navigation parameters if needed
+    if (params.collection) {
+      // Handle collection filtering
+      console.log('Navigate to collection:', params.collection);
+    }
+    if (params.search) {
+      // Handle search parameters
+      console.log('Search for:', params.search);
+    }
     // Immediate scroll to top for faster navigation
     window.scrollTo(0, 0);
   };
@@ -35,7 +44,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
+        return <EnhancedHomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'products':
         return <ProductsPage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
       case 'product-detail':
@@ -47,7 +56,7 @@ function App() {
       case 'login':
         return <LoginPage onNavigate={handleNavigation} />;
       default:
-        return <HomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
+        return <EnhancedHomePage onNavigate={handleNavigation} onProductSelect={handleProductSelect} />;
     }
   };
 
