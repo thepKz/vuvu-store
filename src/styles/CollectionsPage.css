@@ -376,10 +376,6 @@
     grid-template-columns: 1fr;
   }
 
-  .product-card {
-    max-width: 300px;
-    margin: 0 auto;
-  }
 
   .scroll-to-top {
     bottom: 15px;
