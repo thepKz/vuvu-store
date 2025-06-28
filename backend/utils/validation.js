@@ -66,6 +66,7 @@ exports.sanitizeInput = (input) => {
     .replace(/>/g, '>')
     .replace(/"/g, '"')
     .replace(/'/g, ''')
+    )
     .replace(/\//g, '/');
 };
 
