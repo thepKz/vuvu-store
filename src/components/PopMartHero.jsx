@@ -156,6 +156,9 @@ const PopMartHero = ({ onNavigate }) => {
                           objectFit: 'cover',
                           borderRadius: '10px'
                         }}
+                        onError={(e) => {
+                          e.target.src = 'https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=400';
+                        }}
                       />
                       <motion.div 
                         className="image-shimmer"
