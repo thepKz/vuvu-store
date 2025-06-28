@@ -7,10 +7,20 @@ import AboutPagePopMart from './components/AboutPagePopMart';
 import ContactPage from './components/ContactPage';
 import LoginPage from './components/LoginPage';
 import CollectionsPage from './components/CollectionsPage';
+import AdminApp from './components/AdminApp';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check if URL has admin path
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.includes('admin')) {
+      setIsAdmin(true);
+    }
+  }, []);
 
   // Scroll to top when page changes
   useEffect(() => {
@@ -41,6 +51,11 @@ function App() {
     // Scroll to top when selecting a product
     window.scrollTo(0, 0);
   };
+
+  // If admin mode is active, render the admin app
+  if (isAdmin) {
+    return <AdminApp />;
+  }
 
   const renderPage = () => {
     switch (currentPage) {
