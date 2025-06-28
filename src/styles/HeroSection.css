@@ -30,6 +30,7 @@
     #f3e8ff 100%);
 }
 
+/* Enhanced Mesh Background */
 .hero-mesh {
   position: absolute;
   top: 0;
@@ -37,15 +38,59 @@
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.03) 0%, transparent 50%);
-  background-size: 600px 600px, 800px 800px;
+    radial-gradient(circle at 25% 25%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 10%, rgba(6, 182, 212, 0.04) 0%, transparent 50%);
+  background-size: 800px 800px, 600px 600px, 1000px 1000px;
   animation: meshFloat 25s ease-in-out infinite;
 }
 
 @keyframes meshFloat {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(20px, -20px) rotate(1deg); }
+  0%, 100% { 
+    transform: translate(0, 0) rotate(0deg) scale(1); 
+    opacity: 0.6;
+  }
+  33% { 
+    transform: translate(30px, -20px) rotate(1deg) scale(1.05); 
+    opacity: 0.8;
+  }
+  66% { 
+    transform: translate(-20px, 30px) rotate(-1deg) scale(0.95); 
+    opacity: 0.7;
+  }
+}
+
+/* Floating Orbs */
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(168, 85, 247, 0.2) 50%, transparent 70%);
+  top: 10%;
+  left: 5%;
+}
+
+.orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.5) 0%, rgba(236, 72, 153, 0.2) 50%, transparent 70%);
+  top: 60%;
+  right: 10%;
+}
+
+.orb-3 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, rgba(6, 182, 212, 0.1) 50%, transparent 70%);
+  bottom: 20%;
+  left: 30%;
 }
 
 .hero-content {
@@ -172,6 +217,7 @@
   transform: translateX(3px);
 }
 
+/* Social Proof WITHOUT Stars */
 .hero-social-proof {
   display: flex;
   align-items: center;
@@ -225,19 +271,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.proof-rating {
+.proof-text {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
 }
 
-.rating-stars {
-  display: flex;
-  gap: 2px;
-  color: #f59e0b;
-}
-
-.rating-text {
+.trust-text {
   font-size: 0.9rem;
   font-weight: 700;
   color: #374151;
@@ -249,10 +288,12 @@
   align-items: center;
 }
 
+/* Enhanced Visual Container - Larger */
 .hero-visual-container {
   position: relative;
-  width: 450px;
-  height: 450px;
+  width: 500px;
+  height: 500px;
+  perspective: 1000px;
 }
 
 .visual-card {
@@ -265,29 +306,33 @@
   transition: transform 0.3s ease;
 }
 
+/* Main Card - Larger & More Tilted */
 .main-card {
-  width: 300px;
-  height: 360px;
-  top: 45px;
-  left: 75px;
+  width: 320px;
+  height: 380px;
+  top: 60px;
+  left: 90px;
   z-index: 2;
+  transform: perspective(1000px) rotateY(8deg) rotateX(2deg);
 }
 
 .main-card:hover {
-  transform: translateY(-5px) rotate(1deg);
+  transform: perspective(1000px) rotateY(12deg) rotateX(4deg) translateY(-5px);
 }
 
+/* Accent Card - Enhanced */
 .accent-card {
-  width: 160px;
-  height: 100px;
-  top: 20px;
-  right: 20px;
+  width: 180px;
+  height: 120px;
+  top: 30px;
+  right: 30px;
   z-index: 3;
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.06));
+  transform: perspective(800px) rotateY(-5deg);
 }
 
 .accent-card:hover {
-  transform: translateY(-3px) rotate(-1deg);
+  transform: perspective(800px) rotateY(-8deg) translateY(-3px);
 }
 
 .card-header {
@@ -323,6 +368,18 @@
   border-radius: 10px;
   margin-bottom: 12px;
   border: 1px solid rgba(168, 85, 247, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Image Shimmer Effect */
+.image-shimmer {
+  position: absolute;
+  top: 0;
+  width: 50px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-20deg);
 }
 
 .preview-info h4 {
@@ -383,16 +440,17 @@
   transform: translateY(-1px);
 }
 
-.quality-indicator {
+/* Premium Indicator */
+.premium-indicator {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px;
+  gap: 12px;
+  padding: 20px;
   height: 100%;
 }
 
 .indicator-icon {
-  color: #a855f7;
+  font-size: 2rem;
   display: flex;
   align-items: center;
 }
@@ -405,15 +463,16 @@
 .indicator-title {
   font-weight: 700;
   color: #374151;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1;
 }
 
 .indicator-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: #6b7280;
 }
 
+/* Enhanced Floating Elements */
 .floating-elements {
   position: absolute;
   top: 0;
@@ -427,37 +486,28 @@
 .floating-shape {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.06));
-  animation: floatUpDown 6s ease-in-out infinite;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
 }
 
 .shape-1 {
-  width: 50px;
-  height: 50px;
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
+  width: 60px;
+  height: 60px;
+  top: 15%;
+  left: 15%;
 }
 
 .shape-2 {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   top: 70%;
-  right: 20%;
-  animation-delay: 2s;
+  right: 25%;
 }
 
 .shape-3 {
-  width: 40px;
-  height: 40px;
-  bottom: 20%;
-  left: 20%;
-  animation-delay: 4s;
-}
-
-@keyframes floatUpDown {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(180deg); }
+  width: 50px;
+  height: 50px;
+  bottom: 25%;
+  left: 25%;
 }
 
 /* Mobile Responsive */
@@ -491,26 +541,41 @@
   }
 
   .hero-visual-container {
-    width: 320px;
-    height: 320px;
+    width: 350px;
+    height: 350px;
   }
 
   .main-card {
-    width: 250px;
-    height: 280px;
-    top: 35px;
-    left: 35px;
+    width: 260px;
+    height: 300px;
+    top: 40px;
+    left: 45px;
   }
 
   .accent-card {
-    width: 130px;
-    height: 80px;
-    top: 15px;
-    right: 15px;
+    width: 140px;
+    height: 90px;
+    top: 20px;
+    right: 20px;
   }
 
-  .floating-shape {
-    display: none;
+  .floating-orb {
+    filter: blur(40px);
+  }
+
+  .orb-1 {
+    width: 250px;
+    height: 250px;
+  }
+
+  .orb-2 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .orb-3 {
+    width: 150px;
+    height: 150px;
   }
 }
 
@@ -524,30 +589,32 @@
   }
 
   .hero-visual-container {
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
   }
 
   .main-card {
     width: 220px;
-    height: 250px;
+    height: 260px;
     top: 30px;
-    left: 30px;
+    left: 40px;
   }
 
   .accent-card {
-    width: 110px;
-    height: 70px;
-    top: 10px;
-    right: 10px;
+    width: 120px;
+    height: 80px;
+    top: 15px;
+    right: 15px;
   }
 }
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .floating-shape,
+  .floating-orb,
   .badge-dot,
-  .hero-mesh {
+  .hero-mesh,
+  .floating-shape,
+  .image-shimmer {
     animation: none !important;
   }
 }

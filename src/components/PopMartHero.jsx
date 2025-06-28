@@ -5,10 +5,53 @@ import '../styles/HeroSection.css';
 const PopMartHero = ({ onNavigate }) => {
   return (
     <section className="hero">
-      {/* Background */}
+      {/* Enhanced Background with Multiple Layers */}
       <div className="hero-background">
         <div className="hero-gradient"></div>
         <div className="hero-mesh"></div>
+        
+        {/* Floating Orbs */}
+        <motion.div 
+          className="floating-orb orb-1"
+          animate={{
+            x: [0, 30, -20, 0],
+            y: [0, -40, 20, 0],
+            scale: [1, 1.2, 0.8, 1]
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div 
+          className="floating-orb orb-2"
+          animate={{
+            x: [0, -25, 35, 0],
+            y: [0, 30, -25, 0],
+            scale: [1, 0.9, 1.1, 1]
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 5
+          }}
+        />
+        <motion.div 
+          className="floating-orb orb-3"
+          animate={{
+            x: [0, 20, -30, 0],
+            y: [0, -20, 40, 0],
+            scale: [1, 1.1, 0.9, 1]
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 10
+          }}
+        />
       </div>
 
       <div className="container">
@@ -68,6 +111,7 @@ const PopMartHero = ({ onNavigate }) => {
               </motion.button>
             </motion.div>
 
+            {/* Social Proof WITHOUT Stars */}
             <motion.div 
               className="hero-social-proof"
               initial={{ opacity: 0, y: 20 }}
@@ -80,20 +124,13 @@ const PopMartHero = ({ onNavigate }) => {
                 <div className="avatar avatar-3"></div>
                 <div className="avatar-more">+99</div>
               </div>
-              <div className="proof-rating">
-                <div className="rating-stars">
-                  <span>⭐</span>
-                  <span>⭐</span>
-                  <span>⭐</span>
-                  <span>⭐</span>
-                  <span>⭐</span>
-                </div>
-                <span className="rating-text">4.9/5 từ 1000+ khách hàng</span>
+              <div className="proof-text">
+                <span className="trust-text">Được tin tưởng bởi 1000+ khách hàng</span>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Right Visual */}
+          {/* Right Visual - Enhanced & Larger */}
           <motion.div 
             className="hero-visual"
             initial={{ opacity: 0, scale: 0.8, x: 50 }}
@@ -101,17 +138,21 @@ const PopMartHero = ({ onNavigate }) => {
             transition={{ duration: 1, delay: 0.2 }}
           >
             <div className="hero-visual-container">
-              {/* Main Product Card */}
+              {/* Main Product Card - Larger & Tilted */}
               <motion.div 
                 className="visual-card main-card"
                 animate={{ 
-                  y: [0, -10, 0],
-                  rotateY: [0, 2, 0]
+                  y: [0, -15, 0],
+                  rotateY: [2, 5, 2],
+                  rotateX: [1, 3, 1]
                 }}
                 transition={{ 
-                  duration: 4,
+                  duration: 6,
                   repeat: Infinity,
                   ease: "easeInOut"
+                }}
+                style={{
+                  transform: 'perspective(1000px) rotateY(8deg) rotateX(2deg)'
                 }}
               >
                 <div className="card-header">
@@ -119,7 +160,21 @@ const PopMartHero = ({ onNavigate }) => {
                 </div>
                 <div className="card-content">
                   <div className="product-preview">
-                    <div className="preview-image"></div>
+                    <div className="preview-image">
+                      <motion.div 
+                        className="image-shimmer"
+                        animate={{
+                          x: [-100, 300],
+                          opacity: [0, 1, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: 2
+                        }}
+                      />
+                    </div>
                     <div className="preview-info">
                       <h4>Limited Edition Squishy</h4>
                       <div className="preview-price">
@@ -135,34 +190,83 @@ const PopMartHero = ({ onNavigate }) => {
                 </div>
               </motion.div>
 
-              {/* Accent Card */}
+              {/* Quality Card - Removed "Chất lượng đảm bảo" */}
               <motion.div 
                 className="visual-card accent-card"
                 animate={{ 
-                  y: [0, -8, 0],
-                  x: [0, 5, 0]
+                  y: [0, -12, 0],
+                  x: [0, 8, 0],
+                  rotateZ: [-1, 1, -1]
                 }}
                 transition={{ 
-                  duration: 3,
+                  duration: 4,
                   repeat: Infinity,
                   ease: "easeInOut",
                   delay: 1
                 }}
+                style={{
+                  transform: 'perspective(800px) rotateY(-5deg)'
+                }}
               >
-                <div className="quality-indicator">
-                  <div className="indicator-icon">✨</div>
+                <div className="premium-indicator">
+                  <div className="indicator-icon">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    >
+                      💎
+                    </motion.div>
+                  </div>
                   <div className="indicator-text">
-                    <span className="indicator-title">Chất lượng</span>
-                    <span className="indicator-subtitle">đảm bảo</span>
+                    <span className="indicator-title">Premium</span>
+                    <span className="indicator-subtitle">Collection</span>
                   </div>
                 </div>
               </motion.div>
 
-              {/* Floating Elements */}
+              {/* Enhanced Floating Elements */}
               <div className="floating-elements">
-                <div className="floating-shape shape-1"></div>
-                <div className="floating-shape shape-2"></div>
-                <div className="floating-shape shape-3"></div>
+                <motion.div 
+                  className="floating-shape shape-1"
+                  animate={{
+                    y: [0, -20, 0],
+                    rotate: [0, 180, 360],
+                    scale: [1, 1.2, 1]
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <motion.div 
+                  className="floating-shape shape-2"
+                  animate={{
+                    y: [0, 15, 0],
+                    rotate: [0, -180, -360],
+                    scale: [1, 0.8, 1]
+                  }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 2
+                  }}
+                />
+                <motion.div 
+                  className="floating-shape shape-3"
+                  animate={{
+                    y: [0, -10, 0],
+                    rotate: [0, 90, 180],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 4
+                  }}
+                />
               </div>
             </div>
           </motion.div>
