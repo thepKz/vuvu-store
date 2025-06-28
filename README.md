@@ -1,6 +1,6 @@
 # DUDU STORE - PREMIUM SQUISHY COLLECTION
 
-![Dudu Store](https://images.pexels.com/photos/6195121/pexels-photo-6195121.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)
+![Dudu Store](public/images/vuvu.png)
 
 ## 📱 Responsive Modern E-commerce Platform
 
@@ -49,7 +49,7 @@ Dudu Store là nền tảng thương mại điện tử hiện đại chuyên v�
 
 1. Clone repository:
 ```bash
-git clone https://github.com/yourusername/dudu-store.git
+git clone https://github.com/thepKz/vuvu-store.git
 cd dudu-store
 ```
 
@@ -68,10 +68,7 @@ npm start
 npm run build
 ```
 
-5. Deploy lên GitHub Pages:
-```bash
-npm run deploy
-```
+5. Hệ thống sẽ tự động CICD đẩy lên github page
 
 ### 🌟 Tính năng đã hoàn thành
 
@@ -109,7 +106,7 @@ npm run deploy
 
 ### 🌐 Deployment
 
-Dự án được triển khai trên GitHub Pages tại: [https://yourusername.github.io/dudu-store](https://yourusername.github.io/dudu-store)
+Dự án được triển khai trên GitHub Pages tại: [https://thepkz.github.io/vuvu-store/](https://thepkz.github.io/vuvu-store/)
 
 ### 📄 License
 
@@ -117,8 +114,8 @@ MIT License
 
 ### 👥 Contributors
 
-- [Your Name](https://github.com/yourusername)
+- [MinThep](https://github.com/thepkz)
 
 ---
 
-© 2024 Dudu Store. All rights reserved ✨
+© 2026 Dudu Store. All rights reserved ✨
