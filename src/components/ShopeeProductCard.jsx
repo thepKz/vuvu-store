@@ -39,7 +39,10 @@ const ShopeeProductCard = ({ product, onViewDetails }) => {
             className="view-details-btn"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => onViewDetails(product)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails(product);
+            }}
           >
             🔍 Xem chi tiết
           </motion.button>

@@ -179,6 +179,14 @@
   color: #f59e0b;
 }
 
+.rating-stars .filled {
+  opacity: 1;
+}
+
+.rating-stars span:not(.filled) {
+  opacity: 0.3;
+}
+
 .rating-value {
   font-size: 0.75rem;
   font-weight: 600;

@@ -128,9 +128,11 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
     window.scrollTo(0, 0);
   };
 
-  const handleImageView = (imageUrl, productName, e) => {
-    e.stopPropagation();
-    window.open(imageUrl, '_blank');
+  const handleQuickView = (e, product) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    onProductSelect(product);
+    onNavigate('product-detail');
+    window.scrollTo(0, 0);
   };
 
   const handleViewAllProducts = () => {
@@ -192,7 +194,7 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
                     className="quick-view-btn"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={(e) => handleImageView(product.image, product.name, e)}
+                    onClick={(e) => handleQuickView(e, product)}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" strokeWidth="2"/>
