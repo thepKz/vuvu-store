@@ -3,21 +3,6 @@ import { motion } from 'framer-motion';
 import '../styles/EnhancedHero.css';
 
 const EnhancedHero = ({ onNavigate }) => {
-  const heroFeatures = [
-    {
-      title: 'Premium Quality',
-      description: 'Chất lượng cao cấp'
-    },
-    {
-      title: 'Fast Delivery',
-      description: 'Giao hàng nhanh chóng'
-    },
-    {
-      title: 'Gift Ready',
-      description: 'Sẵn sàng làm quà'
-    }
-  ];
-
   return (
     <section className="enhanced-hero">
       {/* Advanced Blended Background Effects */}
@@ -111,30 +96,6 @@ const EnhancedHero = ({ onNavigate }) => {
               >
                 Tìm hiểu thêm
               </motion.button>
-            </motion.div>
-
-            {/* Hero Features - Minimal Icons */}
-            <motion.div 
-              className="hero-features"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.6 }}
-            >
-              {heroFeatures.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="feature-item"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.2 + index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="feature-text">
-                    <h4>{feature.title}</h4>
-                    <p>{feature.description}</p>
-                  </div>
-                </motion.div>
-              ))}
             </motion.div>
           </motion.div>
 
