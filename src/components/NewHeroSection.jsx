@@ -122,7 +122,7 @@ const NewHeroSection = ({ onNavigate }) => {
                 </div>
               </motion.div>
 
-              {/* Floating Info Cards */}
+              {/* Floating Info Cards - NO ICONS */}
               <motion.div 
                 className="info-card card-1"
                 animate={{
@@ -135,8 +135,7 @@ const NewHeroSection = ({ onNavigate }) => {
                   ease: "easeInOut"
                 }}
               >
-                <span className="card-icon">🔥</span>
-                <span>Hot Seller</span>
+                <span>🔥 Hot Seller</span>
               </motion.div>
 
               <motion.div 
