@@ -32,12 +32,12 @@ body {
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Utility Classes */
+/* Utility Classes - Completely Flexible */
 .container {
-  max-width: 1400px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 0 20px;
-  width: 100%;
 }
 
 .section-padding {
@@ -71,24 +71,6 @@ body {
   box-shadow: var(--shadow-hover);
 }
 
-/* Responsive Grid */
-.grid {
-  display: grid;
-  gap: 30px;
-}
-
-.grid-2 {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-}
-
-.grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-
-.grid-4 {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-
 /* Flexible Layout Utilities */
 .flex {
   display: flex;
@@ -118,7 +100,25 @@ body {
   flex: 1;
 }
 
-/* Responsive Typography */
+/* Responsive Grid - No Constraints */
+.grid {
+  display: grid;
+  gap: 30px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Responsive Typography - Fluid Scaling */
 .text-responsive {
   font-size: clamp(1rem, 2.5vw, 1.5rem);
 }
@@ -172,7 +172,7 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Responsive Design */
+/* Responsive Design - Mobile First */
 @media (max-width: 768px) {
   .container {
     padding: 0 15px;
@@ -185,6 +185,12 @@ body {
   .grid {
     gap: 20px;
   }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -195,4 +201,25 @@ body {
   .section-padding {
     padding: 40px 0;
   }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus States */
+*:focus {
+  outline: 2px solid var(--primary-pink);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--primary-pink);
+  color: white;
 }

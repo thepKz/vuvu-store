@@ -12,6 +12,7 @@ const HomePage = ({ onNavigate, onProductSelect }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="homepage"
+      style={{ width: '100%', minHeight: '100vh' }}
     >
       <Header currentPage="home" onNavigate={onNavigate} />
       <NewHeroSection onNavigate={onNavigate} />
