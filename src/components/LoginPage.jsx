@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import '../styles/LoginPage.css';
 
-const LoginPage = ({ onNavigate }) => {
+const LoginPage = ({ onNavigate, onAdminLogin }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -25,8 +25,17 @@ const LoginPage = ({ onNavigate }) => {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
-      alert('Đăng nhập thành công! 🎉');
-      onNavigate('home');
+      
+      // Check if admin login
+      if (formData.email === 'admin@dudustore.com' && formData.password === 'admin123') {
+        if (onAdminLogin) {
+          onAdminLogin();
+        }
+        onNavigate('admin');
+      } else {
+        alert('Đăng nhập thành công! 🎉');
+        onNavigate('home');
+      }
     }, 2000);
   };
 

@@ -1,25 +1,45 @@
-import { Cloudinary } from "@cloudinary/url-gen";
 import axios from 'axios';
 
-// Initialize Cloudinary
-const cld = new Cloudinary({
-  cloud: {
-    cloudName: process.env.REACT_APP_CLOUDINARY_CLOUD_NAME
-  },
-  url: {
-    secure: true
-  }
-});
+// Cloudinary configuration
+const CLOUDINARY_CLOUD_NAME = 'demo'; // Thay thế bằng cloud name thật của bạn
+const CLOUDINARY_UPLOAD_PRESET = 'dudu_store'; // Thay thế bằng upload preset thật của bạn
 
 // API Base URL
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 /**
- * Get upload signature from backend
- * @param {Object} params - Upload parameters
- * @returns {Promise<Object>} - Signature data
+ * Tải lên hình ảnh lên Cloudinary
+ * @param {File} file - File hình ảnh cần tải lên
+ * @param {string} folder - Thư mục lưu trữ (products, categories, collections)
+ * @returns {Promise<Object>} - Kết quả tải lên
  */
-const getUploadSignature = async (params = {}) => {
+export const uploadImage = async (file, folder = 'products') => {
+  try {
+    // Tạo form data
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', `dudu-store/${folder}`);
+
+    // Tải lên Cloudinary
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading image to Cloudinary:', error);
+    throw error;
+  }
+};
+
+/**
+ * Lấy chữ ký tải lên từ backend
+ * @param {Object} params - Tham số tải lên
+ * @returns {Promise<Object>} - Dữ liệu chữ ký
+ */
+export const getUploadSignature = async (params = {}) => {
   try {
     const token = localStorage.getItem('authToken');
     
@@ -42,18 +62,18 @@ const getUploadSignature = async (params = {}) => {
 };
 
 /**
- * Upload image to Cloudinary
- * @param {File} file - Image file to upload
- * @param {string} folder - Folder to upload to
- * @param {Array} tags - Tags to add to image
- * @returns {Promise<Object>} - Upload result
+ * Tải lên hình ảnh với chữ ký bảo mật
+ * @param {File} file - File hình ảnh cần tải lên
+ * @param {string} folder - Thư mục lưu trữ
+ * @param {Array} tags - Tags cho hình ảnh
+ * @returns {Promise<Object>} - Kết quả tải lên
  */
-const uploadImage = async (file, folder = 'products', tags = []) => {
+export const uploadImageWithSignature = async (file, folder = 'products', tags = []) => {
   try {
-    // Get upload signature
+    // Lấy chữ ký từ backend
     const signatureData = await getUploadSignature({ folder, tags });
     
-    // Create form data
+    // Tạo form data
     const formData = new FormData();
     formData.append('file', file);
     formData.append('api_key', signatureData.apiKey);
@@ -65,30 +85,25 @@ const uploadImage = async (file, folder = 'products', tags = []) => {
       formData.append('tags', tags.join(','));
     }
     
-    // Upload to Cloudinary
+    // Tải lên Cloudinary
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
+      formData
     );
     
     return response.data;
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error('Error uploading image with signature:', error);
     throw error;
   }
 };
 
 /**
- * Delete image from Cloudinary
- * @param {string} publicId - Public ID of image to delete
- * @returns {Promise<Object>} - Delete result
+ * Xóa hình ảnh khỏi Cloudinary
+ * @param {string} publicId - Public ID của hình ảnh
+ * @returns {Promise<Object>} - Kết quả xóa
  */
-const deleteImage = async (publicId) => {
+export const deleteImage = async (publicId) => {
   try {
     const token = localStorage.getItem('authToken');
     
@@ -109,11 +124,11 @@ const deleteImage = async (publicId) => {
 };
 
 /**
- * Get media library
- * @param {Object} params - Query parameters
- * @returns {Promise<Object>} - Media library data
+ * Lấy danh sách hình ảnh từ thư viện media
+ * @param {Object} params - Tham số truy vấn
+ * @returns {Promise<Object>} - Danh sách hình ảnh
  */
-const getMediaLibrary = async (params = {}) => {
+export const getMediaLibrary = async (params = {}) => {
   try {
     const token = localStorage.getItem('authToken');
     
@@ -135,39 +150,44 @@ const getMediaLibrary = async (params = {}) => {
 };
 
 /**
- * Create image URL with transformations
- * @param {string} publicId - Public ID of image
- * @param {Object} options - Transformation options
- * @returns {string} - Transformed image URL
+ * Tạo URL hình ảnh với các biến đổi
+ * @param {string} publicId - Public ID của hình ảnh
+ * @param {Object} options - Tùy chọn biến đổi
+ * @returns {string} - URL hình ảnh đã biến đổi
  */
-const getImageUrl = (publicId, options = {}) => {
+export const getImageUrl = (publicId, options = {}) => {
   if (!publicId) return '';
   
-  const image = cld.image(publicId);
+  let transformations = [];
   
   if (options.width) {
-    image.resize(`w_${options.width}`);
+    transformations.push(`w_${options.width}`);
   }
   
   if (options.height) {
-    image.resize(`h_${options.height}`);
+    transformations.push(`h_${options.height}`);
   }
   
   if (options.crop) {
-    image.resize(`c_${options.crop}`);
+    transformations.push(`c_${options.crop}`);
   }
   
   if (options.quality) {
-    image.quality(`q_${options.quality}`);
+    transformations.push(`q_${options.quality}`);
   }
   
-  return image.toURL();
+  const transformationString = transformations.length > 0 
+    ? transformations.join(',') + '/' 
+    : '';
+  
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformationString}${publicId}`;
 };
 
 export default {
-  cld,
   uploadImage,
+  uploadImageWithSignature,
   deleteImage,
   getMediaLibrary,
-  getImageUrl
+  getImageUrl,
+  getUploadSignature
 };

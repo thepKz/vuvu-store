@@ -1,46 +1,43 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize the Supabase client
+// Khởi tạo Supabase client
 const supabaseUrl = 'https://wuntakkwdwblabwaalhn.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bnRha2t3ZHdibGFid2FhbGhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMzM0MTYsImV4cCI6MjA2NjcwOTQxNn0.r726cWWKX3dJGiWoTI7uZ7MoiivhvfJFep_5PTnt-FA';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-/**
- * Get all products from Supabase
- * @param {Object} options - Query options
- * @returns {Promise<Array>} - Products array
- */
+// Hàm truy vấn sản phẩm
 export const getProducts = async (options = {}) => {
-  const { 
-    page = 1, 
-    limit = 10, 
-    category, 
-    collection, 
-    search, 
-    sortBy, 
-    sortOrder = 'desc' 
+  const {
+    page = 1,
+    limit = 10,
+    category = null,
+    collection = null,
+    search = null,
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+    featured = null,
+    isNew = null,
+    isSale = null
   } = options;
 
   let query = supabase
     .from('products')
     .select(`
       *,
-      category:categories(id, name),
-      variants:product_variants(*)
+      category:categories(id, name)
     `);
 
-  // Apply filters
+  // Áp dụng các bộ lọc
   if (category) {
     query = query.eq('category_id', category);
   }
 
   if (collection) {
-    query = query.in('id', 
-      supabase
-        .from('product_collection')
-        .select('product_id')
-        .eq('collection_id', collection)
+    query = query.in('id', supabase
+      .from('product_collection')
+      .select('product_id')
+      .eq('collection_id', collection)
     );
   }
 
@@ -48,18 +45,27 @@ export const getProducts = async (options = {}) => {
     query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`);
   }
 
-  // Apply sorting
-  if (sortBy) {
-    query = query.order(sortBy, { ascending: sortOrder === 'asc' });
-  } else {
-    query = query.order('created_at', { ascending: false });
+  if (featured !== null) {
+    query = query.eq('is_featured', featured);
   }
 
-  // Apply pagination
+  if (isNew !== null) {
+    query = query.eq('is_new', isNew);
+  }
+
+  if (isSale !== null) {
+    query = query.eq('is_sale', isSale);
+  }
+
+  // Áp dụng sắp xếp
+  query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+  // Áp dụng phân trang
   const from = (page - 1) * limit;
   const to = from + limit - 1;
   query = query.range(from, to);
 
+  // Thực hiện truy vấn
   const { data, error, count } = await query;
 
   if (error) {
@@ -67,17 +73,10 @@ export const getProducts = async (options = {}) => {
     throw error;
   }
 
-  return { 
-    products: data || [], 
-    count 
-  };
+  return { data, count };
 };
 
-/**
- * Get a product by ID
- * @param {string} id - Product ID
- * @returns {Promise<Object>} - Product object
- */
+// Hàm lấy chi tiết sản phẩm
 export const getProductById = async (id) => {
   const { data, error } = await supabase
     .from('products')
@@ -95,273 +94,127 @@ export const getProductById = async (id) => {
     throw error;
   }
 
+  // Theo dõi lượt xem sản phẩm
+  await trackProductView(id);
+
   return data;
 };
 
-/**
- * Track product view
- * @param {string} productId - Product ID
- * @param {string|null} userId - User ID (if authenticated)
- * @returns {Promise<void>}
- */
+// Hàm theo dõi lượt xem sản phẩm
 export const trackProductView = async (productId, userId = null) => {
   try {
-    // Insert view record
-    const { error: viewError } = await supabase
+    const { error } = await supabase
       .from('product_views')
       .insert([
-        { 
-          product_id: productId, 
+        {
+          product_id: productId,
           user_id: userId,
-          ip_address: 'client-side' // In a real app, you'd get this from the server
+          ip_address: '127.0.0.1' // Trong thực tế, lấy IP thật của người dùng
         }
       ]);
 
-    if (viewError) throw viewError;
-
-    // Increment view count on product
-    const { error: updateError } = await supabase.rpc('increment_view_count', {
-      product_id: productId
-    });
-
-    if (updateError) throw updateError;
-
+    if (error) {
+      console.error('Error tracking product view:', error);
+    }
   } catch (error) {
     console.error('Error tracking product view:', error);
-    // Don't throw here to prevent breaking the user experience
   }
 };
 
-/**
- * Get categories
- * @returns {Promise<Array>} - Categories array
- */
-export const getCategories = async () => {
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name');
+// Hàm lấy thống kê lượt xem sản phẩm
+export const getProductViewStats = async (options = {}) => {
+  const {
+    period = 'week',
+    productId = null
+  } = options;
 
-  if (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
-  }
-
-  return data || [];
-};
-
-/**
- * Get collections
- * @returns {Promise<Array>} - Collections array
- */
-export const getCollections = async () => {
-  const { data, error } = await supabase
-    .from('collections')
-    .select('*')
-    .order('name');
-
-  if (error) {
-    console.error('Error fetching collections:', error);
-    throw error;
-  }
-
-  return data || [];
-};
-
-/**
- * Get products by collection
- * @param {string} collectionId - Collection ID
- * @param {Object} options - Query options
- * @returns {Promise<Array>} - Products array
- */
-export const getProductsByCollection = async (collectionId, options = {}) => {
-  const { page = 1, limit = 10 } = options;
-  
-  // First get product IDs in this collection
-  const { data: productIds, error: collectionError } = await supabase
-    .from('product_collection')
-    .select('product_id')
-    .eq('collection_id', collectionId);
-    
-  if (collectionError) {
-    console.error('Error fetching collection products:', collectionError);
-    throw collectionError;
-  }
-  
-  if (!productIds || productIds.length === 0) {
-    return { products: [], count: 0 };
-  }
-  
-  // Then fetch the actual products
-  const ids = productIds.map(item => item.product_id);
-  
-  const from = (page - 1) * limit;
-  const to = from + limit - 1;
-  
-  const { data, error, count } = await supabase
-    .from('products')
-    .select(`
-      *,
-      category:categories(id, name),
-      variants:product_variants(*)
-    `, { count: 'exact' })
-    .in('id', ids)
-    .range(from, to);
-    
-  if (error) {
-    console.error('Error fetching products:', error);
-    throw error;
-  }
-  
-  return { 
-    products: data || [], 
-    count 
-  };
-};
-
-/**
- * Authentication functions
- */
-
-/**
- * Sign up a new user
- * @param {Object} credentials - User credentials
- * @returns {Promise<Object>} - User object
- */
-export const signUp = async (credentials) => {
-  const { email, password, ...userData } = credentials;
-  
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: userData
-    }
-  });
-  
-  if (error) {
-    console.error('Error signing up:', error);
-    throw error;
-  }
-  
-  return data;
-};
-
-/**
- * Sign in a user
- * @param {Object} credentials - User credentials
- * @returns {Promise<Object>} - Session object
- */
-export const signIn = async (credentials) => {
-  const { email, password } = credentials;
-  
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-  
-  if (error) {
-    console.error('Error signing in:', error);
-    throw error;
-  }
-  
-  return data;
-};
-
-/**
- * Sign out the current user
- * @returns {Promise<void>}
- */
-export const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  
-  if (error) {
-    console.error('Error signing out:', error);
-    throw error;
-  }
-};
-
-/**
- * Get the current user
- * @returns {Promise<Object>} - User object
- */
-export const getCurrentUser = async () => {
-  const { data, error } = await supabase.auth.getUser();
-  
-  if (error) {
-    console.error('Error getting current user:', error);
-    throw error;
-  }
-  
-  return data?.user || null;
-};
-
-/**
- * Get analytics data
- * @param {string} period - Time period (day, week, month, year)
- * @returns {Promise<Object>} - Analytics data
- */
-export const getAnalytics = async (period = 'week') => {
-  // Get product views
-  const { data: viewsData, error: viewsError } = await supabase
-    .from('product_views')
-    .select(`
-      product_id,
-      created_at,
-      products(name)
-    `)
-    .gte('created_at', getDateForPeriod(period));
-    
-  if (viewsError) {
-    console.error('Error fetching view analytics:', viewsError);
-    throw viewsError;
-  }
-  
-  // Process the data
-  const productViews = {};
-  viewsData.forEach(view => {
-    const productId = view.product_id;
-    if (!productViews[productId]) {
-      productViews[productId] = {
-        id: productId,
-        name: view.products?.name || 'Unknown Product',
-        views: 0
-      };
-    }
-    productViews[productId].views++;
-  });
-  
-  return {
-    productViews: Object.values(productViews).sort((a, b) => b.views - a.views),
-    totalViews: viewsData.length,
-    period
-  };
-};
-
-/**
- * Helper function to get date for period
- * @param {string} period - Time period
- * @returns {string} - ISO date string
- */
-function getDateForPeriod(period) {
-  const date = new Date();
-  
+  let timeFilter;
   switch (period) {
     case 'day':
-      date.setDate(date.getDate() - 1);
-      break;
-    case 'week':
-      date.setDate(date.getDate() - 7);
+      timeFilter = 'created_at > now() - interval \'1 day\'';
       break;
     case 'month':
-      date.setMonth(date.getMonth() - 1);
+      timeFilter = 'created_at > now() - interval \'30 days\'';
       break;
     case 'year':
-      date.setFullYear(date.getFullYear() - 1);
+      timeFilter = 'created_at > now() - interval \'365 days\'';
       break;
-    default:
-      date.setDate(date.getDate() - 7); // Default to week
+    default: // week
+      timeFilter = 'created_at > now() - interval \'7 days\'';
   }
+
+  let query;
   
-  return date.toISOString();
+  if (productId) {
+    // Lấy thông kê cho sản phẩm cụ thể
+    query = supabase
+      .from('product_views')
+      .select('created_at')
+      .eq('product_id', productId)
+      .filter('created_at', 'gte', new Date(Date.now() - getPeriodInMs(period)).toISOString());
+  } else {
+    // Lấy thống kê tổng quan
+    query = supabase
+      .from('product_view_analytics')
+      .select('*')
+      .order('view_count', { ascending: false })
+      .limit(10);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error fetching product view stats:', error);
+    throw error;
+  }
+
+  return data;
+};
+
+// Hàm lấy thống kê doanh thu
+export const getSalesStats = async (options = {}) => {
+  const {
+    period = 'week'
+  } = options;
+
+  // Trong thực tế, đây sẽ là truy vấn SQL phức tạp hơn
+  const { data, error } = await supabase
+    .rpc('get_sales_stats', { period_param: period });
+
+  if (error) {
+    console.error('Error fetching sales stats:', error);
+    throw error;
+  }
+
+  return data;
+};
+
+// Hàm lấy thông tin dashboard
+export const getDashboardStats = async () => {
+  // Trong thực tế, đây sẽ là truy vấn SQL phức tạp hơn
+  const { data, error } = await supabase
+    .rpc('get_dashboard_stats');
+
+  if (error) {
+    console.error('Error fetching dashboard stats:', error);
+    throw error;
+  }
+
+  return data;
+};
+
+// Hàm hỗ trợ chuyển đổi khoảng thời gian thành milliseconds
+function getPeriodInMs(period) {
+  switch (period) {
+    case 'day':
+      return 24 * 60 * 60 * 1000;
+    case 'month':
+      return 30 * 24 * 60 * 60 * 1000;
+    case 'year':
+      return 365 * 24 * 60 * 60 * 1000;
+    default: // week
+      return 7 * 24 * 60 * 60 * 1000;
+  }
 }
+
+export default supabase;
