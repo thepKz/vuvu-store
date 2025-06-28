@@ -7,6 +7,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
@@ -15,6 +16,7 @@ body {
   color: #333;
   background-color: #fafafa;
   width: 100%;
+  overflow-x: hidden;
 }
 
 /* CSS Variables */
@@ -60,6 +62,7 @@ body {
   transition: var(--transition);
   font-size: 16px;
   box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -176,8 +179,12 @@ body {
 
 /* Responsive Design - Mobile First */
 @media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+
   .container {
-    padding: 0 20px;
+    padding: 0 15px;
   }
   
   .section-padding {
@@ -201,8 +208,12 @@ body {
 }
 
 @media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
   .container {
-    padding: 0 15px;
+    padding: 0 12px;
   }
   
   .section-padding {
@@ -212,6 +223,32 @@ body {
   .btn {
     padding: 10px 20px;
     font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  html {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 10px;
+  }
+
+  .section-padding {
+    padding: 30px 0;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .section-padding {
+    padding: 40px 0;
   }
 }
 
@@ -236,6 +273,18 @@ body {
   color: white;
 }
 
+/* Text Overflow Prevention */
+* {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
 /* Remove all icon references and ensure proper layout */
 .homepage,
 .new-hero-section,
@@ -244,4 +293,48 @@ body {
 .hero-visual {
   max-width: 100%;
   box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+/* Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive Tables */
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+}
+
+/* Responsive Forms */
+input, textarea, select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fix viewport issues on mobile */
+@media (max-width: 768px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+}
+
+/* Ensure proper touch targets */
+@media (max-width: 768px) {
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
