@@ -5,17 +5,14 @@ import '../styles/EnhancedHero.css';
 const EnhancedHero = ({ onNavigate }) => {
   const heroFeatures = [
     {
-      icon: '🎯',
       title: 'Premium Quality',
       description: 'Chất lượng cao cấp'
     },
     {
-      icon: '🚚',
       title: 'Fast Delivery',
       description: 'Giao hàng nhanh chóng'
     },
     {
-      icon: '💝',
       title: 'Gift Ready',
       description: 'Sẵn sàng làm quà'
     }
@@ -23,7 +20,7 @@ const EnhancedHero = ({ onNavigate }) => {
 
   return (
     <section className="enhanced-hero">
-      {/* Advanced Background Effects */}
+      {/* Advanced Blended Background Effects */}
       <div className="hero-background">
         <div className="gradient-mesh"></div>
         <div className="floating-particles">
@@ -35,7 +32,7 @@ const EnhancedHero = ({ onNavigate }) => {
                 y: [0, -30, 0],
                 x: [0, 15, -15, 0],
                 scale: [1, 1.2, 1],
-                opacity: [0.4, 0.8, 0.4]
+                opacity: [0.3, 0.7, 0.3]
               }}
               transition={{
                 duration: 4 + i,
@@ -116,7 +113,7 @@ const EnhancedHero = ({ onNavigate }) => {
               </motion.button>
             </motion.div>
 
-            {/* Hero Features */}
+            {/* Hero Features - Minimal Icons */}
             <motion.div 
               className="hero-features"
               initial={{ opacity: 0, y: 20 }}
@@ -130,9 +127,8 @@ const EnhancedHero = ({ onNavigate }) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 1.2 + index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.02 }}
                 >
-                  <span className="feature-icon">{feature.icon}</span>
                   <div className="feature-text">
                     <h4>{feature.title}</h4>
                     <p>{feature.description}</p>
@@ -189,12 +185,12 @@ const EnhancedHero = ({ onNavigate }) => {
                 </div>
               </motion.div>
 
-              {/* Floating Elements */}
+              {/* Floating Elements - Minimal */}
               <motion.div 
                 className="floating-badge badge-1"
                 animate={{
                   y: [0, -20, 0],
-                  rotate: [0, 5, 0]
+                  rotate: [0, 3, 0]
                 }}
                 transition={{
                   duration: 4,
@@ -210,7 +206,7 @@ const EnhancedHero = ({ onNavigate }) => {
                 className="floating-badge badge-2"
                 animate={{
                   y: [0, 15, 0],
-                  rotate: [0, -3, 0]
+                  rotate: [0, -2, 0]
                 }}
                 transition={{
                   duration: 5,
@@ -219,7 +215,6 @@ const EnhancedHero = ({ onNavigate }) => {
                   delay: 1
                 }}
               >
-                <span className="badge-icon">⭐</span>
                 <span>Premium</span>
               </motion.div>
 
@@ -236,7 +231,6 @@ const EnhancedHero = ({ onNavigate }) => {
                   delay: 2
                 }}
               >
-                <span className="badge-icon">🎁</span>
                 <span>Gift Ready</span>
               </motion.div>
             </div>
