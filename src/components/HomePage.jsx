@@ -1,11 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Header from './Header';
-import HeroSection from './HeroSection';
-import ProductCarousel from './ProductCarousel';
-import ProductGrid from './ProductGrid';
+import PopMartHero from './PopMartHero';
+import PopMartProducts from './PopMartProducts';
 import Footer from './Footer';
-import FloatingShapes from './FloatingShapes';
 
 const HomePage = ({ onNavigate, onProductSelect }) => {
   return (
@@ -15,11 +13,9 @@ const HomePage = ({ onNavigate, onProductSelect }) => {
       transition={{ duration: 0.5 }}
       className="homepage"
     >
-      <FloatingShapes />
       <Header currentPage="home" onNavigate={onNavigate} />
-      <HeroSection onNavigate={onNavigate} onProductSelect={onProductSelect} />
-      <ProductCarousel />
-      <ProductGrid onNavigate={onNavigate} onProductSelect={onProductSelect} />
+      <PopMartHero onNavigate={onNavigate} />
+      <PopMartProducts onNavigate={onNavigate} onProductSelect={onProductSelect} />
       <Footer />
     </motion.div>
   );

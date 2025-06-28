@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import '../styles/ProductGrid.css';
+import '../styles/PopMartProducts.css';
 
 import lubu1 from '../images/lubu1.jpg';
 import lubu2 from '../images/lubu2.jpg';
@@ -10,7 +10,7 @@ import lubu4 from '../images/lubu4.jpg';
 import lubu5 from '../images/lubu5.jpg';
 import lubu6 from '../images/lubu6.jpg';
 
-const ProductGrid = ({ onNavigate, onProductSelect }) => {
+const PopMartProducts = ({ onNavigate, onProductSelect }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, threshold: 0.1 });
 
@@ -21,8 +21,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
       name: "DIMOO Premium",
       price: "230.000đ",
       originalPrice: null,
-      badge: "New",
-      rating: 4.9
+      badge: "New"
     },
     {
       id: 2,
@@ -30,8 +29,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
       name: "DIMOO Limited",
       price: "253.000đ",
       originalPrice: null,
-      badge: "Hot",
-      rating: 4.8
+      badge: "Hot"
     },
     {
       id: 3,
@@ -39,8 +37,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
       name: "MOLLY Exclusive",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
-      rating: 4.7
+      badge: "Sale"
     },
     {
       id: 4,
@@ -48,8 +45,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
       name: "MOLLY Deluxe",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
-      rating: 4.9
+      badge: "Sale"
     },
     {
       id: 5,
@@ -57,8 +53,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
       name: "LABUBU Special",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
-      rating: 4.8
+      badge: "Sale"
     },
     {
       id: 6,
@@ -66,8 +61,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
       name: "LABUBU Collector",
       price: "805.000đ",
       originalPrice: "1.150.000đ",
-      badge: "Sale",
-      rating: 4.9
+      badge: "Sale"
     }
   ];
 
@@ -75,7 +69,7 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.08
+        staggerChildren: 0.1
       }
     }
   };
@@ -83,15 +77,15 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
   const productVariants = {
     hidden: { 
       opacity: 0, 
-      y: 30,
-      scale: 0.95
+      y: 40,
+      scale: 0.9
     },
     visible: { 
       opacity: 1, 
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.6,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
@@ -113,17 +107,24 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
   };
 
   return (
-    <section className="products-section" id="products" ref={ref}>
+    <section className="popmart-products" ref={ref}>
+      {/* Background Effects */}
+      <div className="products-bg">
+        <div className="bg-orb orb-left"></div>
+        <div className="bg-orb orb-right"></div>
+        <div className="grid-pattern"></div>
+      </div>
+
       <div className="container">
         <motion.div
           className="section-header"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="section-badge">
-            <span className="badge-dot"></span>
-            <span>Trending</span>
+          <div className="header-badge">
+            <span className="badge-glow"></span>
+            Trending Now
           </div>
           <h2 className="section-title">Sản phẩm nổi bật</h2>
         </motion.div>
@@ -140,61 +141,49 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
               className="product-card"
               variants={productVariants}
               whileHover={{ 
-                y: -5,
-                transition: { duration: 0.2 }
+                y: -8,
+                scale: 1.02,
+                transition: { duration: 0.3 }
               }}
               onClick={() => handleProductClick(product)}
             >
+              <div className="card-glow-effect"></div>
+              
               {product.badge && (
                 <motion.div 
                   className={`product-badge badge-${product.badge.toLowerCase()}`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
+                  initial={{ scale: 0, rotate: -10 }}
+                  animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.3, type: "spring" }}
                 >
                   {product.badge}
                 </motion.div>
               )}
               
-              <motion.div 
-                className="product-image-container"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
+              <div className="product-image-container">
+                <div className="image-glow"></div>
                 <img src={product.image} alt={product.name} className="product-image" />
                 <motion.div 
                   className="product-overlay"
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <motion.button
                     className="quick-view-btn"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" strokeWidth="2"/>
                       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                     </svg>
                   </motion.button>
                 </motion.div>
-              </motion.div>
+              </div>
               
               <div className="product-info">
-                <div className="product-header">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-rating">
-                    <div className="rating-stars">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill={i < Math.floor(product.rating) ? "currentColor" : "none"}>
-                          <path d="M12 2L15.09 8.26L22 9L16 14.74L17.18 21.02L12 18.77L6.82 21.02L8 14.74L2 9L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1"/>
-                        </svg>
-                      ))}
-                    </div>
-                    <span className="rating-value">{product.rating}</span>
-                  </div>
-                </div>
+                <h3 className="product-name">{product.name}</h3>
                 
                 <div className="product-price">
                   <span className="current-price">{product.price}</span>
@@ -206,12 +195,13 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
                 <motion.button
                   className="add-to-cart-btn"
                   whileHover={{ 
-                    scale: 1.02
+                    scale: 1.05,
+                    boxShadow: "0 8px 25px rgba(255, 107, 157, 0.4)"
                   }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" strokeWidth="2"/>
                     <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" stroke="currentColor" strokeWidth="2"/>
                     <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" strokeWidth="2"/>
@@ -227,17 +217,20 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
           className="section-footer"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
         >
           <motion.button
-            className="btn btn-primary view-all-btn"
+            className="view-all-btn"
             onClick={handleViewAllProducts}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ 
+              scale: 1.05,
+              boxShadow: "0 12px 35px rgba(255, 107, 157, 0.4)"
+            }}
+            whileTap={{ scale: 0.95 }}
           >
-            Xem tất cả
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <span>Xem tất cả sản phẩm</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </motion.button>
         </motion.div>
@@ -246,4 +239,4 @@ const ProductGrid = ({ onNavigate, onProductSelect }) => {
   );
 };
 
-export default ProductGrid;
+export default PopMartProducts;
