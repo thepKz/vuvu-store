@@ -217,71 +217,6 @@
   transform: translateX(3px);
 }
 
-/* Social Proof WITHOUT Stars */
-.hero-social-proof {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.proof-avatars {
-  display: flex;
-  align-items: center;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid white;
-  margin-left: -8px;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.avatar:first-child {
-  margin-left: 0;
-}
-
-.avatar-1 {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
-}
-
-.avatar-2 {
-  background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.avatar-3 {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-}
-
-.avatar-more {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #f3f4f6;
-  border: 2px solid white;
-  margin-left: -8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #6b7280;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.proof-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.trust-text {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #374151;
-}
-
 .hero-visual {
   display: flex;
   justify-content: center;
@@ -370,6 +305,43 @@
   border: 1px solid rgba(168, 85, 247, 0.08);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+}
+
+/* Image Overlay for View Detail */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.view-detail-btn {
+  background: rgba(255, 255, 255, 0.95);
+  color: #a855f7;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  backdrop-filter: blur(10px);
+}
+
+.view-detail-btn:hover {
+  background: #a855f7;
+  color: white;
+  transform: translateY(-1px);
 }
 
 /* Image Shimmer Effect */
@@ -534,10 +506,6 @@
   .hero-subtitle {
     font-size: 1rem;
     max-width: none;
-  }
-
-  .hero-social-proof {
-    justify-content: center;
   }
 
   .hero-visual-container {

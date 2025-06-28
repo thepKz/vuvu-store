@@ -112,6 +112,10 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
     }
   };
 
+  const handleImageView = (imageUrl, productName) => {
+    window.open(imageUrl, '_blank');
+  };
+
   return (
     <section className="products-section" ref={ref}>
       <div className="container">
@@ -169,6 +173,10 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
                     className="quick-view-btn"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleImageView(product.image, product.name);
+                    }}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" strokeWidth="2"/>
@@ -208,6 +216,7 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
                   }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" strokeWidth="2"/>

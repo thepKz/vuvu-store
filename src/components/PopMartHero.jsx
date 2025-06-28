@@ -110,24 +110,6 @@ const PopMartHero = ({ onNavigate }) => {
                 </svg>
               </motion.button>
             </motion.div>
-
-            {/* Social Proof WITHOUT Stars */}
-            <motion.div 
-              className="hero-social-proof"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.6 }}
-            >
-              <div className="proof-avatars">
-                <div className="avatar avatar-1"></div>
-                <div className="avatar avatar-2"></div>
-                <div className="avatar avatar-3"></div>
-                <div className="avatar-more">+99</div>
-              </div>
-              <div className="proof-text">
-                <span className="trust-text">Được tin tưởng bởi 1000+ khách hàng</span>
-              </div>
-            </motion.div>
           </motion.div>
 
           {/* Right Visual - Enhanced & Larger */}
@@ -160,7 +142,21 @@ const PopMartHero = ({ onNavigate }) => {
                 </div>
                 <div className="card-content">
                   <div className="product-preview">
-                    <div className="preview-image">
+                    <motion.div 
+                      className="preview-image"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <img 
+                        src="/images/lubu1.jpg" 
+                        alt="Limited Edition Squishy"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '10px'
+                        }}
+                      />
                       <motion.div 
                         className="image-shimmer"
                         animate={{
@@ -174,7 +170,26 @@ const PopMartHero = ({ onNavigate }) => {
                           delay: 2
                         }}
                       />
-                    </div>
+                      <motion.div 
+                        className="image-overlay"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <motion.button
+                          className="view-detail-btn"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => window.open('/images/lubu1.jpg', '_blank')}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" strokeWidth="2"/>
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                          </svg>
+                          Xem chi tiết
+                        </motion.button>
+                      </motion.div>
+                    </motion.div>
                     <div className="preview-info">
                       <h4>Limited Edition Squishy</h4>
                       <div className="preview-price">
@@ -190,7 +205,7 @@ const PopMartHero = ({ onNavigate }) => {
                 </div>
               </motion.div>
 
-              {/* Quality Card - Removed "Chất lượng đảm bảo" */}
+              {/* Premium Indicator Card */}
               <motion.div 
                 className="visual-card accent-card"
                 animate={{ 
