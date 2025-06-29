@@ -65,6 +65,7 @@
 .stat-icon {
   width: 48px;
   height: 48px;
+  background: rgba(168, 85, 247, 0.1);
   border-radius: 12px;
   display: flex;
   align-items: center;
