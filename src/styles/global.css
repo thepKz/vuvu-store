@@ -285,17 +285,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Remove all icon references and ensure proper layout */
-.homepage,
-.new-hero-section,
-.hero-layout,
-.hero-content,
-.hero-visual {
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-wrap: break-word;
-}
-
 /* Responsive Images */
 img {
   max-width: 100%;
