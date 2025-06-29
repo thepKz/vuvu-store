@@ -137,6 +137,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+    setRotation(0);
   };
 
   return (
@@ -345,7 +346,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                 <div className="share-buttons">
                   <motion.button 
                     className="share-btn facebook"
-                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileHover={{ scale: 1.05, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <span>Facebook</span>
@@ -353,7 +354,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   
                   <motion.button 
                     className="share-btn twitter"
-                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileHover={{ scale: 1.05, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <span>Twitter</span>
@@ -361,7 +362,7 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   
                   <motion.button 
                     className="share-btn pinterest"
-                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileHover={{ scale: 1.05, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <span>Pinterest</span>
@@ -405,11 +406,11 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <h3>Mô tả chi tiết</h3>
                     <p>{product.description || "Sản phẩm squishy cao cấp với thiết kế độc đáo, chất liệu mềm mại và an toàn. Phù hợp làm quà tặng hoặc sưu tập."}</p>
                     <ul>
-                      <li>Chất liệu cao cấp, an toàn cho trẻ em</li>
-                      <li>Thiết kế dễ thương, màu sắc tươi sáng</li>
-                      <li>Kích thước hoàn hảo để ôm và chơi</li>
-                      <li>Phù hợp làm quà tặng cho mọi lứa tuổi</li>
-                      <li>Dễ dàng vệ sinh và bảo quản</li>
+                      <li>✨ Chất liệu cao cấp, an toàn cho trẻ em</li>
+                      <li>🌟 Thiết kế dễ thương, màu sắc tươi sáng</li>
+                      <li>💝 Kích thước hoàn hảo để ôm và chơi</li>
+                      <li>🎁 Phù hợp làm quà tặng cho mọi lứa tuổi</li>
+                      <li>🧼 Dễ dàng vệ sinh và bảo quản</li>
                     </ul>
 
                     <div className="product-specs">
