@@ -14,10 +14,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const [activeTab, setActiveTab] = useState('description');
   const [isVisible, setIsVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [rotation, setRotation] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState(0);
-  const rotationRef = useRef(null);
   const imageRef = useRef(null);
 
   // Scroll to top function
@@ -42,40 +38,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     window.addEventListener('scroll', toggleVisibility);
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
-
-  // Handle 360 rotation
-  const handleRotationStart = (e) => {
-    if (isFullscreen) {
-      setIsDragging(true);
-      setDragStart(e.clientX || (e.touches && e.touches[0].clientX) || 0);
-    }
-  };
-
-  const handleRotationMove = (e) => {
-    if (isDragging && isFullscreen) {
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-      const diff = clientX - dragStart;
-      setRotation(prev => (prev + diff / 5) % 360);
-      setDragStart(clientX);
-    }
-  };
-
-  const handleRotationEnd = () => {
-    setIsDragging(false);
-  };
-
-  // Auto-rotate effect
-  useEffect(() => {
-    let rotationInterval;
-    
-    if (isFullscreen && !isDragging) {
-      rotationInterval = setInterval(() => {
-        setRotation(prev => (prev + 1) % 360);
-      }, 50);
-    }
-    
-    return () => clearInterval(rotationInterval);
-  }, [isFullscreen, isDragging]);
 
   // Handle image zoom
   const handleImageHover = (e) => {
@@ -137,7 +99,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
-    setRotation(0);
   };
 
   return (
@@ -227,14 +188,6 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                     <img src={image} alt={`${product.name} ${index + 1}`} />
                   </motion.button>
                 ))}
-                <motion.button
-                  className="thumbnail view-360"
-                  onClick={toggleFullscreen}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>360°</span>
-                </motion.button>
               </div>
             </motion.div>
 
@@ -500,24 +453,12 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
             <div 
               className="fullscreen-content"
               onClick={(e) => e.stopPropagation()}
-              onMouseDown={handleRotationStart}
-              onMouseMove={handleRotationMove}
-              onMouseUp={handleRotationEnd}
-              onMouseLeave={handleRotationEnd}
-              onTouchStart={handleRotationStart}
-              onTouchMove={handleRotationMove}
-              onTouchEnd={handleRotationEnd}
-              ref={rotationRef}
             >
-              <div className="rotation-view">
+              <div className="fullscreen-image-container">
                 <img 
                   src={images[selectedImage]} 
                   alt={product.name}
-                  style={{ transform: `rotate(${rotation}deg)` }}
                 />
-                <div className="rotation-instructions">
-                  <p>🖱️ Kéo để xoay 360°</p>
-                </div>
               </div>
               <div className="fullscreen-thumbnails">
                 {images.map((image, index) => (

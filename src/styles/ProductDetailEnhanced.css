@@ -167,20 +167,6 @@
   object-fit: cover;
 }
 
-.thumbnail.view-360 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
-  border: 2px solid rgba(168, 85, 247, 0.2);
-}
-
-.thumbnail.view-360 span {
-  font-weight: 700;
-  color: #a855f7;
-  font-size: 0.9rem;
-}
-
 /* Product Info */
 .product-info {
   display: flex;
@@ -733,37 +719,19 @@
   cursor: default;
 }
 
-.rotation-view {
+.fullscreen-image-container {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  cursor: grab;
 }
 
-.rotation-view:active {
-  cursor: grabbing;
-}
-
-.rotation-view img {
+.fullscreen-image-container img {
   max-width: 100%;
   max-height: 80vh;
   object-fit: contain;
-  transition: transform 0.1s linear;
-}
-
-.rotation-instructions {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 0.9rem;
 }
 
 .fullscreen-thumbnails {
@@ -955,11 +923,6 @@
   .fullscreen-thumbnail {
     width: 50px;
     height: 50px;
-  }
-
-  .rotation-instructions {
-    font-size: 0.8rem;
-    padding: 8px 15px;
   }
 }
 
