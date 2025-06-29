@@ -47,15 +47,16 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
   const handleRotationStart = (e) => {
     if (isFullscreen) {
       setIsDragging(true);
-      setDragStart(e.clientX);
+      setDragStart(e.clientX || (e.touches && e.touches[0].clientX) || 0);
     }
   };
 
   const handleRotationMove = (e) => {
     if (isDragging && isFullscreen) {
-      const diff = e.clientX - dragStart;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const diff = clientX - dragStart;
       setRotation(prev => (prev + diff / 5) % 360);
-      setDragStart(e.clientX);
+      setDragStart(clientX);
     }
   };
 
@@ -502,6 +503,9 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
               onMouseMove={handleRotationMove}
               onMouseUp={handleRotationEnd}
               onMouseLeave={handleRotationEnd}
+              onTouchStart={handleRotationStart}
+              onTouchMove={handleRotationMove}
+              onTouchEnd={handleRotationEnd}
               ref={rotationRef}
             >
               <div className="rotation-view">
