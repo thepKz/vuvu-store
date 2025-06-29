@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactImageMagnify from 'react-image-magnify';
 import Header from './Header';
 import Footer from './Footer';
 import ProductRecommendations from './ProductRecommendations';
@@ -112,13 +113,8 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
     );
   }
 
-  // Mock data for enhanced features
-  const images = [
-    product.image,
-    product.image,
-    product.image,
-    product.image
-  ];
+  // Use product images if available, otherwise use a single image
+  const images = product.images || [product.image, product.image, product.image, product.image];
 
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
@@ -185,13 +181,26 @@ const ProductDetailEnhanced = ({ product, onNavigate, onProductSelect }) => {
                   onClick={toggleFullscreen}
                   ref={imageRef}
                 >
-                  <img 
-                    src={images[selectedImage]} 
-                    alt={product.name}
-                    style={isZoomed ? {
-                      transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                      transform: 'scale(2)'
-                    } : {}}
+                  <ReactImageMagnify
+                    {...{
+                      smallImage: {
+                        alt: product.name,
+                        isFluidWidth: true,
+                        src: images[selectedImage]
+                      },
+                      largeImage: {
+                        src: images[selectedImage],
+                        width: 1200,
+                        height: 1200
+                      },
+                      enlargedImageContainerDimensions: {
+                        width: '150%',
+                        height: '150%'
+                      },
+                      isHintEnabled: true,
+                      shouldHideHintAfterFirstActivation: false,
+                      hintTextMouse: 'Di chuột để phóng to'
+                    }}
                   />
                   {product.badge && (
                     <div className={`product-badge badge-${product.badge.toLowerCase()}`}>

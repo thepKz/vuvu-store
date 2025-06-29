@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import '../styles/ProductGrid.css';
+import '../styles/PopMartProducts.css';
 
 import lubu1 from '../images/lubu1.jpg';
 import lubu2 from '../images/lubu2.jpg';
@@ -140,7 +140,14 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
               onClick={() => handleProductClick(product)}
             >
               <div className="product-image-container">
-                <img src={product.image} alt={product.name} className="product-image" />
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="product-image"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
+                  }}
+                />
                 <motion.div 
                   className="product-overlay"
                   initial={{ opacity: 0 }}
@@ -175,7 +182,7 @@ const PopMartProducts = ({ onNavigate, onProductSelect }) => {
                         </span>
                       ))}
                     </div>
-                    <span className="rating-value">{product.rating}</span>
+                    <span className="rating-value">({product.rating})</span>
                   </div>
                 </div>
                 

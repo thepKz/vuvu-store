@@ -5,6 +5,8 @@ import AdminDashboard from './AdminDashboard';
 import ProductManager from './ProductManager';
 import OrderManager from './OrderManager';
 import UserManager from './UserManager';
+import CategoryManager from './CategoryManager';
+import CollectionManager from './CollectionManager';
 
 const AdminLayout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -15,14 +17,14 @@ const AdminLayout = () => {
         return <AdminDashboard />;
       case 'products':
         return <ProductManager />;
+      case 'categories':
+        return <CategoryManager />;
+      case 'collections':
+        return <CollectionManager />;
       case 'orders':
         return <OrderManager />;
       case 'users':
         return <UserManager />;
-      case 'categories':
-        return <div>Categories Manager</div>;
-      case 'collections':
-        return <div>Collections Manager</div>;
       case 'settings':
         return <div>Settings</div>;
       default:

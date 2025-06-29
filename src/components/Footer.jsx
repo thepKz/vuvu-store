@@ -50,15 +50,15 @@ const Footer = () => {
             <p>Cửa hàng squishy và đồ chơi mềm mại đáng yêu nhất Việt Nam</p>
             <div className="contact-info">
               <div className="contact-item">
-                <span>📍</span>
+                <span>Địa chỉ:</span>
                 <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
               </div>
               <div className="contact-item">
-                <span>📞</span>
+                <span>Số điện thoại:</span>
                 <span>0123 456 789</span>
               </div>
               <div className="contact-item">
-                <span>📧</span>
+                <span>Email:</span>
                 <span>hello@dudustore.com</span>
               </div>
             </div>
