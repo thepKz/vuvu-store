@@ -3,6 +3,8 @@
   padding: 80px 0;
   background: linear-gradient(135deg, #fff5f3, #fff0ed);
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .shopee-home-banner::before {
@@ -16,13 +18,24 @@
   opacity: 0.5;
 }
 
-.banner-content {
+.shopee-home-banner .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 40px;
   position: relative;
   z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.banner-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
 }
 
 .banner-text {

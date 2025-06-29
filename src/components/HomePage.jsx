@@ -4,6 +4,7 @@ import Header from './Header';
 import NewHeroSection from './NewHeroSection';
 import PopMartProducts from './PopMartProducts';
 import Footer from './Footer';
+import '../styles/HomePage.css';
 
 const HomePage = ({ onNavigate, onProductSelect }) => {
   // Social media and Shopee links
