@@ -493,7 +493,7 @@ const OrderManager = () => {
                       <tr key={item.id}>
                         <td className="product-cell">
                           {item.product?.image && (
-                            <div className="product-image">
+                            <div className="order-product-image">
                               <img src={item.product.image} alt={item.product.name} />
                             </div>
                           )}
